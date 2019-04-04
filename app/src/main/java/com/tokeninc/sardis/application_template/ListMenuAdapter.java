@@ -28,7 +28,7 @@ public class ListMenuAdapter extends RecyclerView.Adapter<ListMenuAdapter.ListIt
     @Override
     public ListItemViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         Log.d(TAG,"onCreateViewHolder");
-        View textView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.menu_item,
+        View textView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_menu_item,
                 viewGroup,false);
 
         ListItemViewHolder listItemViewHolder = new ListItemViewHolder(textView);
