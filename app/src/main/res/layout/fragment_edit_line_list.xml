@@ -1,0 +1,22 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.tokeninc.sardis.application_template.EditLineListFragment"
+    android:background="@color/translucent_black">
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rv_edit_list_menu"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="30dp"
+        android:text="BUTTON"
+        android:textColor="@color/white"
+        android:background="@drawable/std_button"
+        android:id="@+id/bttn_edit_line_list_fragment"/>
+</FrameLayout>
