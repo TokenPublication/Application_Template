@@ -1,5 +1,15 @@
 <resources>
     <string name="app_name">400TR_YKB</string>
     <string name="title_activity_list_menu">ListMenuActivity</string>
+    <string name="amount">Amount</string>
+    <string name="waiting">Waiting for a Response</string>
+    <string name="approved">Approved</string>
+    <string name="currencycode">$</string>
+
+    <string name="transactions">Transactions</string>
+    <string name="reports">Reports</string>
+    <string name="void_transaction">Void</string>
+    <string name="insert_card">Please Insert Card</string>
+
 
 </resources>
