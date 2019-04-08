@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_border"
+    android:padding="20dp"
+    tools:context="com.tokeninc.sardis.application_template.ShowCardFragment">
+
+
+        <TextView
+            android:id="@+id/tv_amount_insert_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentTop="true"
+            android:text="@string/amount"
+            android:textSize="24sp"
+            android:textColor="@android:color/white"/>
+
+        <TextView
+            android:id="@+id/tv_total_insert_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_amount_insert_card"
+            android:layout_centerHorizontal="true"
+            android:text="63.00 $"
+            android:textSize="28sp"
+            android:textColor="@color/colorPrimary"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_total_insert_card"
+            android:layout_centerHorizontal="true"
+            android:text="@string/insert_card"
+            android:textSize="24sp"
+            android:textColor="@android:color/white"
+            android:paddingTop="20dp"/>
+
+        <ImageView
+            android:id="@+id/iv_insert_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/insert_card" />
+        <Button
+            android:id="@+id/fragment_btn_Cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:width="200dp"
+            android:background="@drawable/red_button"
+            android:text="CANCEL"
+            android:textColor="@android:color/white"
+            android:textSize="24sp" />
+
+
+</RelativeLayout>
