@@ -9,7 +9,7 @@ import android.util.Pair;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main2Activity extends AppCompatActivity implements EditLineListFragment.OnFragmentInteractionListener {
+public class Main2Activity extends AppCompatActivity implements EditLineListFragment.OnFragmentInteractionListener, InfoFragment.OnFragmentInteractionListener {
     private List<String> mValueList;
     private List<Pair<String,String>> mPairsList;
     @Override
@@ -19,17 +19,29 @@ public class Main2Activity extends AppCompatActivity implements EditLineListFrag
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        mPairsList = new ArrayList<>();
+
+        /*mPairsList = new ArrayList<>();
 
         mPairsList.add(new Pair<String, String>("Hello",""));
         mPairsList.add(new Pair<String, String>("Bye","Hello"));
-        EditLineListFragment editLineListFragment = new EditLineListFragment(mPairsList);
+        EditLineListFragment editLineListFragment = new EditLineListFragment();
+        editLineListFragment.setArguments(mPairsList);
         fragmentTransaction.add(R.id.main2_editLine_list_frame, editLineListFragment);
+        fragmentTransaction.commit();
+        */
+
+        InfoFragment infoFragment = new InfoFragment();
+        fragmentTransaction.add(R.id.main2_editLine_list_frame,infoFragment);
         fragmentTransaction.commit();
     }
 
     @Override
-    public void onFragmentInteraction(List<String> list) {
+    public void onEditLineListFragmentInteraction(List<String> list) {
         this.mValueList = list;
+    }
+
+    @Override
+    public void onInfoFragmentInteraction() {
+
     }
 }
