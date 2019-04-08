@@ -3,6 +3,7 @@ package com.tokeninc.sardis.application_template;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,10 +25,8 @@ import java.util.List;
  * Activities that contain this fragment must implement the
  * {@link EditLineListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link EditLineListFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
-public class EditLineListFragment extends Fragment {
+public class  EditLineListFragment extends Fragment {
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -45,16 +44,17 @@ public class EditLineListFragment extends Fragment {
     private EditLineListAdapter mEditLineListAdapter;
     private View mView;
 
+    public EditLineListFragment(){
 
-    public EditLineListFragment(List<Pair<String, String>> mTagHintPairsList) {
+    }
+
+    public void setArguments(List<Pair<String, String>> mTagHintPairsList){
         this.mTagHintPairsList = mTagHintPairsList;
         this.mEditTextValues = new ArrayList<>(mTagHintPairsList.size());
         for (int i = 0; i < mTagHintPairsList.size(); i++) {
             mEditTextValues.add("");
         }
-        Log.d("OK","OK");
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -106,7 +106,7 @@ public class EditLineListFragment extends Fragment {
 
     public void onButtonPressed() {
         if (mListener != null) {
-            mListener.onFragmentInteraction(this.mEditTextValues);
+            mListener.onEditLineListFragmentInteraction(this.mEditTextValues);
         }
     }
 
@@ -138,6 +138,6 @@ public class EditLineListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(List<String> list);
+        void onEditLineListFragmentInteraction(List<String> list);
     }
 }

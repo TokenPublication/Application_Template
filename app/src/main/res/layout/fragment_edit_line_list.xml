@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.tokeninc.sardis.application_template.EditLineListFragment"
-    android:background="@color/translucent_black">
+    >
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
