@@ -34,7 +34,7 @@ public class  EditLineListFragment extends Fragment {
 
     private String mParam1;
     private String mParam2;
-    private List<Pair<String,String>> mTagHintPairsList;
+    private List<EditTextFormat> mEditTextFormats;
     private List<String> mEditTextValues;
 
     private OnFragmentInteractionListener mListener;
@@ -48,10 +48,10 @@ public class  EditLineListFragment extends Fragment {
 
     }
 
-    public void setArguments(List<Pair<String, String>> mTagHintPairsList){
-        this.mTagHintPairsList = mTagHintPairsList;
-        this.mEditTextValues = new ArrayList<>(mTagHintPairsList.size());
-        for (int i = 0; i < mTagHintPairsList.size(); i++) {
+    public void setArguments(List<EditTextFormat> mEditTextFormats){
+        this.mEditTextFormats = mEditTextFormats;
+        this.mEditTextValues = new ArrayList<>(mEditTextFormats.size());
+        for (int i = 0; i < mEditTextValues.size(); i++) {
             mEditTextValues.add("");
         }
     }
@@ -83,7 +83,8 @@ public class  EditLineListFragment extends Fragment {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this.getContext());
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setHasFixedSize(true);
-        mEditLineListAdapter = new EditLineListAdapter(mTagHintPairsList);
+        mEditLineListAdapter = new EditLineListAdapter(mEditTextFormats,getActivity());
+
         mEditLineListAdapter.setTextWatcherInterface(new EditLineListAdapter.TextWatcherInterface() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after, int tag) {

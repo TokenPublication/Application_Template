@@ -1,14 +1,22 @@
 package com.tokeninc.sardis.application_template;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.Context;
+import android.icu.util.Calendar;
+import android.icu.util.TimeZone;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -17,11 +25,14 @@ import java.util.Map;
 
 public class EditLineListAdapter extends RecyclerView.Adapter<EditLineListAdapter.EditLineViewHolder> {
     private static String TAG = "EditLineListAdapter";
-    private List<Pair<String,String>> tagHintPairs;
+    private List<EditTextFormat> mEditTextFormats;
     private TextWatcherInterface textWatcherInterface;
+    private Map<String,Integer> inputTypes;
+    private final Context mContext;
 
-    public EditLineListAdapter(List<Pair<String,String>> tagHintPairs){
-        this.tagHintPairs = tagHintPairs;
+    public EditLineListAdapter(List<EditTextFormat> mEditTextFormats, Context context){
+        this.mEditTextFormats = mEditTextFormats;
+        this.mContext = context;
     }
 
     public void setTextWatcherInterface(TextWatcherInterface textWatcherInterface) {
@@ -30,7 +41,7 @@ public class EditLineListAdapter extends RecyclerView.Adapter<EditLineListAdapte
 
     @Override
     public int getItemCount() {
-        return tagHintPairs.size();
+        return mEditTextFormats.size();
     }
 
     @NonNull
@@ -40,8 +51,7 @@ public class EditLineListAdapter extends RecyclerView.Adapter<EditLineListAdapte
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.edit_line_list_item,
                 viewGroup,false);
 
-        EditLineViewHolder editLineViewHolder = new EditLineViewHolder(view);
-        return editLineViewHolder;
+        return new EditLineViewHolder(view);
     }
 
     @Override
@@ -49,7 +59,8 @@ public class EditLineListAdapter extends RecyclerView.Adapter<EditLineListAdapte
         Log.d(TAG,"onBindViewHolder");
 
         editLineViewHolder.editText.setTag(i);
-        editLineViewHolder.bind(tagHintPairs.get(i).first,tagHintPairs.get(i).second);
+        editLineViewHolder.setInputType(mEditTextFormats.get(i).type);
+        editLineViewHolder.bind(mEditTextFormats.get(i).tag,mEditTextFormats.get(i).hint);
     }
 
     public class EditLineViewHolder extends RecyclerView.ViewHolder{
@@ -81,7 +92,42 @@ public class EditLineListAdapter extends RecyclerView.Adapter<EditLineListAdapte
 
         public void bind(String editLineTag, String editLineHint){
             textView.setText(editLineTag);
-            editText.setText(editLineHint);
+            editText.setHint(editLineHint);
+        }
+
+        /**
+         * Sets edit text format
+         * @param inputType Set 0 for Date Picker, -1 for Time Picker. See Android Developer's Manual for other input types.
+         */
+        public void setInputType(int inputType){
+            //editText.setInputType(inputType);
+            if(inputType == 0){
+                editText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+
+                        DatePickerDialog dialog = new DatePickerDialog(mContext,new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                                StringBuilder stringBuilder = new StringBuilder();
+                                stringBuilder.append(dayOfMonth).
+                                        append("/").append(month+1).
+                                        append("/").append(year);
+                                editText.setText(stringBuilder.toString());
+                            }
+                        },
+                                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DAY_OF_MONTH));
+                        dialog.show();
+                    }
+                });
+            }else if(inputType == -1){
+
+            }else{
+                editText.setInputType(inputType);
+            }
+
         }
     }
 
@@ -90,4 +136,7 @@ public class EditLineListAdapter extends RecyclerView.Adapter<EditLineListAdapte
         void onTextChanged(CharSequence s, int start, int before, int count,int tag);
         void afterTextChanged(Editable s, int tag);
     }
+
 }
+
+
