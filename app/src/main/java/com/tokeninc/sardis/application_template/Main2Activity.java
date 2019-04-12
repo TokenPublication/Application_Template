@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Main2Activity extends AppCompatActivity implements EditLineListFragment.OnFragmentInteractionListener, InfoFragment.OnFragmentInteractionListener {
     private List<String> mValueList;
-    private List<Pair<String,String>> mPairsList;
+    private List<EditTextFormat> mEditLineFormats;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,19 +20,19 @@ public class Main2Activity extends AppCompatActivity implements EditLineListFrag
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        /*mPairsList = new ArrayList<>();
+        mEditLineFormats = new ArrayList<>();
 
-        mPairsList.add(new Pair<String, String>("Hello",""));
-        mPairsList.add(new Pair<String, String>("Bye","Hello"));
+        mEditLineFormats.add(new EditTextFormat("Hello","",0));
+
         EditLineListFragment editLineListFragment = new EditLineListFragment();
-        editLineListFragment.setArguments(mPairsList);
+        editLineListFragment.setArguments(mEditLineFormats);
         fragmentTransaction.add(R.id.main2_editLine_list_frame, editLineListFragment);
         fragmentTransaction.commit();
-        */
 
+/*
         InfoFragment infoFragment = new InfoFragment();
         fragmentTransaction.add(R.id.main2_editLine_list_frame,infoFragment);
-        fragmentTransaction.commit();
+        fragmentTransaction.commit();*/
     }
 
     @Override
