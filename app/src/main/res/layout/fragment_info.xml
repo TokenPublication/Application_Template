@@ -69,11 +69,4 @@ tools:context="com.tokeninc.sardis.application_template.InfoFragment">
 
 
 
-    <Button
-        android:id="@+id/denemebuton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="start"/>
-
-
 </RelativeLayout>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +34,7 @@ public class InfoFragment extends Fragment {
     private TextView mProgressText;
     private ProgressBar mProgressBar;
     private ImageView mTickAnimation;
-    private ImageView mCrossAnim;
+    private ImageView mAnim;
     private Button mButton;
 
     public InfoFragment() {
@@ -55,17 +56,17 @@ public class InfoFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_info, container, false);
 
         mButton = view.findViewById(R.id.denemebuton);
-        mCrossAnim = view.findViewById(R.id.iv_animation);
+        mAnim = view.findViewById(R.id.iv_animation);
         mProgressBar = view.findViewById(R.id.progress_bar_indeterminate);
-        mProgressBar.setProgress(0);
+
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCrossAnim.setVisibility(View.VISIBLE);
+                mAnim.setVisibility(View.VISIBLE);
                 mProgressBar.setVisibility(View.INVISIBLE);
-                mCrossAnim.setImageResource(R.drawable.animated_check);
-                ((Animatable) mCrossAnim.getDrawable()).start();
+                mAnim.setImageResource(R.drawable.animated_check);
+                ((Animatable) mAnim.getDrawable()).start();
             }
         });
 
@@ -89,6 +90,43 @@ public class InfoFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public void startProgress(){
+        mProgressBar.setVisibility(View.VISIBLE);
+        mProgressBar.setProgress(0);
+    }
+
+    public void stopProgress(){
+        mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+
+    /**
+     *
+     * @param type 0 For Check Mark, 1 for Red X Mark
+     */
+    public void showAnim(int type){
+        mAnim.setVisibility(View.VISIBLE);
+        if(type == 0){
+            mAnim.setImageResource(R.drawable.animated_check);
+        }else{
+            mAnim.setImageResource(R.drawable.animated_cross);
+        }
+        ((Animatable) mAnim.getDrawable()).start();
+
+    }
+
+    public void setTitle(String text){
+        mAmountTitle.setText(text);
+    }
+
+    public void setAmount(String text){
+        mAmount.setText(text);
+    }
+
+    public void setmProgressText(String text){
+        mProgressText.setText(text);
     }
 
     /**
