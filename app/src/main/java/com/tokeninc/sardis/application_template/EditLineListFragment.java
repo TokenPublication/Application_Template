@@ -51,7 +51,7 @@ public class  EditLineListFragment extends Fragment {
     public void setArguments(List<EditTextFormat> mEditTextFormats){
         this.mEditTextFormats = mEditTextFormats;
         this.mEditTextValues = new ArrayList<>(mEditTextFormats.size());
-        for (int i = 0; i < mEditTextValues.size(); i++) {
+        for (int i = 0; i < mEditTextFormats.size(); i++) {
             mEditTextValues.add("");
         }
     }

@@ -3,6 +3,7 @@ package com.tokeninc.sardis.application_template;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.icu.util.Calendar;
 import android.icu.util.TimeZone;
@@ -16,10 +17,15 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -95,13 +101,15 @@ public class EditLineListAdapter extends RecyclerView.Adapter<EditLineListAdapte
             editText.setHint(editLineHint);
         }
 
+
         /**
          * Sets edit text format
-         * @param inputType Set 0 for Date Picker, -1 for Time Picker. See Android Developer's Manual for other input types.
+         * @param inputType Set -2 for Date Picker, -1 for Time Picker. See Android Developer's Manual for other input types.
          */
         public void setInputType(int inputType){
             //editText.setInputType(inputType);
-            if(inputType == 0){
+            if(inputType == -2){
+                editText.setFocusable(false);
                 editText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -123,7 +131,24 @@ public class EditLineListAdapter extends RecyclerView.Adapter<EditLineListAdapte
                     }
                 });
             }else if(inputType == -1){
+                editText.setFocusable(false);
+                editText.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+                        TimePickerDialog timePickerDialog = new TimePickerDialog(mContext, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                StringBuilder stringBuilder = new StringBuilder();
+                                stringBuilder.append(hourOfDay).append(":").append(minute);
 
+                                editText.setText(stringBuilder.toString());
+                            }
+                        },
+                                calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE),true);
+                        timePickerDialog.show();
+                    }
+                });
             }else{
                 editText.setInputType(inputType);
             }

@@ -4,6 +4,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -22,7 +23,9 @@ public class Main2Activity extends AppCompatActivity implements EditLineListFrag
 
         mEditLineFormats = new ArrayList<>();
 
-        mEditLineFormats.add(new EditTextFormat("Hello","",0));
+        mEditLineFormats.add(new EditTextFormat("Hello","",-2));
+        mEditLineFormats.add(new EditTextFormat("Bye","",-1));
+        mEditLineFormats.add(new EditTextFormat("Hello","",1));
 
         EditLineListFragment editLineListFragment = new EditLineListFragment();
         editLineListFragment.setArguments(mEditLineFormats);
