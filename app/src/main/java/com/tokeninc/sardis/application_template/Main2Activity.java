@@ -9,9 +9,10 @@ import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Main2Activity extends AppCompatActivity implements EditLineListFragment.OnFragmentInteractionListener, InfoFragment.OnFragmentInteractionListener {
-    private List<String> mValueList;
+    private Map<String,String> mValueMap;
     private List<EditTextFormat> mEditLineFormats;
 
     @Override
@@ -40,8 +41,8 @@ public class Main2Activity extends AppCompatActivity implements EditLineListFrag
     }
 
     @Override
-    public void onEditLineListFragmentInteraction(List<String> list) {
-        this.mValueList = list;
+    public void onEditLineListFragmentInteraction(Map<String,String> list) {
+        this.mValueMap = list;
         InfoFragment infoFragment = new InfoFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main2_editLine_list_frame,infoFragment);

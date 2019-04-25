@@ -18,7 +18,9 @@ import android.widget.Button;
 import com.tokeninc.sardis.application_template.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,7 +37,7 @@ public class  EditLineListFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     private List<EditTextFormat> mEditTextFormats;
-    private List<String> mEditTextValues;
+    private Map<String,String> mEditTextValues;
 
     private OnFragmentInteractionListener mListener;
 
@@ -50,9 +52,9 @@ public class  EditLineListFragment extends Fragment {
 
     public void setArguments(List<EditTextFormat> mEditTextFormats){
         this.mEditTextFormats = mEditTextFormats;
-        this.mEditTextValues = new ArrayList<>(mEditTextFormats.size());
+        this.mEditTextValues = new HashMap<>();
         for (int i = 0; i < mEditTextFormats.size(); i++) {
-            mEditTextValues.add("");
+            mEditTextValues.put(mEditTextFormats.get(i).tag,"");
         }
     }
 
@@ -87,17 +89,17 @@ public class  EditLineListFragment extends Fragment {
 
         mEditLineListAdapter.setTextWatcherInterface(new EditLineListAdapter.TextWatcherInterface() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after, int tag) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after, String tag) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count, int tag) {
-                mEditTextValues.set(tag,String.valueOf(s));
+            public void onTextChanged(CharSequence s, int start, int before, int count, String tag) {
+                mEditTextValues.put(tag,String.valueOf(s));
             }
 
             @Override
-            public void afterTextChanged(Editable s, int tag) {
+            public void afterTextChanged(Editable s, String tag) {
 
             }
         });
@@ -139,6 +141,6 @@ public class  EditLineListFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onEditLineListFragmentInteraction(List<String> list);
+        void onEditLineListFragmentInteraction(Map<String,String> list);
     }
 }

@@ -64,7 +64,7 @@ public class EditLineListAdapter extends RecyclerView.Adapter<EditLineListAdapte
     public void onBindViewHolder(@NonNull EditLineViewHolder editLineViewHolder, int i) {
         Log.d(TAG,"onBindViewHolder");
 
-        editLineViewHolder.editText.setTag(i);
+        editLineViewHolder.editText.setTag(mEditTextFormats.get(i).tag);
         editLineViewHolder.setInputType(mEditTextFormats.get(i).type);
         editLineViewHolder.bind(mEditTextFormats.get(i).tag,mEditTextFormats.get(i).hint);
     }
@@ -81,17 +81,17 @@ public class EditLineListAdapter extends RecyclerView.Adapter<EditLineListAdapte
             editText.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                    textWatcherInterface.beforeTextChanged(s,start,count,after,(int)editText.getTag());
+                    textWatcherInterface.beforeTextChanged(s,start,count,after,(String)editText.getTag());
                 }
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    textWatcherInterface.onTextChanged(s,start,before,count,(int)editText.getTag());
+                    textWatcherInterface.onTextChanged(s,start,before,count,(String)editText.getTag());
                 }
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    textWatcherInterface.afterTextChanged(s,(int)editText.getTag());
+                    textWatcherInterface.afterTextChanged(s,(String)editText.getTag());
                 }
             });
         }
@@ -157,9 +157,9 @@ public class EditLineListAdapter extends RecyclerView.Adapter<EditLineListAdapte
     }
 
     public interface TextWatcherInterface{
-        void beforeTextChanged(CharSequence s, int start, int count, int after, int tag);
-        void onTextChanged(CharSequence s, int start, int before, int count,int tag);
-        void afterTextChanged(Editable s, int tag);
+        void beforeTextChanged(CharSequence s, int start, int count, int after, String tag);
+        void onTextChanged(CharSequence s, int start, int before, int count,String tag);
+        void afterTextChanged(Editable s, String tag);
     }
 
 }
