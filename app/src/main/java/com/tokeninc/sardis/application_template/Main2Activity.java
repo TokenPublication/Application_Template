@@ -13,6 +13,7 @@ import java.util.List;
 public class Main2Activity extends AppCompatActivity implements EditLineListFragment.OnFragmentInteractionListener, InfoFragment.OnFragmentInteractionListener {
     private List<String> mValueList;
     private List<EditTextFormat> mEditLineFormats;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +42,11 @@ public class Main2Activity extends AppCompatActivity implements EditLineListFrag
     @Override
     public void onEditLineListFragmentInteraction(List<String> list) {
         this.mValueList = list;
+        InfoFragment infoFragment = new InfoFragment();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main2_editLine_list_frame,infoFragment);
+        fragmentTransaction.commit();
+
     }
 
     @Override
