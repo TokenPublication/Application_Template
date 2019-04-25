@@ -55,20 +55,11 @@ public class InfoFragment extends Fragment {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_info, container, false);
 
-        mButton = view.findViewById(R.id.denemebuton);
+
         mAnim = view.findViewById(R.id.iv_animation);
         mProgressBar = view.findViewById(R.id.progress_bar_indeterminate);
 
 
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAnim.setVisibility(View.VISIBLE);
-                mProgressBar.setVisibility(View.INVISIBLE);
-                mAnim.setImageResource(R.drawable.animated_check);
-                ((Animatable) mAnim.getDrawable()).start();
-            }
-        });
 
         return view;
     }
