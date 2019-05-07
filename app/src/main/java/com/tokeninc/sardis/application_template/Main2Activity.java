@@ -8,6 +8,7 @@ import android.text.InputType;
 import android.util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +43,7 @@ public class Main2Activity extends AppCompatActivity implements EditLineListFrag
 
     @Override
     public void onEditLineListFragmentInteraction(Map<String,String> list) {
-        this.mValueMap = list;
+        this.mValueMap = new HashMap<String,String>(list);
         InfoFragment infoFragment = new InfoFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main2_editLine_list_frame,infoFragment);

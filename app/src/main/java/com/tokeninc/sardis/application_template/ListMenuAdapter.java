@@ -8,18 +8,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+import java.util.Map;
+
 public class ListMenuAdapter extends RecyclerView.Adapter<ListMenuAdapter.ListItemViewHolder> {
     private static String TAG = "ListMenuAdapter";
-    private String[] mMenuListItems;
-    private static ClickListener mClickListener;
+    private List<ListMenuItemFormat> mMenuListItems;
+    private static ListMenuClickListener mClickListener;
 
-    public void setmClickListener(ClickListener mClickListener) {
+    public void setmClickListener(ListMenuClickListener mClickListener) {
         ListMenuAdapter.mClickListener = mClickListener;
     }
 
 
 
-    public ListMenuAdapter(String[] menuListItems){
+    public ListMenuAdapter(List<ListMenuItemFormat> menuListItems){
         Log.d(TAG,"ListMenuAdapter");
         this.mMenuListItems = menuListItems;
     }
@@ -39,14 +42,13 @@ public class ListMenuAdapter extends RecyclerView.Adapter<ListMenuAdapter.ListIt
     @Override
     public void onBindViewHolder(@NonNull ListItemViewHolder listItemViewHolder, int i) {
         Log.d(TAG,"onBindViewHolder");
-        listItemViewHolder.mListItemView.setTag(i);
-        listItemViewHolder.setmPosition(i);
-        listItemViewHolder.bind(mMenuListItems[i]);
+        listItemViewHolder.mListItemView.setTag(mMenuListItems.get(i).tag);
+        listItemViewHolder.bind(mMenuListItems.get(i).name);
     }
 
     @Override
     public int getItemCount() {
-        return mMenuListItems.length;
+        return mMenuListItems.size();
     }
 
     class ListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -77,11 +79,11 @@ public class ListMenuAdapter extends RecyclerView.Adapter<ListMenuAdapter.ListIt
 
         @Override
         public void onClick(View v) {
-            int tag = (int)v.findViewById(R.id.tv_menu_item_name).getTag();
-            mClickListener.onItemClick(this.getmPosition(),v);
+            String tag = (String) v.findViewById(R.id.tv_menu_item_name).getTag();
+            mClickListener.onItemClick(tag,v);
         }
     }
-    public interface ClickListener{
-        void onItemClick(int position,View view);
+    public interface ListMenuClickListener{
+        void onItemClick(String tag,View view);
     }
 }

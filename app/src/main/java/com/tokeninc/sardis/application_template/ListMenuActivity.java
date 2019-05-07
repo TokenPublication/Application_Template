@@ -16,25 +16,5 @@ public class  ListMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_menu);
-
-        mRecyclerView = findViewById(R.id.rv_list_menu);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        mRecyclerView.setHasFixedSize(true);
-        listMenuAdapter = new ListMenuAdapter(productNames);
-        listMenuAdapter.setmClickListener(
-                new ListMenuAdapter.ClickListener() {
-                    @Override
-                    public void onItemClick(int position, View view) {
-                        Intent intent = new Intent(ListMenuActivity.this,Main2Activity.class);
-                        startActivity(intent);
-
-                    }
-                }
-        );
-        mRecyclerView.setAdapter(listMenuAdapter);
-
     }
 }
