@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template;
+package com.tokeninc.sardis.application_template.Definitions;
 
 public class EditTextFormat {
     public String tag;

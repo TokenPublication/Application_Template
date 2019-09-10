@@ -1,12 +1,10 @@
 package com.tokeninc.sardis.application_template;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.View;
+
+import com.tokeninc.sardis.application_template.Adapters.ListMenuAdapter;
 
 public class  ListMenuActivity extends AppCompatActivity {
     private ListMenuAdapter listMenuAdapter;

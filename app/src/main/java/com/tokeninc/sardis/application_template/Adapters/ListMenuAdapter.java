@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template;
+package com.tokeninc.sardis.application_template.Adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokeninc.sardis.application_template.Definitions.ListMenuItemFormat;
+import com.tokeninc.sardis.application_template.R;
+
 import java.util.List;
-import java.util.Map;
 
 public class ListMenuAdapter extends RecyclerView.Adapter<ListMenuAdapter.ListItemViewHolder> {
     private static String TAG = "ListMenuAdapter";

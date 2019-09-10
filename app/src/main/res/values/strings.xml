@@ -1,5 +1,5 @@
-<resources>
-    <string name="app_name">400TR_YKB</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Application Template</string>
     <string name="title_activity_list_menu">ListMenuActivity</string>
     <string name="amount">Amount</string>
     <string name="waiting">Waiting for a Response</string>
@@ -10,6 +10,11 @@
     <string name="reports">Reports</string>
     <string name="void_transaction">Void</string>
     <string name="insert_card">Please Insert Card</string>
+    <string name="button">Button</string>
+
+    <string name="title_activity_start">StartActivity</string>
+    <string name="dummy_button" tools:ignore="ExtraTranslation">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 
 
 </resources>

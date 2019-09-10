@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/black"
     tools:context="com.tokeninc.sardis.application_template.EditLineListFragment"
     android:orientation="vertical"
     >
@@ -13,11 +14,13 @@
         android:id="@+id/rv_edit_list_menu"/>
 
     <Button
-        android:layout_width="178sp"
+        android:layout_margin="8dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="30dp"
-        android:text="BUTTON"
+        android:layout_marginTop="10dp"
+        android:text="@string/button"
         android:textColor="@color/white"
         android:background="@drawable/std_button"
         android:id="@+id/bttn_edit_line_list_fragment"/>

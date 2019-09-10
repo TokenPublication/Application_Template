@@ -1,7 +1,5 @@
-package com.tokeninc.sardis.application_template;
+package com.tokeninc.sardis.application_template.Adapters;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
@@ -10,22 +8,19 @@ import android.icu.util.TimeZone;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import java.sql.Time;
-import java.text.SimpleDateFormat;
+import com.tokeninc.sardis.application_template.Definitions.EditTextFormat;
+import com.tokeninc.sardis.application_template.R;
+
 import java.util.List;
 import java.util.Map;
 
