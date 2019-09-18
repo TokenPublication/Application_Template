@@ -9,13 +9,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.tokeninc.sardis.application_template.Definitions.EditTextFormat;
+import com.tokeninc.sardis.application_template.UI.Definitions.EditTextFormat;
+import com.tokeninc.sardis.application_template.UI.Fragments.EditLineListFragment;
+import com.tokeninc.sardis.application_template.UI.Fragments.InfoFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/*
+This activity shows how to use edit line list and info fragment
+ */
 public class Main2Activity extends AppCompatActivity implements EditLineListFragment.OnFragmentInteractionListener, InfoFragment.OnFragmentInteractionListener {
     private Map<String,String> mValueMap;
     private List<EditTextFormat> mEditLineFormats;

@@ -8,6 +8,6 @@
     android:clipToPadding="false"
     android:paddingTop="@dimen/list_item_spacing_half"
     android:paddingBottom="@dimen/list_item_spacing_half"
-    tools:context=".Fragments.OptionsListDialogFragment"
+    tools:context=".UI.Fragments.OptionsListDialogFragment"
     tools:listitem="@layout/fragment_options_list_dialog_item"
     />

@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template.Definitions;
+package com.tokeninc.sardis.application_template.UI.Definitions;
 
 public class ListMenuItemFormat {
     public String name;

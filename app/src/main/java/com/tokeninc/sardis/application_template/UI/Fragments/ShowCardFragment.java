@@ -1,51 +1,39 @@
-package com.tokeninc.sardis.application_template;
+package com.tokeninc.sardis.application_template.UI.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
-import com.tokeninc.sardis.application_template.Adapters.ListMenuAdapter;
-import com.tokeninc.sardis.application_template.Definitions.ListMenuItemFormat;
-
-import java.util.List;
-
+import com.tokeninc.sardis.application_template.R;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ListMenuFragment.OnFragmentInteractionListener} interface
+ * {@link ShowCardFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ListMenuFragment#newInstance} factory method to
+ * Use the {@link ShowCardFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ListMenuFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+public class ShowCardFragment extends Fragment {
+
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    private RecyclerView mRecyclerView;
-    private List<ListMenuItemFormat> mMenuItemNames;
-    private ListMenuAdapter mListMenuAdapter;
     private View mView;
 
-    private ListMenuFragmentListener mListener;
+    private Button mCancelButton;
 
-    public ListMenuFragment() {
+    private OnFragmentInteractionListener mListener;
+
+    public ShowCardFragment() {
         // Required empty public constructor
-    }
-
-    public void setArguments(List<ListMenuItemFormat> menuItemNames){
-        this.mMenuItemNames = menuItemNames;
     }
 
     /**
@@ -54,11 +42,11 @@ public class ListMenuFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment ListMenuFragment.
+     * @return A new instance of fragment ShowCardFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static ListMenuFragment newInstance(String param1, String param2) {
-        ListMenuFragment fragment = new ListMenuFragment();
+
+    public static ShowCardFragment newInstance(String param1, String param2) {
+        ShowCardFragment fragment = new ShowCardFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -79,30 +67,30 @@ public class ListMenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mView = inflater.inflate(R.layout.fragment_list_menu, container, false);
-        mRecyclerView = mView.findViewById(R.id.rv_list_menu);
+        mView = inflater.inflate(R.layout.fragment_show_card, container, false);
+        mCancelButton =  mView.findViewById(R.id.fragment_btn_Cancel);
 
-        LinearLayoutManager linearLayout = new LinearLayoutManager(this.getContext());
-        mRecyclerView.setLayoutManager(linearLayout);
-        mRecyclerView.setHasFixedSize(true);
-
-        mListMenuAdapter = new ListMenuAdapter(mMenuItemNames);
-
-        mListMenuAdapter.setmClickListener(new ListMenuAdapter.ListMenuClickListener() {
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(String tag, View view) {
-                mListener.OnItemClick(tag,view);
+            public void onClick(View v) {
+                onButtonPressed();
             }
         });
-
         return mView;
     }
+
+    public void onButtonPressed() {
+        if (mListener != null) {
+            mListener.onFragmentInteraction();
+        }
+    }
+
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ListMenuFragmentListener) {
-            mListener = (ListMenuFragmentListener) context;
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -125,8 +113,7 @@ public class ListMenuFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface ListMenuFragmentListener {
-        // TODO: Update argument type and name
-        void OnItemClick(String tag, View view);
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction();
     }
 }

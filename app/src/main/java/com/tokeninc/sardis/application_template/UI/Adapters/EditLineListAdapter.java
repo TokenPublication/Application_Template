@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template.Adapters;
+package com.tokeninc.sardis.application_template.UI.Adapters;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -20,7 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.tokeninc.sardis.application_template.Definitions.EditTextFormat;
+import com.tokeninc.sardis.application_template.UI.Definitions.EditTextFormat;
 import com.tokeninc.sardis.application_template.R;
 
 import java.util.List;

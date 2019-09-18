@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 
-import com.tokeninc.sardis.application_template.Adapters.ListMenuAdapter;
+import com.tokeninc.sardis.application_template.UI.Adapters.ListMenuAdapter;
 
 public class  ListMenuActivity extends AppCompatActivity {
     private ListMenuAdapter listMenuAdapter;

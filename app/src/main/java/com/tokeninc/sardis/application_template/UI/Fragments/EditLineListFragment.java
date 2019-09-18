@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template;
+package com.tokeninc.sardis.application_template.UI.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,8 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.tokeninc.sardis.application_template.Adapters.EditLineListAdapter;
-import com.tokeninc.sardis.application_template.Definitions.EditTextFormat;
+import com.tokeninc.sardis.application_template.UI.Adapters.EditLineListAdapter;
+import com.tokeninc.sardis.application_template.UI.Definitions.EditTextFormat;
+import com.tokeninc.sardis.application_template.R;
 
 import java.util.HashMap;
 import java.util.List;

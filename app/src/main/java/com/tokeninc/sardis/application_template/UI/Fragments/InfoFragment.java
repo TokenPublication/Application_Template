@@ -1,90 +1,67 @@
-package com.tokeninc.sardis.application_template;
+package com.tokeninc.sardis.application_template.UI.Fragments;
 
 import android.content.Context;
-import android.net.Uri;
+import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.tokeninc.sardis.application_template.R;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link ShowCardFragment.OnFragmentInteractionListener} interface
+ * {@link InfoFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ShowCardFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
-public class ShowCardFragment extends Fragment {
-
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
+public class InfoFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private View mView;
-
-    private Button mCancelButton;
-
     private OnFragmentInteractionListener mListener;
 
-    public ShowCardFragment() {
+    private View view;
+    private TextView mAmountTitle;
+    private TextView mAmount;
+    private TextView mProgressText;
+    private ProgressBar mProgressBar;
+    private ImageView mTickAnimation;
+    private ImageView mAnim;
+    private Button mButton;
+
+    public InfoFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ShowCardFragment.
-     */
 
-    public static ShowCardFragment newInstance(String param1, String param2) {
-        ShowCardFragment fragment = new ShowCardFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        mView = inflater.inflate(R.layout.fragment_show_card, container, false);
-        mCancelButton =  mView.findViewById(R.id.fragment_btn_Cancel);
+        view = inflater.inflate(R.layout.fragment_info, container, false);
 
-        mCancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onButtonPressed();
-            }
-        });
-        return mView;
+
+        mAnim = view.findViewById(R.id.iv_animation);
+        mProgressBar = view.findViewById(R.id.progress_bar_indeterminate);
+
+
+
+        return view;
     }
 
-    public void onButtonPressed() {
-        if (mListener != null) {
-            mListener.onFragmentInteraction();
-        }
-    }
 
 
     @Override
@@ -104,6 +81,43 @@ public class ShowCardFragment extends Fragment {
         mListener = null;
     }
 
+    public void startProgress(){
+        mProgressBar.setVisibility(View.VISIBLE);
+        mProgressBar.setProgress(0);
+    }
+
+    public void stopProgress(){
+        mProgressBar.setVisibility(View.INVISIBLE);
+    }
+
+
+    /**
+     *
+     * @param type 0 For Check Mark, 1 for Red X Mark
+     */
+    public void showAnim(int type){
+        mAnim.setVisibility(View.VISIBLE);
+        if(type == 0){
+            mAnim.setImageResource(R.drawable.animated_check);
+        }else{
+            mAnim.setImageResource(R.drawable.animated_cross);
+        }
+        ((Animatable) mAnim.getDrawable()).start();
+
+    }
+
+    public void setTitle(String text){
+        mAmountTitle.setText(text);
+    }
+
+    public void setAmount(String text){
+        mAmount.setText(text);
+    }
+
+    public void setmProgressText(String text){
+        mProgressText.setText(text);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -115,6 +129,6 @@ public class ShowCardFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        void onFragmentInteraction();
+        void onInfoFragmentInteraction();
     }
 }

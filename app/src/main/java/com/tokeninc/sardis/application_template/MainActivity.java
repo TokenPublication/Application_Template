@@ -1,22 +1,22 @@
 package com.tokeninc.sardis.application_template;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 
-import com.tokeninc.sardis.application_template.Adapters.MenuItemAdapter;
-import com.tokeninc.sardis.application_template.Definitions.MenuItems;
+import com.tokeninc.sardis.application_template.UI.Adapters.MenuItemAdapter;
+import com.tokeninc.sardis.application_template.UI.Definitions.MenuItems;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+This activity shows how to use List Menu
+ */
 public class MainActivity extends AppCompatActivity {
     private List<MenuItems> menuItems = new ArrayList<>();
     private RecyclerView recyclerView;

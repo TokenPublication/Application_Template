@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template.Fragments;
+package com.tokeninc.sardis.application_template.UI.Fragments;
 
 import android.content.Context;
 import android.os.Bundle;
