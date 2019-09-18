@@ -5,7 +5,9 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.icu.util.Calendar;
 import android.icu.util.TimeZone;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -106,6 +108,7 @@ public class EditLineListAdapter extends RecyclerView.Adapter<EditLineListAdapte
             if(inputType == -2){
                 editText.setFocusable(false);
                 editText.setOnClickListener(new View.OnClickListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onClick(View v) {
                         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
@@ -128,6 +131,7 @@ public class EditLineListAdapter extends RecyclerView.Adapter<EditLineListAdapte
             }else if(inputType == -1){
                 editText.setFocusable(false);
                 editText.setOnClickListener(new View.OnClickListener(){
+                    @RequiresApi(api = Build.VERSION_CODES.N)
                     @Override
                     public void onClick(View v) {
                         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());

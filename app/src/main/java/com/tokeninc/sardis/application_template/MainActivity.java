@@ -49,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
         menuItems.add(new MenuItems("Settings", R.drawable.ic_settings_blue));
         menuItems.add(new MenuItems("Item 2", R.drawable.ic_favorite));
         menuItems.add(new MenuItems("Item 3",0));
-        menuItems.add(new MenuItems("Item 4",0));
+        menuItems.add(new MenuItems("Item 4",R.drawable.ic_settings_blue));
         menuItems.add(new MenuItems("Item 5",0));
-        menuItems.add(new MenuItems("Item 6",0));
+        menuItems.add(new MenuItems("Item 6",R.drawable.ic_settings_blue  ));
 
 
 

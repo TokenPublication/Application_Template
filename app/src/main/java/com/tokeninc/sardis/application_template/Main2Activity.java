@@ -30,10 +30,12 @@ public class Main2Activity extends AppCompatActivity implements EditLineListFrag
 
         mEditLineFormats = new ArrayList<>();
 
-        mEditLineFormats.add(new EditTextFormat("Select Datee","",-2));
+        mEditLineFormats.add(new EditTextFormat("Select Date","",-2));
         mEditLineFormats.add(new EditTextFormat("Select time","",-1));
         mEditLineFormats.add(new EditTextFormat("Third line","",1));
-        mEditLineFormats.add(new EditTextFormat("4th line with hint","Hint", InputType.TYPE_CLASS_NUMBER));
+        mEditLineFormats.add(new EditTextFormat("4th line ","", InputType.TYPE_CLASS_NUMBER));
+        mEditLineFormats.add(new EditTextFormat("5th line with hint","Hint",InputType.TYPE_CLASS_TEXT));
+
 
 
         EditLineListFragment editLineListFragment = new EditLineListFragment();
