@@ -1,12 +1,12 @@
 package com.tokeninc.sardis.application_template.UI.Definitions;
 
-public class MenuItems {
+public class MenuItem {
     private String mTitle;
     private int mIconId;
-    public MenuItems() {
+    public MenuItem() {
     }
 
-    public MenuItems(String title, int iconSrc) {
+    public MenuItem(String title, int iconSrc) {
         this.mTitle = title;
         this.mIconId = iconSrc;
     }

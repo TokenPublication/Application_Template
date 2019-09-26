@@ -12,7 +12,6 @@
     <ImageView
         android:paddingLeft="28dp"
         android:id="@+id/menu_item_icon_view"
-
         android:layout_width="0dp"
         android:layout_weight="2"
         android:layout_height="match_parent"
