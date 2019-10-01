@@ -1,14 +1,14 @@
-package com.tokeninc.sardis.application_template;
+package com.tokeninc.sardis.application_template.UI.Activities;
 
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.tokeninc.sardis.application_template.BaseActivity;
+import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.EditTextFormat;
 import com.tokeninc.sardis.application_template.UI.Fragments.EditLineListFragment;
 import com.tokeninc.sardis.application_template.UI.Fragments.InfoFragment;
@@ -20,17 +20,14 @@ import java.util.Map;
 /*
 This activity shows how to use edit line list and info fragment
  */
-public class Main2Activity extends AppCompatActivity implements EditLineListFragment.OnFragmentInteractionListener, InfoFragment.OnFragmentInteractionListener {
+public class EditLineActivity extends BaseActivity implements EditLineListFragment.OnFragmentInteractionListener, InfoFragment.OnFragmentInteractionListener {
     private Map<String,String> mValueMap;
     private List<EditTextFormat> mEditLineFormats;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        setContentView(R.layout.activity_editline);
 
         mEditLineFormats = new ArrayList<>();
 
@@ -40,13 +37,9 @@ public class Main2Activity extends AppCompatActivity implements EditLineListFrag
         mEditLineFormats.add(new EditTextFormat("4th line ","", InputType.TYPE_CLASS_NUMBER));
         mEditLineFormats.add(new EditTextFormat("5th line with hint","Hint",InputType.TYPE_CLASS_TEXT));
 
-
-
         EditLineListFragment editLineListFragment = new EditLineListFragment();
         editLineListFragment.setArguments(mEditLineFormats);
-        fragmentTransaction.add(R.id.main2_editLine_list_frame, editLineListFragment);
-        fragmentTransaction.commit();
-
+        addFragment(R.id.main2_editLine_list_frame, editLineListFragment, false);
 /*
         InfoFragment infoFragment = new InfoFragment();
         fragmentTransaction.add(R.id.main2_editLine_list_frame,infoFragment);
@@ -81,7 +74,7 @@ public class Main2Activity extends AppCompatActivity implements EditLineListFrag
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_favorite) {
-            Toast.makeText(Main2Activity.this, "Action clicked", Toast.LENGTH_LONG).show();
+            Toast.makeText(EditLineActivity.this, "Action clicked", Toast.LENGTH_LONG).show();
             return true;
         }
 

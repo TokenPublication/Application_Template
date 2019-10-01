@@ -51,7 +51,6 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
         public TextView mTitle;
         public MenuItemHolder(@NonNull View itemView) {
             super(itemView);
-            mIcon = (ImageView) itemView.findViewById(R.id.menu_item_icon_view);
             mTitle = (TextView) itemView.findViewById(R.id.menu_item_title);
         }
 
