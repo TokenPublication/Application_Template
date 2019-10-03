@@ -4,6 +4,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".MainApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -16,22 +17,32 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UI.Activities.SaleActivity">
+        <activity android:name=".UI.Activities.DummySaleActivity">
             <intent-filter>
                 <action android:name="Sale_Action" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        <activity android:name=".UI.Activities.SaleActivity" />
         <activity android:name=".UI.Activities.SlipActivity">
             <intent-filter>
                 <action android:name="Slip_Action" />
                 <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
         <activity android:name=".UI.Activities.PosTxnActivity">
             <intent-filter>
                 <action android:name="PosTxn_Action" />
+                <data android:mimeType="text/plain" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".UI.Activities.SettingsActivity">
+            <intent-filter>
+                <action android:name="Settings_Action" />
+                <data android:mimeType="text/plain" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
