@@ -39,7 +39,8 @@ public class InfoDialogFragment extends DialogFragment {
         Connecting,
         Downloading,
         Uploading,
-        Processing
+        Processing,
+        None
     }
 
     /**
@@ -77,10 +78,15 @@ public class InfoDialogFragment extends DialogFragment {
         mTextView = view.findViewById(R.id.tv_info);
 
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        update(type, text);
+        return view;
+    }
 
+    public void update(InfoType type, String text) {
+        this.text = text;
+        this.type = type;
         mTextView.setText(text);
         setAnimation();
-        return view;
     }
 
     private void setAnimation() {
@@ -97,6 +103,9 @@ public class InfoDialogFragment extends DialogFragment {
                 AnimatedVectorDrawable d = (AnimatedVectorDrawable) getContext().getDrawable(R.drawable.animated_check);
                 mImageView.setImageDrawable(d);
                 d.start();
+                break;
+            case None:
+                mImageView.setImageDrawable(null);
                 break;
         }
     }

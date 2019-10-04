@@ -39,14 +39,9 @@ public class MainActivity extends BaseActivity implements ConfirmationDialog.Con
             }
         });
 
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(menuItemAdapter);
-        //For scrolling performance optimization
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(20);
-
         prepareData();
     }
 

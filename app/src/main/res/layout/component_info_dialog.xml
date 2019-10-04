@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/animated_check"/>
+        tools:src="@drawable/animated_check"/>
 
     <TextView
         android:id="@+id/tv_info"

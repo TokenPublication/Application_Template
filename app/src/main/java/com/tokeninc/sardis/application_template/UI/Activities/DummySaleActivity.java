@@ -21,7 +21,6 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_dummy_sale);
 
         //get data from payment gateway and process
@@ -36,7 +35,14 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     private void doSale(Object cardReadType, Object cardData) {
         Intent intent = new Intent(this, SaleActivity.class);
         intent.putExtra("Amount", amount);
-        startActivity(intent);
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        int responseCode = data.getIntExtra("ResponseCode", ResponseCode.CANCELLED.ordinal());
+        onSaleResponseRetrieved(amount, ResponseCode.values()[responseCode], true, SlipType.BOTH_SLIPS);
     }
 
     @Override
