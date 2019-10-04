@@ -41,8 +41,10 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        int responseCode = data.getIntExtra("ResponseCode", ResponseCode.CANCELLED.ordinal());
-        onSaleResponseRetrieved(amount, ResponseCode.values()[responseCode], true, SlipType.BOTH_SLIPS);
+        if (resultCode == Activity.RESULT_OK) {
+            int responseCode = data.getIntExtra("ResponseCode", ResponseCode.CANCELLED.ordinal());
+            onSaleResponseRetrieved(amount, ResponseCode.values()[responseCode], true, SlipType.BOTH_SLIPS);
+        }
     }
 
     @Override
@@ -102,5 +104,11 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         resultIntent.putExtras(bundle);
         setResult(Activity.RESULT_OK,resultIntent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(Activity.RESULT_CANCELED);
+        super.onBackPressed();
     }
 }

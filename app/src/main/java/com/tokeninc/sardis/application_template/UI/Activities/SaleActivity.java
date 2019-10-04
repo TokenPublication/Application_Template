@@ -202,5 +202,9 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        setResult(Activity.RESULT_CANCELED);
+        super.onBackPressed();
+    }
 }
