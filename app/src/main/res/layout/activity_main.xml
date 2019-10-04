@@ -10,11 +10,9 @@
     android:background="@color/dark_gray"
     tools:context=".UI.Activities.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/main_recycler_view"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:scrollbars="vertical" />
+        android:layout_height="match_parent" />
 
 </android.support.constraint.ConstraintLayout>

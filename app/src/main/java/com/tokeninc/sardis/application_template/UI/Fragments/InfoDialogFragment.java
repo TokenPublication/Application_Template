@@ -2,10 +2,12 @@ package com.tokeninc.sardis.application_template.UI.Fragments;
 
 import android.graphics.Color;
 import android.graphics.drawable.AnimatedVectorDrawable;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,23 +92,38 @@ public class InfoDialogFragment extends DialogFragment {
     }
 
     private void setAnimation() {
+        mImageView.setImageDrawable(null);
+        mImageView.setBackground(null);
         switch (type) {
             case Confirmed:
-            case Warning:
-            case Error:
-            case Info:
-            case Declined:
-            case Connecting:
-            case Downloading:
-            case Uploading:
-            case Processing:
                 AnimatedVectorDrawable d = (AnimatedVectorDrawable) getContext().getDrawable(R.drawable.animated_check);
                 mImageView.setImageDrawable(d);
                 d.start();
                 break;
-            case None:
-                mImageView.setImageDrawable(null);
+            case Warning:
                 break;
+            case Error:
+                break;
+            case Info:
+                break;
+            case Declined:
+                break;
+            case Connecting:
+                break;
+            case Downloading:
+                mImageView.setBackgroundResource(R.drawable.downloading);
+                break;
+            case Uploading:
+                break;
+            case Processing:
+                break;
+            case None:
+                break;
+        }
+
+        if (mImageView.getBackground() != null && mImageView.getBackground() instanceof AnimationDrawable) {
+            ((AnimationDrawable) mImageView.getBackground()).setOneShot(false);
+            ((AnimationDrawable) mImageView.getBackground()).start();
         }
     }
 

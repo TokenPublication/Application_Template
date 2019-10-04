@@ -86,7 +86,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         else if (cbCustomer.isChecked())
             slipType = SlipType.CARDHOLDER_SLIP;
 
-        onSaleResponseRetrieved(1, code, cbCustomer.isChecked() || cbMerchant.isChecked(), slipType);
+        onSaleResponseRetrieved(amount, code, cbCustomer.isChecked() || cbMerchant.isChecked(), slipType);
     }
 
     //TODO Data has to be returned to Payment Gateway after sale operation completed via template below using actual data.
