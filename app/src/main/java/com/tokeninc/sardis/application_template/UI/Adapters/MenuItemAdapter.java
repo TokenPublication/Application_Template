@@ -8,17 +8,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokeninc.sardis.application_template.UI.Definitions.MenuItems;
 import com.tokeninc.sardis.application_template.R;
+import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 
 import java.util.List;
 
 public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuItemHolder> {
 
-    private List<MenuItems> mMenuItems;
+    private List<MenuItem> mMenuItems;
     private final OnItemClickListener listener;
 
-    public MenuItemAdapter(List<MenuItems> mMenuItems, OnItemClickListener listener) {
+    public MenuItemAdapter(List<MenuItem> mMenuItems, OnItemClickListener listener) {
         this.mMenuItems = mMenuItems;
         this.listener = listener;
     }
@@ -34,7 +34,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
 
     @Override
     public void onBindViewHolder(@NonNull MenuItemHolder menuItemHolder, int i) {
-        MenuItems item = mMenuItems.get(i);
+        MenuItem item = mMenuItems.get(i);
         menuItemHolder.mTitle.setText(item.getTitle());
         menuItemHolder.bind(item, i,listener);
         if( item.getIconId() != 0)
@@ -51,11 +51,10 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
         public TextView mTitle;
         public MenuItemHolder(@NonNull View itemView) {
             super(itemView);
-            mIcon = (ImageView) itemView.findViewById(R.id.menu_item_icon_view);
             mTitle = (TextView) itemView.findViewById(R.id.menu_item_title);
         }
 
-        public void bind(final MenuItems item, final int position, final OnItemClickListener listener) {
+        public void bind(final MenuItem item, final int position, final OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onItemClick(item, position);
@@ -66,6 +65,6 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
     }
 
     public interface OnItemClickListener {
-        void onItemClick(MenuItems item, int position);
+        void onItemClick(MenuItem item, int position);
     }
 }
