@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template.Printer;
+package com.tokeninc.sardis.application_template.UI.Printer;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

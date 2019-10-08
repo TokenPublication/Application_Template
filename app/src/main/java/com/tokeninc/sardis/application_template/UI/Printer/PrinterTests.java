@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template.Printer;
+package com.tokeninc.sardis.application_template.UI.Printer;
 
 import android.content.Context;
 import android.os.RemoteException;
@@ -6,8 +6,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.printertest.IPrinterService;
-import com.tokeninc.sardis.application_template.Printer.PrinterDefinitions.Alignment;
-import com.tokeninc.sardis.application_template.Printer.PrinterDefinitions.Font_E;
+import com.tokeninc.sardis.application_template.UI.Printer.PrinterDefinitions.Alignment;
+import com.tokeninc.sardis.application_template.UI.Printer.PrinterDefinitions.Font_E;
 
 
 public class PrinterTests {
