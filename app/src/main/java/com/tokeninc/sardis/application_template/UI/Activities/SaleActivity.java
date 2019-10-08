@@ -9,9 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v7.view.menu.MenuAdapter;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -24,9 +21,11 @@ import com.tokeninc.sardis.application_template.Entity.ICCCard;
 import com.tokeninc.sardis.application_template.Entity.MSRCard;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.R;
-import com.tokeninc.sardis.application_template.UI.Adapters.MenuItemAdapter;
+import com.tokeninc.sardis.application_template.UI.Definitions.IListMenuItem;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
-import com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment;
+import com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment.InfoDialog;
+import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuClickListener;
+import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuFragment;
 
 import org.json.JSONObject;
 
@@ -36,7 +35,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaleActivity extends BaseActivity implements View.OnClickListener {
+public class SaleActivity extends BaseActivity implements View.OnClickListener, ListMenuClickListener {
 
     private ITokenCardService emvService;
     private ServiceConnection emvServiceConnection;
@@ -47,29 +46,31 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
 
     private int amount = 0;
 
+    private List<IListMenuItem> menuItemList;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sale);
 
-        initMenu();
         amount = getIntent().getExtras().getInt("Amount");
+
+        prepareData();
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, this);
+        addFragment(R.id.container, fragment, false);
     }
 
-    private void initMenu() {
-        List<MenuItem> menuItemList = new ArrayList<>();
-        menuItemList.add(new MenuItem("Satış", 0));
-        menuItemList.add(new MenuItem("Taksitli Satış", 0));
-        menuItemList.add(new MenuItem("Puan Satış", 0));
-        menuItemList.add(new MenuItem("Kampanya Satış", 0));
+    private void prepareData() {
+        menuItemList = new ArrayList<>();
+        menuItemList.add(new MenuItem("Satış"));
+        menuItemList.add(new MenuItem("Taksitli Satış"));
+        menuItemList.add(new MenuItem("Puan Satış"));
+        menuItemList.add(new MenuItem("Kampanya Satış"));
+    }
 
-        MenuItemAdapter adapter = new MenuItemAdapter(menuItemList, (item, position) ->
-                readCard()
-        );
-
-        RecyclerView recyclerView = findViewById(R.id.sale_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+    @Override
+    public void onItemClick(int position, IListMenuItem item) {
+        readCard();
     }
 
     @Override
@@ -158,11 +159,11 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void showInfoDialog() {
-        InfoDialogFragment dialog = showInfoDialog(InfoDialogFragment.InfoType.None, "Bağlanıyor...");
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.None, "Bağlanıyor...");
         new Handler().postDelayed(() -> {
-            dialog.update(InfoDialogFragment.InfoType.None, "İşlem yapılıyor...");
+            dialog.update(InfoDialog.InfoType.None, "İşlem yapılıyor...");
             new Handler().postDelayed(() -> {
-                dialog.update(InfoDialogFragment.InfoType.Confirmed, "İşlem Başarılı!");
+                dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı!");
                 new Handler().postDelayed(() -> {
                     dialog.dismiss();
                     finishSale(ResponseCode.SUCCESS);

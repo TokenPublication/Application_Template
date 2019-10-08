@@ -10,36 +10,29 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".UI.Activities.MainActivity" >
+        <activity android:name=".UI.Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UI.Activities.DummySaleActivity">
+        <activity android:name=".UI.Activities.DummySaleActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="Sale_Action" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name=".UI.Activities.SaleActivity" />
-        <activity android:name=".UI.Activities.SlipActivity">
-            <intent-filter>
-                <action android:name="Slip_Action" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".UI.Activities.PosTxnActivity">
+        <activity android:name=".UI.Activities.SaleActivity" android:launchMode="singleTop"/>
+        <activity android:name=".UI.Activities.PosTxnActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="PosTxn_Action" />
                 <data android:mimeType="text/plain" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".UI.Activities.SettingsActivity">
+        <activity android:name=".UI.Activities.SettingsActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="Settings_Action" />
                 <data android:mimeType="text/plain" />
@@ -47,7 +40,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".UI.Activities.EditLineActivity" />
-        <activity android:name=".UI.Activities.InfoDialogActivity" />
     </application>
 
 </manifest>

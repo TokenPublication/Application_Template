@@ -37,8 +37,6 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.MenuIt
         MenuItem item = mMenuItems.get(i);
         menuItemHolder.mTitle.setText(item.getTitle());
         menuItemHolder.bind(item, i,listener);
-        if( item.getIconId() != 0)
-            menuItemHolder.mIcon.setImageResource(item.getIconId());
     }
 
     @Override

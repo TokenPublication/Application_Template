@@ -24,4 +24,10 @@ public class SettingsActivity extends BaseActivity {
         setResult(Activity.RESULT_OK,resultIntent); //Settings_Request_Code: 24
         finish();
     }
+
+    @Override
+    public void onBackPressed() {
+        setResult(Activity.RESULT_CANCELED);
+        super.onBackPressed();
+    }
 }
