@@ -3,16 +3,22 @@ package com.tokeninc.sardis.application_template.UI.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.example.printertest.IPrinterService;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
 import com.tokeninc.sardis.application_template.Helpers.StringHelper;
+import com.tokeninc.sardis.application_template.Printer.PrinterTests;
 import com.tokeninc.sardis.application_template.R;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public class DummySaleActivity extends BaseActivity implements View.OnClickListener {
 
@@ -71,8 +77,19 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             case R.id.btnOnlineDecline:
                 prepareDummyResponse(ResponseCode.ONLINE_DECLINE);
                 break;
+            case R.id.btnPrint:
+                print();
+                break;
         }
     }
+
+    private void print() {
+        if (mPrinterService == null) {
+            mPrinterService = getPrinterService();
+        }
+        PrinterTests.PrintSampleReceipt(mPrinterService);
+    }
+
 
     private void prepareDummyResponse(ResponseCode code) {
         CheckBox cbMerchant = findViewById(R.id.cbMerchant);
@@ -110,5 +127,28 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     public void onBackPressed() {
         setResult(Activity.RESULT_CANCELED);
         super.onBackPressed();
+    }
+
+    IPrinterService mPrinterService = null;
+
+    private IPrinterService getPrinterService() {
+        IPrinterService mService = null;
+        Method method = null;
+        try {
+            method = Class.forName("android.os.ServiceManager").getMethod("getService", String.class);
+            IBinder binder = (IBinder) method.invoke(null, "PrinterService");
+            if (binder != null) {
+                mService = IPrinterService.Stub.asInterface(binder);
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return mService;
     }
 }

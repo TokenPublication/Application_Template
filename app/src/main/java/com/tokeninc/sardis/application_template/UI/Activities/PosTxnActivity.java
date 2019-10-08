@@ -7,20 +7,21 @@ import android.os.Bundle;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.IListMenuItem;
-import com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment;
-import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment;
+import com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment.InfoDialog;
+import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuClickListener;
+import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PosTxnActivity extends BaseActivity implements ListMenuFragment.ListMenuClickListener {
+public class PosTxnActivity extends BaseActivity implements ListMenuClickListener {
 
     class InfoDialogItem implements IListMenuItem {
 
-        private InfoDialogFragment.InfoType mType;
+        private InfoDialog.InfoType mType;
         private String mText;
 
-        public InfoDialogItem(InfoDialogFragment.InfoType type, String text) {
+        public InfoDialogItem(InfoDialog.InfoType type, String text) {
             mType = type;
             mText = text;
         }
@@ -44,15 +45,15 @@ public class PosTxnActivity extends BaseActivity implements ListMenuFragment.Lis
     }
 
     private void prepareData() {
-        menuItems.add(new InfoDialogItem(InfoDialogFragment.InfoType.Confirmed, "Confirmed"));
-        menuItems.add(new InfoDialogItem(InfoDialogFragment.InfoType.Warning, "Warning"));
-        menuItems.add(new InfoDialogItem(InfoDialogFragment.InfoType.Error, "Error"));
-        menuItems.add(new InfoDialogItem(InfoDialogFragment.InfoType.Info,"Info"));
-        menuItems.add(new InfoDialogItem(InfoDialogFragment.InfoType.Declined, "Declined"));
-        menuItems.add(new InfoDialogItem(InfoDialogFragment.InfoType.Connecting,"Connecting"));
-        menuItems.add(new InfoDialogItem(InfoDialogFragment.InfoType.Downloading, "Downloading"));
-        menuItems.add(new InfoDialogItem(InfoDialogFragment.InfoType.Uploading, "Uploading"));
-        menuItems.add(new InfoDialogItem(InfoDialogFragment.InfoType.Processing, "Installing"));
+        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Confirmed, "Confirmed"));
+        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Warning, "Warning"));
+        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Error, "Error"));
+        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Info,"Info"));
+        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Declined, "Declined"));
+        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Connecting,"Connecting"));
+        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Downloading, "Downloading"));
+        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Uploading, "Uploading"));
+        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Processing, "Installing"));
     }
 
     @Override
@@ -61,7 +62,7 @@ public class PosTxnActivity extends BaseActivity implements ListMenuFragment.Lis
     }
 
     private void showPopup(InfoDialogItem item){
-        InfoDialogFragment dialog = showInfoDialog(item.mType, item.mText);
+        InfoDialog dialog = showInfoDialog(item.mType, item.mText);
         //Dismiss dialog by calling dialog.dismiss() when needed.
     }
 

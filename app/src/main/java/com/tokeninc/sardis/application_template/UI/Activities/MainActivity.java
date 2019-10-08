@@ -8,8 +8,10 @@ import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.IListMenuItem;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
-import com.tokeninc.sardis.application_template.UI.Fragments.ConfirmationDialog;
-import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment;
+import com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment.InfoDialog;
+import com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment.InfoDialogListener;
+import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuClickListener;
+import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.List;
 /*
 This activity shows how to use List Menu
  */
-public class MainActivity extends BaseActivity implements ConfirmationDialog.ConfirmationDialogListener, ListMenuFragment.ListMenuClickListener {
+public class MainActivity extends BaseActivity implements InfoDialogListener, ListMenuClickListener {
 
     private List<IListMenuItem> menuItems = new ArrayList<>();
 
@@ -33,7 +35,7 @@ public class MainActivity extends BaseActivity implements ConfirmationDialog.Con
 
     private void prepareData() {
         menuItems.add(new MenuItem("EditLineListFragment"));
-        menuItems.add(new MenuItem("InfoDialogFragment"));
+        menuItems.add(new MenuItem("InfoDialog"));
         menuItems.add(new MenuItem("ConfirmationDialog"));
     }
 
@@ -50,19 +52,25 @@ public class MainActivity extends BaseActivity implements ConfirmationDialog.Con
                 break;
             }
             case 2: {
-                showConfirmationDialog("Confirmation", "Are you sure?", "Yes", "No", 999, this);
+                showConfirmationDialog(InfoDialog.InfoType.Warning,"Warning", "Are you sure?", InfoDialog.InfoDialogButtons.Both, 99, this);
             }
         }
     }
 
     @Override
     public void confirmed(int arg) {
-        Toast.makeText(this, "Confirmed.", Toast.LENGTH_SHORT).show();
+        if (arg == 99) {
+            Toast.makeText(this, "Confirmed.", Toast.LENGTH_SHORT).show();
+        }
+        //else if (arg == ***) { Do something else... }
     }
 
     @Override
     public void canceled(int arg) {
-        Toast.makeText(this, "Canceled.", Toast.LENGTH_SHORT).show();
+        if (arg == 99) {
+            Toast.makeText(this, "Canceled.", Toast.LENGTH_SHORT).show();
+        }
+        //else if (arg == ***) { Do something else... }
     }
 
     @Override

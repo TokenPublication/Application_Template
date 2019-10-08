@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template.UI.Adapters;
+package com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.IListMenuItem;
-import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment;
 
 import java.util.List;
 
@@ -19,9 +18,9 @@ public class ListMenuAdapter extends RecyclerView.Adapter<ListMenuAdapter.ListIt
      * Implement this interface in your class, then implement getName() method and return the property which you want to see in the list item.
      */
     private List<IListMenuItem> mMenuListItems;
-    private ListMenuFragment.ListMenuClickListener mClickListener;
+    private ListMenuClickListener mClickListener;
 
-    public ListMenuAdapter(List<IListMenuItem> menuListItems, ListMenuFragment.ListMenuClickListener mClickListener){
+    public ListMenuAdapter(List<IListMenuItem> menuListItems, ListMenuClickListener mClickListener){
         this.mMenuListItems = menuListItems;
         this.mClickListener = mClickListener;
     }

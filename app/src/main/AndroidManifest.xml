@@ -25,13 +25,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".UI.Activities.SaleActivity" android:launchMode="singleTop"/>
-        <activity android:name=".UI.Activities.SlipActivity">
-            <intent-filter>
-                <action android:name="Slip_Action" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-        </activity>
         <activity android:name=".UI.Activities.PosTxnActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="PosTxn_Action" />

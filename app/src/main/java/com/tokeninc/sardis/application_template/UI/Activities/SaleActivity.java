@@ -23,8 +23,9 @@ import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.IListMenuItem;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
-import com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment;
-import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment;
+import com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment.InfoDialog;
+import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuClickListener;
+import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuFragment;
 
 import org.json.JSONObject;
 
@@ -34,7 +35,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaleActivity extends BaseActivity implements View.OnClickListener, ListMenuFragment.ListMenuClickListener {
+public class SaleActivity extends BaseActivity implements View.OnClickListener, ListMenuClickListener {
 
     private ITokenCardService emvService;
     private ServiceConnection emvServiceConnection;
@@ -158,11 +159,11 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void showInfoDialog() {
-        InfoDialogFragment dialog = showInfoDialog(InfoDialogFragment.InfoType.None, "Bağlanıyor...");
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.None, "Bağlanıyor...");
         new Handler().postDelayed(() -> {
-            dialog.update(InfoDialogFragment.InfoType.None, "İşlem yapılıyor...");
+            dialog.update(InfoDialog.InfoType.None, "İşlem yapılıyor...");
             new Handler().postDelayed(() -> {
-                dialog.update(InfoDialogFragment.InfoType.Confirmed, "İşlem Başarılı!");
+                dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı!");
                 new Handler().postDelayed(() -> {
                     dialog.dismiss();
                     finishSale(ResponseCode.SUCCESS);
