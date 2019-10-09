@@ -6,11 +6,24 @@
         <item name="colorPrimary">@color/dark_gray</item>
         <item name="colorPrimaryDark">@color/dark_gray</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="checkboxStyle">@style/AppTheme.DefaultCheckBoxStyle</item>
+        <item name="android:textViewStyle">@style/AppTheme.DefaultTextStyle</item>
+        <item name="buttonStyle">@style/AppTheme.DefaultButtonStyle</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.DefaultTextStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+    </style>
+    <style name="AppTheme.DefaultCheckBoxStyle" parent="android:Widget.CompoundButton.CheckBox">
+        <item name="android:fontFamily">@font/montserrat_regular</item>
+    </style>
+    <style name="AppTheme.DefaultButtonStyle" parent="android:Widget.Button">
+        <item name="android:fontFamily">@font/montserrat_semibold</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

@@ -84,9 +84,6 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             case R.id.btnOnlineDecline:
                 prepareDummyResponse(ResponseCode.ONLINE_DECLINE);
                 break;
-            case R.id.btnPrint:
-                print();
-                break;
         }
     }
 
@@ -132,13 +129,12 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         bundle.putInt("ResponseCode", code.ordinal());
         bundle.putInt("PaymentStatus",0);
         bundle.putInt("Amount",price);
-        bundle.putInt("IsSlip", hasSlip ? 1 : 0);
+        bundle.putBoolean("IsSlip", hasSlip);
         bundle.putInt("BatchNo",0);
         bundle.putInt("TxnNo",0);
         bundle.putInt("Amount2", price);
         bundle.putInt("SlipType", slipType.value);
 
-        SampleReceipt receipt = getSampleReceipt();
         if (slipType == SlipType.CARDHOLDER_SLIP || slipType == SlipType.BOTH_SLIPS) {
             bundle.putString("customerSlipData", getFormattedText(getSampleReceipt(), SlipType.CARDHOLDER_SLIP));
         }

@@ -13,19 +13,24 @@
         <activity android:name=".UI.Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UI.Activities.DummySaleActivity" android:launchMode="singleTop">
+        <activity android:name=".UI.Activities.DummySaleActivity" android:launchMode="singleTop"
+            android:label="Dummy Sale Activity">
             <intent-filter>
                 <action android:name="Sale_Action" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name=".UI.Activities.SaleActivity" android:launchMode="singleTop"/>
-        <activity android:name=".UI.Activities.PosTxnActivity" android:launchMode="singleTop">
+        <activity
+            android:name=".UI.Activities.SaleActivity"
+            android:launchMode="singleTop"
+            android:label="Sale Activity" />
+        <activity android:name=".UI.Activities.PosTxnActivity"
+            android:launchMode="singleTop"
+            android:label="Pos İşlemleri">
             <intent-filter>
                 <action android:name="PosTxn_Action" />
                 <data android:mimeType="text/plain" />

@@ -1,7 +1,6 @@
 package com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment;
 
 import android.graphics.Color;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -149,9 +148,7 @@ public class InfoDialog extends DialogFragment {
         mImageView.setBackground(null);
         switch (type) {
             case Confirmed:
-                AnimatedVectorDrawable d = (AnimatedVectorDrawable) getContext().getDrawable(R.drawable.animated_check);
-                mImageView.setImageDrawable(d);
-                d.start();
+                mImageView.setImageResource(R.drawable.success);
                 break;
             case Warning:
                 mImageView.setImageResource(R.drawable.warning);

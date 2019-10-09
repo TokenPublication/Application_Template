@@ -20,6 +20,7 @@ import com.tokeninc.sardis.application_template.Entity.CardReadType;
 import com.tokeninc.sardis.application_template.Entity.ICCCard;
 import com.tokeninc.sardis.application_template.Entity.MSRCard;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
+import com.tokeninc.sardis.application_template.Entity.SlipType;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.IListMenuItem;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
@@ -113,9 +114,9 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
 
     @Override
     protected void onDestroy() {
-        Log.d("TCardService", "onDestroy");
         if (mBound) {
             unbindService(emvServiceConnection);
+            mBound = false;
             Log.d("TCardService", "Unbind!");
         }
         super.onDestroy();
@@ -131,6 +132,11 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
 
     }
 
+    /**
+     * Read card data and return result with data back to payment gateway.
+     * @see DummySaleActivity#onSaleResponseRetrieved(Integer, ResponseCode, Boolean, SlipType)
+     *
+     */
     private void readCard() {
         if (mBound) {
             try {
