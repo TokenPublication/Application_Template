@@ -151,8 +151,8 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
                 }
                 else if (type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
                     MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
-                    String pin = emvService.getOnlinePIN(amount, 4, 8, 30);
-                    //TODO Do transaction with pin
+                    String pin = emvService.getOnlinePIN(amount, card.getmCardNumber(), 0x0A01,0,4, 8, 30);
+                    //TODO Do transaction after pin verification
                     showInfoDialog();
                 }
                 //TODO

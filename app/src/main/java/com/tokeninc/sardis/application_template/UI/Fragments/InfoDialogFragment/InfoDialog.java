@@ -168,8 +168,10 @@ public class InfoDialog extends DialogFragment {
                 mImageView.setBackgroundResource(R.drawable.downloading);
                 break;
             case Uploading:
+                mImageView.setBackgroundResource(R.drawable.uploading);
                 break;
             case Processing:
+                //mImageView.setBackgroundResource(R.drawable.installing);
                 break;
             case None:
                 break;
