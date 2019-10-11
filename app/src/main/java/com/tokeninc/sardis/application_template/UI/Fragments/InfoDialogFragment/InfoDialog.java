@@ -9,6 +9,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +29,7 @@ public class InfoDialog extends DialogFragment {
     private InfoDialogButtons buttons;
     private ConstraintLayout confirmationLayout;
     private int arg;
+    private boolean isCancelable;
 
     public enum InfoType {
         Confirmed,
@@ -52,11 +54,13 @@ public class InfoDialog extends DialogFragment {
     /**
      * @param type Animation type to be shown on dialog screen.
      * @param title Text to be shown under animation.
+     * @param isCancelable Set true if this dialog should be dismissed when back button pressed.
      */
-    public static InfoDialog newInstance(InfoType type, String title) {
+    public static InfoDialog newInstance(InfoType type, String title, boolean isCancelable) {
         InfoDialog fragment = new InfoDialog();
         fragment.type = type;
         fragment.title = title;
+        fragment.isCancelable = isCancelable;
         return fragment;
     }
 
@@ -69,7 +73,7 @@ public class InfoDialog extends DialogFragment {
      * @param listener The listener object which implements {@link InfoDialogListener} interface.
      */
     public static InfoDialog newInstance(InfoType type, String title, String info, InfoDialogButtons buttons, int arg, InfoDialogListener listener) {
-        InfoDialog fragment = InfoDialog.newInstance(type, title);
+        InfoDialog fragment = InfoDialog.newInstance(type, title, false);
         fragment.infoText = info;
         fragment.buttons = buttons;
         fragment.listener = listener;
@@ -96,8 +100,10 @@ public class InfoDialog extends DialogFragment {
         btnCancel = view.findViewById(R.id.btnCancel);
         confirmationLayout = view.findViewById(R.id.confirmationLayout);
         setButtonClickActions();
+        this.setCancelable(isCancelable);
 
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        getDialog().getWindow().addFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         update(type, title);
         setConfirmation(view);
 

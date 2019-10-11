@@ -87,10 +87,15 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    private void print() {
-        SampleReceipt receipt = getSampleReceipt();
-        getFormattedText(receipt, SlipType.CARDHOLDER_SLIP);
-        getFormattedText(receipt, SlipType.MERCHANT_SLIP);
+    /**
+     * Use this method only to print dummy slip.
+     * This method will NOT be used in production.
+     */
+    private void print(StyledString styledText) {
+        if (mPrinterService == null) {
+            mPrinterService = getPrinterService();
+        }
+        styledText.print(mPrinterService);
     }
 
     private SampleReceipt getSampleReceipt() {
@@ -260,12 +265,6 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
 
         styledText.printBitmap("ykb", 20);
         styledText.addSpace(100);
-
-        //Uncomment this code block to print sample receipt
-        /*if (mPrinterService == null) {
-            mPrinterService = getPrinterService();
-        }
-        styledText.print(mPrinterService);*/
 
         return styledText.toString();
     }

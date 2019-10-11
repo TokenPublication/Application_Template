@@ -36,11 +36,11 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     /**
      * Shows a dialog to the user which informs the user about current progress.
-     * See {@link InfoDialog#newInstance(InfoDialog.InfoType, String)}
+     * See {@link InfoDialog#newInstance(InfoDialog.InfoType, String, boolean)}
      * Dialog can dismissed by calling .dismiss() method of the fragment instance returned from this method.
      */
-    protected InfoDialog showInfoDialog(InfoDialog.InfoType type, String text) {
-        InfoDialog fragment = InfoDialog.newInstance(type, text);
+    protected InfoDialog showInfoDialog(InfoDialog.InfoType type, String text, boolean isCancelable) {
+        InfoDialog fragment = InfoDialog.newInstance(type, text, isCancelable);
         fragment.show(getSupportFragmentManager(), "");
         return fragment;
     }

@@ -165,7 +165,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void showInfoDialog() {
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.None, "Bağlanıyor...");
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.None, "Bağlanıyor...", false);
         new Handler().postDelayed(() -> {
             dialog.update(InfoDialog.InfoType.None, "İşlem yapılıyor...");
             new Handler().postDelayed(() -> {

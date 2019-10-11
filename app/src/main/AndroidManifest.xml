@@ -4,6 +4,7 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:name=".MainApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -45,6 +46,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".UI.Activities.EditLineActivity" />
+        <activity android:name=".UI.Activities.PosTxnSecondActivity" />
     </application>
 
 </manifest>
