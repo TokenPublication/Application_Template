@@ -8,13 +8,18 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+
 import com.google.gson.Gson;
 import com.tokeninc.cardservice.ITokenCardService;
+import com.tokeninc.components.ListMenuFragment.IListMenuItem;
+import com.tokeninc.components.ListMenuFragment.ListMenuClickListener;
+import com.tokeninc.components.ListMenuFragment.ListMenuFragment;
+import com.tokeninc.components.infodialog.InfoDialog;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.CardReadType;
 import com.tokeninc.sardis.application_template.Entity.ICCCard;
@@ -22,11 +27,7 @@ import com.tokeninc.sardis.application_template.Entity.MSRCard;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
 import com.tokeninc.sardis.application_template.R;
-import com.tokeninc.sardis.application_template.UI.Definitions.IListMenuItem;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
-import com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment.InfoDialog;
-import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuClickListener;
-import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuFragment;
 
 import org.json.JSONObject;
 

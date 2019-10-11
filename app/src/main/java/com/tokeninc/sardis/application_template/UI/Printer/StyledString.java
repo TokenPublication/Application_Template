@@ -1,7 +1,7 @@
 package com.tokeninc.sardis.application_template.UI.Printer;
 
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.example.printertest.IPrinterService;
 

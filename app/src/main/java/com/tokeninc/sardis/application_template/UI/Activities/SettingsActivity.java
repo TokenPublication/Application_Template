@@ -3,7 +3,7 @@ package com.tokeninc.sardis.application_template.UI.Activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.R;

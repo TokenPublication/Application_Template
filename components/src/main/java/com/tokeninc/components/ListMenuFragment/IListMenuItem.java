@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template.UI.Definitions;
+package com.tokeninc.components.ListMenuFragment;
 
 import java.io.Serializable;
 

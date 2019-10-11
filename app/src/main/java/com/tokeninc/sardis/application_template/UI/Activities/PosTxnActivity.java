@@ -12,14 +12,14 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.tokeninc.cardservice.ITokenCardService;
+import com.tokeninc.components.ListMenuFragment.IListMenuItem;
+import com.tokeninc.components.ListMenuFragment.ListMenuClickListener;
+import com.tokeninc.components.ListMenuFragment.ListMenuFragment;
+import com.tokeninc.components.infodialog.InfoDialog;
+import com.tokeninc.components.infodialog.InfoDialogListener;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.R;
-import com.tokeninc.sardis.application_template.UI.Definitions.IListMenuItem;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
-import com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment.InfoDialog;
-import com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment.InfoDialogListener;
-import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuClickListener;
-import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +88,7 @@ public class PosTxnActivity extends BaseActivity implements ListMenuClickListene
             }
             case 2: {
                 showConfirmationDialog(InfoDialog.InfoType.Warning,"Warning", "Are you sure?", InfoDialog.InfoDialogButtons.Both, 99, this);
+                break;
             }
             case 3: {
                 if (mBound) {
@@ -99,6 +100,7 @@ public class PosTxnActivity extends BaseActivity implements ListMenuClickListene
                 else {
                     Toast.makeText(this, "Service not bound!", Toast.LENGTH_SHORT).show();
                 }
+                break;
             }
         }
     }

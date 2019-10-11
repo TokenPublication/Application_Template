@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.tokeninc.components.ListMenuFragment.IListMenuItem;
+import com.tokeninc.components.ListMenuFragment.ListMenuClickListener;
+import com.tokeninc.components.ListMenuFragment.ListMenuFragment;
+import com.tokeninc.components.infodialog.InfoDialog;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.R;
-import com.tokeninc.sardis.application_template.UI.Definitions.IListMenuItem;
-import com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment.InfoDialog;
-import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuClickListener;
-import com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment.ListMenuFragment;
 
 import java.util.ArrayList;
 import java.util.List;

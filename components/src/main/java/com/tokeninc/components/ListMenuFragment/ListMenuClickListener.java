@@ -1,6 +1,4 @@
-package com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment;
-
-import com.tokeninc.sardis.application_template.UI.Definitions.IListMenuItem;
+package com.tokeninc.components.ListMenuFragment;
 
 /**
  * The click listener interface which has to be implemented by the object which is passed as second parameter to

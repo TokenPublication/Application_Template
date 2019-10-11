@@ -1,5 +1,7 @@
 package com.tokeninc.sardis.application_template.UI.Definitions;
 
+import com.tokeninc.components.ListMenuFragment.IListMenuItem;
+
 public class MenuItem implements IListMenuItem {
     private String mTitle;
 

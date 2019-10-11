@@ -1,14 +1,14 @@
-package com.tokeninc.sardis.application_template.UI.Fragments.ListMenuFragment;
+package com.tokeninc.components.ListMenuFragment;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokeninc.sardis.application_template.R;
-import com.tokeninc.sardis.application_template.UI.Definitions.IListMenuItem;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.tokeninc.components.R;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.tokeninc.sardis.application_template.UI.Activities;
 
-import android.support.v4.app.FragmentTransaction;
+import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.Menu;

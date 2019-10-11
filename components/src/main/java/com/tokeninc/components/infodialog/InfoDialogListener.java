@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template.UI.Fragments.InfoDialogFragment;
+package com.tokeninc.components.infodialog;
 
 public interface InfoDialogListener {
     void confirmed(int arg);
