@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<animation-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/installing1" android:duration="50" />
-    <item android:drawable="@drawable/installing2" android:duration="50" />
-    <item android:drawable="@drawable/installing3" android:duration="50" />
-    <item android:drawable="@drawable/installing4" android:duration="50" />
-</animation-list>
