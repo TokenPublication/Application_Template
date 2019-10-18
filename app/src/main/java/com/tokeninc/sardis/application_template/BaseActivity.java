@@ -1,14 +1,32 @@
 package com.tokeninc.sardis.application_template;
 
+import android.os.Bundle;
+
 import androidx.annotation.IdRes;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.tokeninc.components.infodialog.InfoDialog;
 import com.tokeninc.components.infodialog.InfoDialogListener;
+import com.tokeninc.customerservice.CustomerScreenServiceBinding;
 
 public abstract class BaseActivity extends AppCompatActivity {
+
+    protected CustomerScreenServiceBinding customerScreenService;
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        customerScreenService = new CustomerScreenServiceBinding(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        customerScreenService.unBind(this);
+        super.onDestroy();
+    }
 
     protected void addFragment(@IdRes Integer resourceId, Fragment fragment, Boolean addToBackStack) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

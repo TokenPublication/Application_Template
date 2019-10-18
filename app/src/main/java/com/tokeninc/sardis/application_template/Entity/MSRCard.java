@@ -1,13 +1,13 @@
 package com.tokeninc.sardis.application_template.Entity;
 
-public class MSRCard {
-    int resultCode;
-    int mCardReadType;
-    String mCardNumber;
-    String mTrack2Data;
-    String mExpireDate;
-    int mTranAmount1;
-    String mTrack1CustomerName;
+public class MSRCard implements ICard {
+    private int resultCode;
+    private int mCardReadType;
+    private String mCardNumber;
+    private String mTrack2Data;
+    private String mExpireDate;
+    private int mTranAmount1;
+    private String mTrack1CustomerName;
 
     public int getResultCode() {
         return resultCode;
@@ -17,8 +17,14 @@ public class MSRCard {
         return mCardReadType;
     }
 
-    public String getmCardNumber() {
+    @Override
+    public String getCardNumber() {
         return mCardNumber;
+    }
+
+    @Override
+    public String getOwnerName() {
+        return mTrack1CustomerName;
     }
 
     public String getmTrack2Data() {
@@ -32,8 +38,5 @@ public class MSRCard {
     public int getmTranAmount1() {
         return mTranAmount1;
     }
-
-    public String getmTrack1CustomerName() {
-        return mTrack1CustomerName;
-    }
 }
+

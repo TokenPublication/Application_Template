@@ -1,6 +1,6 @@
 package com.tokeninc.sardis.application_template.Entity;
 
-public class ICCCard {
+public class ICCCard implements ICard {
     int resultCode;
     int mCardReadType;
     String mCardNumber;
@@ -19,4 +19,14 @@ public class ICCCard {
     String AID2;
     String UN;
     String IAD;
+
+    @Override
+    public String getCardNumber() {
+        return mCardNumber;
+    }
+
+    @Override
+    public String getOwnerName() {
+        return mTrack1CustomerName;
+    }
 }

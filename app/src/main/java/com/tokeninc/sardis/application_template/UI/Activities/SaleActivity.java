@@ -23,9 +23,9 @@ import com.tokeninc.components.infodialog.InfoDialog;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.CardReadType;
 import com.tokeninc.sardis.application_template.Entity.ICCCard;
+import com.tokeninc.sardis.application_template.Entity.ICard;
 import com.tokeninc.sardis.application_template.Entity.MSRCard;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
-import com.tokeninc.sardis.application_template.Entity.SlipType;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 
@@ -49,6 +49,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
     private int amount = 0;
 
     private List<IListMenuItem> menuItemList;
+    private ICard card;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -135,24 +136,34 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
 
     /**
      * Read card data and return result with data back to payment gateway.
-     * @see DummySaleActivity#onSaleResponseRetrieved(Integer, ResponseCode, Boolean, SlipType)
+     * @see DummySaleActivity onSaleResponseRetrieved(Integer, ResponseCode, Boolean, SlipType)
      *
      */
     private void readCard() {
         if (mBound) {
             try {
-                String cardData = emvService.getCard(amount, 40, "Get Card is called by alien application");
+                JSONObject obj = new JSONObject();
+                obj.put("forceOnline", 0);
+                obj.put("iccError", 1);
+                obj.put("msrError", 0);
+                obj.put("fallback", 0);
+                obj.put("keyIn", 0);
+
+                String cardData = emvService.getCard(amount, 40,
+                        obj.toString());
 
                 JSONObject json = new JSONObject(cardData);
                 int type = json.getInt("mCardReadType");
 
                 if (type == CardReadType.ICC.value) {
                     ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
+                    this.card = card;
                     showInfoDialog();
                 }
                 else if (type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
                     MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
-                    String pin = emvService.getOnlinePIN(amount, card.getmCardNumber(), 0x0A01,0,4, 8, 30);
+                    this.card = card;
+                    String pin = emvService.getOnlinePIN(amount, card.getCardNumber(), 0x0A01,0,4, 8, 30);
                     //TODO Do transaction after pin verification
                     showInfoDialog();
                 }
@@ -167,10 +178,13 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
 
     private void showInfoDialog() {
         InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.None, "Bağlanıyor...", false);
+        customerScreenService.showProgress("Bağlanıyor...");
         new Handler().postDelayed(() -> {
             dialog.update(InfoDialog.InfoType.None, "İşlem yapılıyor...");
+            customerScreenService.showProgress("İşlem yapılıyor....");
             new Handler().postDelayed(() -> {
                 dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı!");
+                customerScreenService.showSuccess("İşlem Başarılı!");
                 new Handler().postDelayed(() -> {
                     dialog.dismiss();
                     finishSale(ResponseCode.SUCCESS);
@@ -182,6 +196,10 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
     private void finishSale(ResponseCode code) {
         Bundle bundle = new Bundle();
         bundle.putInt("ResponseCode", code.ordinal());
+        if (card != null) {
+            bundle.putString("CardOwner", card.getOwnerName());
+            bundle.putString("CardNumber", card.getCardNumber());
+        }
         Intent result = new Intent();
         result.putExtras(bundle);
         setResult(Activity.RESULT_OK, result);

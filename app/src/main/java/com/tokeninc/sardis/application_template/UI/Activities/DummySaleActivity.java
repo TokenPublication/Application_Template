@@ -15,17 +15,13 @@ import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.Entity.SampleReceipt;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
+import com.tokeninc.sardis.application_template.Helpers.PrintHelper;
 import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
-import com.tokeninc.sardis.application_template.UI.Printer.PrinterDefinitions;
-import com.tokeninc.sardis.application_template.UI.Printer.PrinterDefinitions.Alignment;
 import com.tokeninc.sardis.application_template.UI.Printer.StyledString;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 public class DummySaleActivity extends BaseActivity implements View.OnClickListener {
 
@@ -57,7 +53,19 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             int responseCode = data.getIntExtra("ResponseCode", ResponseCode.CANCELLED.ordinal());
-            onSaleResponseRetrieved(amount, ResponseCode.values()[responseCode], true, SlipType.BOTH_SLIPS);
+            String cardNo = "**** **** **** ";
+            String owner = "";
+            if (data.hasExtra("CardOwner")) {
+                owner = data.getStringExtra("CardOwner");
+            }
+            if (data.hasExtra("CardNumber")) {
+                String number = data.getStringExtra("CardNumber");
+                if (number.length() >= 4) {
+                    cardNo = cardNo + number.substring(number.length() - 4);
+                }
+            }
+
+            onSaleResponseRetrieved(amount, ResponseCode.values()[responseCode], true, SlipType.BOTH_SLIPS, cardNo, owner);
         }
     }
 
@@ -99,14 +107,14 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         styledText.print(mPrinterService);
     }
 
-    private SampleReceipt getSampleReceipt() {
+    private SampleReceipt getSampleReceipt(String cardNo, String ownerName) {
         SampleReceipt receipt = new SampleReceipt();
         receipt.setMerchantName("TOKEN FINTECH");
         receipt.setMerchantID("26854222228");
         receipt.setPosID("000002AC");
-        receipt.setCardNo("**** **** **** 2453");
-        receipt.setFullName("SERDAR SAMANCIOĞLU");
-        receipt.setAmount("100,00 TL");
+        receipt.setCardNo(cardNo);
+        receipt.setFullName(ownerName);
+        receipt.setAmount(StringHelper.getAmount(amount));
         receipt.setGroupNo("0001");
         receipt.setAid("A0000000000031010");
         return receipt;
@@ -125,11 +133,11 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         else if (cbCustomer.isChecked())
             slipType = SlipType.CARDHOLDER_SLIP;
 
-        onSaleResponseRetrieved(amount, code, cbCustomer.isChecked() || cbMerchant.isChecked(), slipType);
+        onSaleResponseRetrieved(amount, code, cbCustomer.isChecked() || cbMerchant.isChecked(), slipType, "**** **** **** ****", "OWNER NAME");
     }
 
     //TODO Data has to be returned to Payment Gateway after sale operation completed via template below using actual data.
-    private void onSaleResponseRetrieved(Integer price, ResponseCode code, Boolean hasSlip, SlipType slipType) {
+    private void onSaleResponseRetrieved(Integer price, ResponseCode code, Boolean hasSlip, SlipType slipType, String cardNo, String ownerName) {
         Intent resultIntent = new Intent();
         Bundle bundle = new Bundle();
         bundle.putInt("ResponseCode", code.ordinal());
@@ -142,10 +150,10 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         bundle.putInt("SlipType", slipType.value);
 
         if (slipType == SlipType.CARDHOLDER_SLIP || slipType == SlipType.BOTH_SLIPS) {
-            bundle.putString("customerSlipData", getFormattedText(getSampleReceipt(), SlipType.CARDHOLDER_SLIP));
+            bundle.putString("customerSlipData", PrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.CARDHOLDER_SLIP));
         }
         if (slipType == SlipType.MERCHANT_SLIP || slipType == SlipType.BOTH_SLIPS) {
-            bundle.putString("merchantSlipData", getFormattedText(getSampleReceipt(), SlipType.MERCHANT_SLIP));
+            bundle.putString("merchantSlipData", PrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.MERCHANT_SLIP));
         }
         resultIntent.putExtras(bundle);
         setResult(Activity.RESULT_OK,resultIntent);
@@ -181,92 +189,5 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         return mService;
     }
 
-    public String getFormattedText(SampleReceipt receipt, SlipType slipType)
-    {
-        StyledString styledText = new StyledString();
 
-        styledText.setLineSpacing(0.5f);
-        styledText.setFontSize(12);
-        styledText.setFontFace(PrinterDefinitions.Font_E.SourceSansPro);
-        styledText.addTextToLine(receipt.getMerchantName(), Alignment.Center);
-
-        styledText.newLine();
-        styledText.setFontFace(PrinterDefinitions.Font_E.Sans_Semi_Bold);
-        styledText.addTextToLine("İŞYERİ NO:", Alignment.Left);
-        styledText.setFontFace(PrinterDefinitions.Font_E.SourceSansPro);
-        styledText.addTextToLine(receipt.getMerchantID(), Alignment.Right);
-
-        styledText.newLine();
-        styledText.setFontFace(PrinterDefinitions.Font_E.Sans_Semi_Bold);
-        styledText.addTextToLine("TERMİNAL NO:", Alignment.Left);
-        styledText.setFontFace(PrinterDefinitions.Font_E.SourceSansPro);
-        styledText.addTextToLine(receipt.getPosID(), Alignment.Right);
-
-        styledText.newLine();
-        if (slipType == SlipType.CARDHOLDER_SLIP) {
-            styledText.addTextToLine("MÜŞTERİ NÜSHASI", Alignment.Center);
-            styledText.newLine();
-        }
-        else if (slipType == SlipType.MERCHANT_SLIP) {
-            styledText.addTextToLine("İŞYERİ NÜSHASI", Alignment.Center);
-            styledText.newLine();
-        }
-        styledText.addTextToLine("SATIŞ", Alignment.Center);
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy HH:mm:ss", Locale.getDefault());
-        String time = sdf.format(Calendar.getInstance().getTime());
-
-        styledText.newLine();
-        styledText.addTextToLine(time + " " + "C ONLINE", Alignment.Center);
-
-        styledText.newLine();
-        styledText.addTextToLine(receipt.getCardNo(), Alignment.Center);
-
-        styledText.newLine();
-        styledText.addTextToLine(receipt.getFullName(), Alignment.Center);
-
-        styledText.setLineSpacing(1f);
-        styledText.setFontSize(14);
-        styledText.setFontFace(PrinterDefinitions.Font_E.Sans_Semi_Bold);
-        styledText.newLine();
-        styledText.addTextToLine("TUTAR:");
-        styledText.addTextToLine(receipt.getAmount(), Alignment.Right);
-
-        styledText.setLineSpacing(0.5f);
-        styledText.setFontSize(10);
-        styledText.newLine();
-        if (slipType == SlipType.CARDHOLDER_SLIP) {
-            styledText.addTextToLine("KARŞILIĞI MAL/HİZM ALDIM", Alignment.Center);
-        }
-        else {
-            styledText.addTextToLine("İşlem Şifre Girilerek Yapılmıştır", Alignment.Center);
-            styledText.newLine();
-            styledText.addTextToLine("İMZAYA GEREK YOKTUR", Alignment.Center);
-        }
-
-        styledText.setFontFace(PrinterDefinitions.Font_E.Sans_Bold);
-        styledText.setFontSize(12);
-        styledText.newLine();
-        styledText.addTextToLine("SN: " + "0001");
-        styledText.addTextToLine("ONAY KODU: " + "235188", Alignment.Right);
-
-        styledText.setFontSize(8);
-        styledText.setFontFace(PrinterDefinitions.Font_E.Sans_Semi_Bold);
-        styledText.newLine();
-        styledText.addTextToLine("GRUP NO:" + receipt.getGroupNo());
-
-        styledText.newLine();
-        styledText.addTextToLine("AID: " + receipt.getAid());
-
-        styledText.newLine();
-        styledText.addTextToLine("BU İŞLEM YURT İÇİ KARTLA YAPILMIŞTIR", Alignment.Center);
-        styledText.newLine();
-        styledText.addTextToLine("BU BELGEYİ SAKLAYINIZ", Alignment.Center);
-        styledText.newLine();
-
-        styledText.printBitmap("ykb", 20);
-        styledText.addSpace(100);
-
-        return styledText.toString();
-    }
 }
