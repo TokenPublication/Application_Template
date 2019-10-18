@@ -143,11 +143,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
         if (mBound) {
             try {
                 JSONObject obj = new JSONObject();
-                obj.put("forceOnline", 0);
-                obj.put("iccError", 1);
-                obj.put("msrError", 0);
-                obj.put("fallback", 0);
-                obj.put("keyIn", 0);
+                obj.put("forceOnline", 1);
 
                 String cardData = emvService.getCard(amount, 40,
                         obj.toString());
