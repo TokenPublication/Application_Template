@@ -1,13 +1,9 @@
 package com.tokeninc.sardis.application_template.UI.Activities;
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -15,7 +11,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
-import com.tokeninc.cardservice.ITokenCardService;
 import com.tokeninc.components.ListMenuFragment.IListMenuItem;
 import com.tokeninc.components.ListMenuFragment.ListMenuClickListener;
 import com.tokeninc.components.ListMenuFragment.ListMenuFragment;
@@ -38,13 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SaleActivity extends BaseActivity implements View.OnClickListener, ListMenuClickListener {
-
-    private ITokenCardService emvService;
-    private ServiceConnection emvServiceConnection;
-    private boolean mBound = false;
-
-    private static final String EMV_SERVICE_PACKAGE_NAME = "com.tokeninc.cardservice";
-    private static final String EMV_SERVICE_NAME = "com.tokeninc.cardservice.CardService";
 
     private int amount = 0;
 
@@ -77,61 +65,12 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        if (!mBound) {
-            bindService();
-        }
-    }
-
-    private void bindService() {
-        emvServiceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName componentName, IBinder service) {
-                Log.d("TCardService", "Connected");
-                emvService = ITokenCardService.Stub.asInterface(service);
-                mBound = true;
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName componentName) {
-                Log.d("TCardService", "Disconnected");
-                mBound = false;
-            }
-        };
-
-        Intent emvS = new Intent();
-        emvS.setComponent(new ComponentName(EMV_SERVICE_PACKAGE_NAME, EMV_SERVICE_NAME));
-        try {
-            if (!bindService(emvS, emvServiceConnection, Context.BIND_AUTO_CREATE)) {
-                Toast.makeText(getApplicationContext(), "Could not bind to the service", Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                Log.d("TCardService", "Successfully bound!");
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        if (mBound) {
-            unbindService(emvServiceConnection);
-            mBound = false;
-            Log.d("TCardService", "Unbind!");
-        }
-        super.onDestroy();
-    }
-
-    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnSetConfig:
                 setConfig();
                 break;
         }
-
     }
 
     /**
@@ -140,35 +79,16 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
      *
      */
     private void readCard() {
-        if (mBound) {
-            try {
-                JSONObject obj = new JSONObject();
-                obj.put("forceOnline", 1);
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("forceOnline", 1);
 
-                String cardData = emvService.getCard(amount, 40,
-                        obj.toString());
+            cardServiceBinding.getCard(amount, 40,
+                    obj.toString(), this.getPackageName());
 
-                JSONObject json = new JSONObject(cardData);
-                int type = json.getInt("mCardReadType");
-
-                if (type == CardReadType.ICC.value) {
-                    ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
-                    this.card = card;
-                    showInfoDialog();
-                }
-                else if (type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
-                    MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
-                    this.card = card;
-                    String pin = emvService.getOnlinePIN(amount, card.getCardNumber(), 0x0A01,0,4, 8, 30);
-                    //TODO Do transaction after pin verification
-                    showInfoDialog();
-                }
-                //TODO
-                //..check and process other read types
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -215,7 +135,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
                 total.append(line).append('\n');
             }
             //Log.d(TAG, "conf string: " + total.toString());
-            int setConfigResult = emvService.setEMVConfiguration(total.toString());
+            int setConfigResult = cardServiceBinding.setEMVConfiguration(total.toString());
             Toast.makeText(getApplicationContext(), "setEMVConfiguration res=" + setConfigResult, Toast.LENGTH_SHORT).show();
             Log.d("emv_config", "setEMVConfiguration: " + setConfigResult);
         }
@@ -228,5 +148,44 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
     public void onBackPressed() {
         setResult(Activity.RESULT_CANCELED);
         super.onBackPressed();
+    }
+
+    /**
+     * Callback for TCardService getCard method.
+     * As getCard is an asynchronous real time operation, you will get the response after operation is done in this callback.
+     * @param cardData: Card data json string
+     */
+    @Override
+    protected void onCardDataReceived(String cardData) {
+
+        try {
+            JSONObject json = new JSONObject(cardData);
+            int type = json.getInt("mCardReadType");
+
+            if (type == CardReadType.ICC.value) {
+                ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
+                this.card = card;
+                showInfoDialog();
+            } else if (type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
+                MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
+                this.card = card;
+                cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30, this.getPackageName());
+                //TODO Do transaction after pin verification
+            }
+            //TODO
+            //..check and process other read types
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+    * Callback for TCardService #getOnlinePin() method.
+    * As getOnlinePin is an asynchronous real time operation, you will get the response after operation is done in this callback.
+    */
+    @Override
+    protected void onPinReceived(String pin) {
+        showInfoDialog();
     }
 }

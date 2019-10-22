@@ -1,13 +1,20 @@
 package com.tokeninc.sardis.application_template;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.MutableLiveData;
 
+import com.tokeninc.cardservicebinding.CardServiceBinding;
 import com.tokeninc.components.infodialog.InfoDialog;
 import com.tokeninc.components.infodialog.InfoDialogListener;
 import com.tokeninc.customerservice.CustomerScreenServiceBinding;
@@ -15,17 +22,55 @@ import com.tokeninc.customerservice.CustomerScreenServiceBinding;
 public abstract class BaseActivity extends AppCompatActivity {
 
     protected CustomerScreenServiceBinding customerScreenService;
+    protected CardServiceBinding cardServiceBinding;
+    private BroadcastReceiver cardServiceReceiver;
+    private MutableLiveData<String> cardData;
+    private MutableLiveData<String> pinData;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         customerScreenService = new CustomerScreenServiceBinding(this);
+        cardServiceBinding = new CardServiceBinding(this);
+        registerBroadCastReceiver();
     }
 
     @Override
     protected void onDestroy() {
-        customerScreenService.unBind(this);
+        if (cardServiceBinding != null) {
+            cardServiceBinding.unBind(this);
+        }
+        if (cardServiceReceiver != null) {
+            unregisterReceiver(cardServiceReceiver);
+        }
+        if (customerScreenService != null) {
+            customerScreenService.unBind(this);
+        }
         super.onDestroy();
+    }
+
+    private void registerBroadCastReceiver() {
+        cardData = new MutableLiveData<>();
+        pinData = new MutableLiveData<>();
+        cardData.observe(this, this::onCardDataReceived);
+        pinData.observe(this, this::onPinReceived);
+
+        cardServiceReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d("Template", "BroadCastReceived");
+                if (intent.hasExtra("cardData")) {
+                    cardData.setValue(intent.getStringExtra("cardData"));
+                }
+                else if (intent.hasExtra("PIN")) {
+                    pinData.setValue(intent.getStringExtra("PIN"));
+                }
+            }
+        };
+
+        //Every app should register action named with its own package name
+        IntentFilter filter = new IntentFilter(this.getPackageName());
+        registerReceiver(cardServiceReceiver, filter);
     }
 
     protected void addFragment(@IdRes Integer resourceId, Fragment fragment, Boolean addToBackStack) {
@@ -73,4 +118,21 @@ public abstract class BaseActivity extends AppCompatActivity {
         dialog.show(getSupportFragmentManager(), "");
         return dialog;
     }
+
+
+    /**
+     * Callback for TCardService getCard method.
+     * As getCard is an asynchronous service operation, you will get the response after operation is done in this callback.
+     * @apiNote Override this method in your activity in order to get card data after calling #getData() method of Card Service.
+     * @param cardData: Card data json string
+     */
+    protected void onCardDataReceived(String cardData) { }
+
+    /**
+     * Callback for TCardService getOnlinePin method.
+     * As getOnlinePin is an asynchronous real time operation, you will get the response after operation is done in this callback.
+     * @apiNote Override this method in your activity in order to get pin data after calling #getOnlinePin() method of Card Service.
+     * @param pin: Pin string
+     */
+    protected  void onPinReceived(String pin) {}
 }

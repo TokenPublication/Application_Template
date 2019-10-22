@@ -1,6 +1,8 @@
 // ITokenCardService.aidl
 package com.tokeninc.cardservice;
 
+
+
 interface ITokenCardService {
         // amount:
         // please provide it as 100 x Float amount.
@@ -12,7 +14,7 @@ interface ITokenCardService {
         //
         // config:
         // reserved for future use
-        String getCard(int amount, int timeout, String config);
+        void getCard(int amount, int timeout, String config, String packageName);
 
         // action:
         // Online approval					    1
@@ -63,7 +65,7 @@ interface ITokenCardService {
         //
         // timeout:
         // PIN entry timeout as Sec
-        String getOnlinePIN(int amount, String pan, int keySet, int keyIndex, int minLen, int maxLen, int timeout);
+        void getOnlinePIN(int amount, String pan, int keySet, int keyIndex, int minLen, int maxLen, int timeout, String packageName);
 
         String getDeviceSN();
 }
