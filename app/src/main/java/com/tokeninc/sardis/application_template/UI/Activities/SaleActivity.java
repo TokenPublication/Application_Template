@@ -82,14 +82,17 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
         try {
             JSONObject obj = new JSONObject();
             obj.put("forceOnline", 1);
+            obj.put("zeroAmount", 1);
 
-            cardServiceBinding.getCard(amount, 40,
-                    obj.toString(), this.getPackageName());
-
+            cardServiceBinding.getCard(amount, 40, obj.toString());
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void takeOutICC() {
+        cardServiceBinding.takeOutICC(40);
     }
 
     private void showInfoDialog() {
@@ -101,10 +104,11 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
             new Handler().postDelayed(() -> {
                 dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı!");
                 customerScreenService.showSuccess("İşlem Başarılı!");
-                new Handler().postDelayed(() -> {
-                    dialog.dismiss();
+                if(card instanceof ICCCard)
+                    takeOutICC();
+                else{
                     finishSale(ResponseCode.SUCCESS);
-                }, 2000);
+                }
             }, 2000);
         }, 2000);
     }
@@ -169,7 +173,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
             } else if (type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
                 MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
                 this.card = card;
-                cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30, this.getPackageName());
+                cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);
                 //TODO Do transaction after pin verification
             }
             //TODO
@@ -187,5 +191,10 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onPinReceived(String pin) {
         showInfoDialog();
+    }
+
+    @Override
+    protected void onICCTakeOut() {
+        finishSale(ResponseCode.SUCCESS);
     }
 }

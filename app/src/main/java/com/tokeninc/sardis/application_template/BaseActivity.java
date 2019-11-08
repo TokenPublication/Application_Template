@@ -26,12 +26,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     private BroadcastReceiver cardServiceReceiver;
     private MutableLiveData<String> cardData;
     private MutableLiveData<String> pinData;
+    private MutableLiveData<Boolean> iccTakeOut;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         customerScreenService = new CustomerScreenServiceBinding(this);
-        cardServiceBinding = new CardServiceBinding(this);
+        cardServiceBinding = new CardServiceBinding(this, null);
         registerBroadCastReceiver();
     }
 
@@ -52,8 +53,12 @@ public abstract class BaseActivity extends AppCompatActivity {
     private void registerBroadCastReceiver() {
         cardData = new MutableLiveData<>();
         pinData = new MutableLiveData<>();
+        iccTakeOut = new MutableLiveData<>();
         cardData.observe(this, this::onCardDataReceived);
         pinData.observe(this, this::onPinReceived);
+        iccTakeOut.observe(this, (value) -> {
+            onICCTakeOut();
+        });
 
         cardServiceReceiver = new BroadcastReceiver() {
             @Override
@@ -64,6 +69,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                 }
                 else if (intent.hasExtra("PIN")) {
                     pinData.setValue(intent.getStringExtra("PIN"));
+                }
+                else if (intent.hasExtra("iccTakeOut")) {
+                    iccTakeOut.setValue(true);
                 }
             }
         };
@@ -135,4 +143,11 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @param pin: Pin string
      */
     protected  void onPinReceived(String pin) {}
+
+    /**
+     * Callback for TCardService iccTakeOut method.
+     *
+     * @apiNote Override this method in your activity in order to get icc take out callback after calling #iccTakeOut() method of Card Service.
+     */
+    protected  void onICCTakeOut() {}
 }
