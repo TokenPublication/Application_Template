@@ -82,14 +82,17 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
         try {
             JSONObject obj = new JSONObject();
             obj.put("forceOnline", 1);
+            obj.put("zeroAmount", 1);
 
-            cardServiceBinding.getCard(amount, 40,
-                    obj.toString(), this.getPackageName());
-
+            cardServiceBinding.getCard(amount, 40, obj.toString());
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void takeOutICC() {
+        cardServiceBinding.takeOutICC(40);
     }
 
     private void showInfoDialog() {
@@ -100,11 +103,16 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
                 dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı!");
                 new Handler().postDelayed(() -> {
                     dialog.dismiss();
-                    finishSale(ResponseCode.SUCCESS);
+                    if (card instanceof ICCCard)
+                        takeOutICC();
+                    else {
+                        finishSale(ResponseCode.SUCCESS);
+                    }
                 }, 2000);
             }, 2000);
         }, 2000);
     }
+
 
     private void finishSale(ResponseCode code) {
         Bundle bundle = new Bundle();
@@ -166,8 +174,8 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
             } else if (type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
                 MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
                 this.card = card;
-                cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30, this.getPackageName());
-                //TODO Do transaction after pin received callback: onPinReceived()
+                cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);
+                //TODO Do transaction after pin verification
             }
             //TODO
             //..check and process other read types
@@ -184,5 +192,10 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onPinReceived(String pin) {
         showInfoDialog();
+    }
+
+    @Override
+    protected void onICCTakeOut() {
+        finishSale(ResponseCode.SUCCESS);
     }
 }
