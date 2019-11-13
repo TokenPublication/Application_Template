@@ -12,11 +12,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.tokeninc.cardservice.ITokenCardService;
-import com.tokeninc.components.ListMenuFragment.IListMenuItem;
-import com.tokeninc.components.ListMenuFragment.ListMenuClickListener;
-import com.tokeninc.components.ListMenuFragment.ListMenuFragment;
-import com.tokeninc.components.infodialog.InfoDialog;
-import com.tokeninc.components.infodialog.InfoDialogListener;
+import com.token.components.ListMenuFragment.IListMenuItem;
+import com.token.components.ListMenuFragment.ListMenuClickListener;
+import com.token.components.ListMenuFragment.ListMenuFragment;
+import com.token.components.infodialog.InfoDialog;
+import com.token.components.infodialog.InfoDialogListener;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
@@ -41,7 +41,7 @@ public class PosTxnActivity extends BaseActivity implements ListMenuClickListene
         setContentView(R.layout.activity_pos_txn);
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, this);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, this, "");
         addFragment(R.id.container, fragment, false);
     }
 

@@ -15,13 +15,11 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.MutableLiveData;
 
 import com.tokeninc.cardservicebinding.CardServiceBinding;
-import com.tokeninc.components.infodialog.InfoDialog;
-import com.tokeninc.components.infodialog.InfoDialogListener;
-import com.tokeninc.customerservice.CustomerScreenServiceBinding;
+import com.token.components.infodialog.InfoDialog;
+import com.token.components.infodialog.InfoDialogListener;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
-    protected CustomerScreenServiceBinding customerScreenService;
     protected CardServiceBinding cardServiceBinding;
     private BroadcastReceiver cardServiceReceiver;
     private MutableLiveData<String> cardData;
@@ -30,7 +28,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        customerScreenService = new CustomerScreenServiceBinding(this);
         cardServiceBinding = new CardServiceBinding(this);
         registerBroadCastReceiver();
     }
@@ -42,9 +39,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         if (cardServiceReceiver != null) {
             unregisterReceiver(cardServiceReceiver);
-        }
-        if (customerScreenService != null) {
-            customerScreenService.unBind(this);
         }
         super.onDestroy();
     }

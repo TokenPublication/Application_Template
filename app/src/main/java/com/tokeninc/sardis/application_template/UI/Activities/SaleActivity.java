@@ -11,10 +11,10 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
-import com.tokeninc.components.ListMenuFragment.IListMenuItem;
-import com.tokeninc.components.ListMenuFragment.ListMenuClickListener;
-import com.tokeninc.components.ListMenuFragment.ListMenuFragment;
-import com.tokeninc.components.infodialog.InfoDialog;
+import com.token.components.ListMenuFragment.IListMenuItem;
+import com.token.components.ListMenuFragment.ListMenuClickListener;
+import com.token.components.ListMenuFragment.ListMenuFragment;
+import com.token.components.infodialog.InfoDialog;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.CardReadType;
 import com.tokeninc.sardis.application_template.Entity.ICCCard;
@@ -47,7 +47,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
         amount = getIntent().getExtras().getInt("Amount");
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, this);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, this, "Satış Tipi");
         addFragment(R.id.container, fragment, false);
     }
 
@@ -93,14 +93,11 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void showInfoDialog() {
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.None, "Bağlanıyor...", false);
-        customerScreenService.showProgress("Bağlanıyor...");
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Connecting, "Bağlanıyor...", false);
         new Handler().postDelayed(() -> {
-            dialog.update(InfoDialog.InfoType.None, "İşlem yapılıyor...");
-            customerScreenService.showProgress("İşlem yapılıyor....");
+            dialog.update(InfoDialog.InfoType.Processing, "İşlem yapılıyor...");
             new Handler().postDelayed(() -> {
                 dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı!");
-                customerScreenService.showSuccess("İşlem Başarılı!");
                 new Handler().postDelayed(() -> {
                     dialog.dismiss();
                     finishSale(ResponseCode.SUCCESS);
@@ -170,7 +167,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
                 MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
                 this.card = card;
                 cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30, this.getPackageName());
-                //TODO Do transaction after pin verification
+                //TODO Do transaction after pin received callback: onPinReceived()
             }
             //TODO
             //..check and process other read types

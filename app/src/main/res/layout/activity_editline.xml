@@ -9,10 +9,9 @@
     android:background="#000000"
     tools:context="com.tokeninc.sardis.application_template.UI.Activities.EditLineActivity">
 
-    <FrameLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/inputRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/main2_editLine_list_frame"/>
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 </RelativeLayout>
-    <!--        app:theme="@style/ActionBarThemeOverlay"-->
-    <!--        app:popupTheme="@style/ActionBarPopupThemeOverlay"-->
