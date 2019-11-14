@@ -53,14 +53,14 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
 
     private void prepareData() {
         menuItemList = new ArrayList<>();
-        menuItemList.add(new MenuItem("Satış"));
-        menuItemList.add(new MenuItem("Taksitli Satış"));
-        menuItemList.add(new MenuItem("Puan Satış"));
-        menuItemList.add(new MenuItem("Kampanya Satış"));
+        menuItemList.add(new MenuItem(1,"Satış"));
+        menuItemList.add(new MenuItem(2,"Taksitli Satış"));
+        menuItemList.add(new MenuItem(3,"Puan Satış"));
+        menuItemList.add(new MenuItem(4,"Kampanya Satış"));
     }
 
     @Override
-    public void onItemClick(int position, IListMenuItem item) {
+    public void onItemClick(IListMenuItem item) {
         readCard();
     }
 

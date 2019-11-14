@@ -10,12 +10,12 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.tokeninc.cardservice.ITokenCardService;
 import com.token.components.ListMenuFragment.IListMenuItem;
 import com.token.components.ListMenuFragment.ListMenuClickListener;
 import com.token.components.ListMenuFragment.ListMenuFragment;
 import com.token.components.infodialog.InfoDialog;
 import com.token.components.infodialog.InfoDialogListener;
+import com.tokeninc.cardservice.ITokenCardService;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
@@ -65,29 +65,44 @@ public class MainActivity extends BaseActivity implements InfoDialogListener, Li
     }
 
     private void prepareData() {
-        menuItems.add(new MenuItem("CustomInputList"));
-        menuItems.add(new MenuItem("InfoDialog"));
-        menuItems.add(new MenuItem("ConfirmationDialog"));
-        menuItems.add(new MenuItem("Device Number"));
+
+        List<IListMenuItem> subList2 = new ArrayList<>();
+        subList2.add(new MenuItem(10,"subMenuItem 1.1"));
+        subList2.add(new MenuItem(11,"subMenuItem 1.2"));
+        subList2.add(new MenuItem(12,"subMenuItem 1.3"));
+
+        List<IListMenuItem> subList1 = new ArrayList<>();
+        subList1.add(new MenuItem(6,"MenuItem 1 with Sub menu", subList2));
+        subList1.add(new MenuItem(7,"MenuItem 2"));
+        subList1.add(new MenuItem(8,"MenuItem 3"));
+
+
+
+        menuItems.add(new MenuItem(1,"CustomInputList"));
+        menuItems.add(new MenuItem(2,"InfoDialog"));
+        menuItems.add(new MenuItem(3,"ConfirmationDialog"));
+        menuItems.add(new MenuItem(4,"Device Number"));
+        menuItems.add(new MenuItem(5,"Menu Item with Sub menu", subList1));
+
     }
 
     private void startActivity(int menuNo){
         switch (menuNo){
-            case 0: {
+            case 1: {
                 Intent myIntent = new Intent(MainActivity.this, EditLineActivity.class);
                 startActivity(myIntent);
                 break;
             }
-            case 1: {
+            case 2: {
                 Intent myIntent = new Intent(MainActivity.this, PosTxnActivity.class);
                 startActivity(myIntent);
                 break;
             }
-            case 2: {
+            case 3: {
                 showConfirmationDialog(InfoDialog.InfoType.Warning,"Warning", "Are you sure?", InfoDialog.InfoDialogButtons.Both, 99, this);
                 break;
             }
-            case 3: {
+            case 4: {
                 if (mBound) {
                     try {
                         Toast.makeText(this, "Device SN: " + emvService.getDeviceSN(), Toast.LENGTH_SHORT).show();
@@ -119,8 +134,8 @@ public class MainActivity extends BaseActivity implements InfoDialogListener, Li
     }
 
     @Override
-    public void onItemClick(int position, IListMenuItem item) {
-        startActivity(position);
+    public void onItemClick(IListMenuItem item) {
+        startActivity(item.getId());
     }
 
     private void bindService() {

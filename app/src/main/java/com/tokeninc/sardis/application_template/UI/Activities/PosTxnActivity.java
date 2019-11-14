@@ -63,15 +63,15 @@ public class PosTxnActivity extends BaseActivity implements ListMenuClickListene
     }
 
     private void prepareData() {
-        menuItems.add(new MenuItem("EditLineListFragment"));
-        menuItems.add(new MenuItem("InfoDialog"));
-        menuItems.add(new MenuItem("ConfirmationDialog"));
-        menuItems.add(new MenuItem("Device Number"));
+        menuItems.add(new MenuItem(0,"EditLineListFragment"));
+        menuItems.add(new MenuItem(1,"InfoDialog"));
+        menuItems.add(new MenuItem(2,"ConfirmationDialog"));
+        menuItems.add(new MenuItem(3,"Device Number"));
     }
 
     @Override
-    public void onItemClick(int position, IListMenuItem item) {
-        startActivity(position);
+    public void onItemClick(IListMenuItem item) {
+        startActivity(item.getId());
     }
 
     private void startActivity(int menuNo){

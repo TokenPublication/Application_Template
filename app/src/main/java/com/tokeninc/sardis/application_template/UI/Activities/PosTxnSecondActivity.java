@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+
 import com.token.components.ListMenuFragment.IListMenuItem;
 import com.token.components.ListMenuFragment.ListMenuClickListener;
 import com.token.components.ListMenuFragment.ListMenuFragment;
@@ -20,15 +22,28 @@ public class PosTxnSecondActivity extends BaseActivity implements ListMenuClickL
 
         private InfoDialog.InfoType mType;
         private String mText;
+        private int mID;
 
-        public InfoDialogItem(InfoDialog.InfoType type, String text) {
+        public InfoDialogItem(int ID, InfoDialog.InfoType type, String text) {
             mType = type;
             mText = text;
+            mID = ID;
         }
 
         @Override
         public String getName() {
             return mText;
+        }
+
+        @Nullable
+        @Override
+        public List<IListMenuItem> getSubMenuItemList() {
+            return null;
+        }
+
+        @Override
+        public int getId() {
+            return mID;
         }
     }
 
@@ -45,19 +60,19 @@ public class PosTxnSecondActivity extends BaseActivity implements ListMenuClickL
     }
 
     private void prepareData() {
-        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Confirmed, "Confirmed"));
-        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Warning, "Warning"));
-        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Error, "Error"));
-        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Info,"Info"));
-        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Declined, "Declined"));
-        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Connecting,"Connecting"));
-        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Downloading, "Downloading"));
-        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Uploading, "Uploading"));
-        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Processing, "Installing"));
+        menuItems.add(new InfoDialogItem(0, InfoDialog.InfoType.Confirmed, "Confirmed"));
+        menuItems.add(new InfoDialogItem(1,InfoDialog.InfoType.Warning, "Warning"));
+        menuItems.add(new InfoDialogItem(2,InfoDialog.InfoType.Error, "Error"));
+        menuItems.add(new InfoDialogItem(3,InfoDialog.InfoType.Info,"Info"));
+        menuItems.add(new InfoDialogItem(4,InfoDialog.InfoType.Declined, "Declined"));
+        menuItems.add(new InfoDialogItem(5,InfoDialog.InfoType.Connecting,"Connecting"));
+        menuItems.add(new InfoDialogItem(6,InfoDialog.InfoType.Downloading, "Downloading"));
+        menuItems.add(new InfoDialogItem(7,InfoDialog.InfoType.Uploading, "Uploading"));
+        menuItems.add(new InfoDialogItem(8,InfoDialog.InfoType.Processing, "Installing"));
     }
 
     @Override
-    public void onItemClick(int position, IListMenuItem item) {
+    public void onItemClick(IListMenuItem item) {
         showPopup((InfoDialogItem) item);
     }
 
