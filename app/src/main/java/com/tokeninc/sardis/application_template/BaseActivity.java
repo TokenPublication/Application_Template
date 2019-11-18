@@ -15,8 +15,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.MutableLiveData;
 
 import com.tokeninc.cardservicebinding.CardServiceBinding;
-import com.token.components.infodialog.InfoDialog;
-import com.token.components.infodialog.InfoDialogListener;
+import com.token.uicomponents.infodialog.InfoDialog;
+import com.token.uicomponents.infodialog.InfoDialogListener;
 
 public abstract class BaseActivity extends AppCompatActivity {
 

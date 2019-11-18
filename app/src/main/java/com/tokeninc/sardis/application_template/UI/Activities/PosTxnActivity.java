@@ -12,11 +12,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.tokeninc.cardservice.ITokenCardService;
-import com.token.components.ListMenuFragment.IListMenuItem;
-import com.token.components.ListMenuFragment.ListMenuClickListener;
-import com.token.components.ListMenuFragment.ListMenuFragment;
-import com.token.components.infodialog.InfoDialog;
-import com.token.components.infodialog.InfoDialogListener;
+import com.token.uicomponents.ListMenuFragment.IListMenuItem;
+import com.token.uicomponents.ListMenuFragment.ListMenuClickListener;
+import com.token.uicomponents.ListMenuFragment.ListMenuFragment;
+import com.token.uicomponents.infodialog.InfoDialog;
+import com.token.uicomponents.infodialog.InfoDialogListener;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;

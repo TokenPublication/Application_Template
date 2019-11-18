@@ -2,7 +2,7 @@ package com.tokeninc.sardis.application_template.UI.Definitions;
 
 import androidx.annotation.Nullable;
 
-import com.token.components.ListMenuFragment.IListMenuItem;
+import com.token.uicomponents.ListMenuFragment.IListMenuItem;
 
 import java.util.List;
 

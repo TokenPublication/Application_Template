@@ -2,9 +2,9 @@ package com.tokeninc.sardis.application_template.UI.Activities;
 
 import android.os.Bundle;
 
-import com.token.components.CustomInput.CustomInputFormat;
-import com.token.components.CustomInput.EditTextInputType;
-import com.token.components.CustomInput.InputListFragment;
+import com.token.uicomponents.CustomInput.CustomInputFormat;
+import com.token.uicomponents.CustomInput.EditTextInputType;
+import com.token.uicomponents.CustomInput.InputListFragment;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.R;
 

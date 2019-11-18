@@ -6,10 +6,10 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.token.components.ListMenuFragment.IListMenuItem;
-import com.token.components.ListMenuFragment.ListMenuClickListener;
-import com.token.components.ListMenuFragment.ListMenuFragment;
-import com.token.components.infodialog.InfoDialog;
+import com.token.uicomponents.ListMenuFragment.IListMenuItem;
+import com.token.uicomponents.ListMenuFragment.ListMenuClickListener;
+import com.token.uicomponents.ListMenuFragment.ListMenuFragment;
+import com.token.uicomponents.infodialog.InfoDialog;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.R;
 
