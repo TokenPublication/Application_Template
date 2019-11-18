@@ -155,13 +155,8 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
         super.onBackPressed();
     }
 
-    /**
-     * Callback for TCardService getCard method.
-     * As getCard is an asynchronous real time operation, you will get the response after operation is done in this callback.
-     * @param cardData: Card data json string
-     */
     @Override
-    protected void onCardDataReceived(String cardData) {
+    public void onCardDataReceived(String cardData) {
 
         try {
             JSONObject json = new JSONObject(cardData);
@@ -185,17 +180,13 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
         }
     }
 
-    /**
-    * Callback for TCardService #getOnlinePin() method.
-    * As getOnlinePin is an asynchronous real time operation, you will get the response after operation is done in this callback.
-    */
     @Override
-    protected void onPinReceived(String pin) {
+    public void onPinReceived(String pin) {
         showInfoDialog();
     }
 
     @Override
-    protected void onICCTakeOut() {
+    public void onICCTakeOut() {
         finishSale(ResponseCode.SUCCESS);
     }
 }
