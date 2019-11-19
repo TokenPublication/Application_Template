@@ -12,8 +12,8 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.token.uicomponents.ListMenuFragment.IListMenuItem;
-import com.token.uicomponents.ListMenuFragment.ListMenuClickListener;
 import com.token.uicomponents.ListMenuFragment.ListMenuFragment;
+import com.token.uicomponents.ListMenuFragment.MenuItemClickListener;
 import com.token.uicomponents.infodialog.InfoDialog;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.CardReadType;
@@ -32,7 +32,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SaleActivity extends BaseActivity implements View.OnClickListener, ListMenuClickListener {
+public class SaleActivity extends BaseActivity implements View.OnClickListener {
 
     private int amount = 0;
 
@@ -47,21 +47,21 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener, 
         amount = getIntent().getExtras().getInt("Amount");
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, this, "Satış Tipi", false);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, "Satış Tipi", false);
         addFragment(R.id.container, fragment, false);
     }
 
     private void prepareData() {
         menuItemList = new ArrayList<>();
-        menuItemList.add(new MenuItem(1,"Satış"));
-        menuItemList.add(new MenuItem(2,"Taksitli Satış"));
-        menuItemList.add(new MenuItem(3,"Puan Satış"));
-        menuItemList.add(new MenuItem(4,"Kampanya Satış"));
-    }
-
-    @Override
-    public void onItemClick(IListMenuItem item) {
-        readCard();
+        menuItemList.add(new MenuItem("Satış", new MenuItemClickListener() {
+            @Override
+            public void onClick(IListMenuItem menuItem) {
+                readCard();
+            }
+        }));
+        menuItemList.add(new MenuItem("Taksitli Satış", (menuItem) -> readCard()));
+        menuItemList.add(new MenuItem("Puan Satış", (menuItem) -> readCard()));
+        menuItemList.add(new MenuItem("Kampanya Satış", (menuItem) -> readCard()));
     }
 
     @Override
