@@ -82,7 +82,8 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         try {
             JSONObject obj = new JSONObject();
             obj.put("forceOnline", 1);
-            obj.put("zeroAmount", 1);
+            obj.put("zeroAmount", 0);
+            obj.put("fallback", 1);
 
             cardServiceBinding.getCard(amount, 40, obj.toString());
         }
@@ -166,7 +167,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
                 ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
                 this.card = card;
                 showInfoDialog();
-            } else if (type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
+            } else if (type == CardReadType.ICC2MSR.value || type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
                 MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
                 this.card = card;
                 cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);

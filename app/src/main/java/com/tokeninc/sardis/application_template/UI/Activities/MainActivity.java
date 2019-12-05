@@ -18,6 +18,8 @@ import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokeninc.sardis.application_template.Helpers.KeyInjectHelper.exampleKey;
+
 /*
 This activity shows how to use List Menu
  */
@@ -73,6 +75,12 @@ public class MainActivity extends BaseActivity implements InfoDialogListener {
             }
             catch (RemoteException e) { }
         }));
+
+        menuItems.add(new MenuItem("Inject Key", (menuItem) -> {
+            exampleKey();
+        }));
+
+
         menuItems.add(new MenuItem("Menu Item with Sub menu", subList1, null));
 
     }
