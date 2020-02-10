@@ -11,10 +11,12 @@ import com.token.uicomponents.ListMenuFragment.ListMenuFragment;
 import com.token.uicomponents.ListMenuFragment.MenuItemClickListener;
 import com.token.uicomponents.infodialog.InfoDialog;
 import com.token.uicomponents.infodialog.InfoDialogListener;
+import com.tokeninc.barcodescannerimpl.TokenBarcodeScanner;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,8 +82,12 @@ public class MainActivity extends BaseActivity implements InfoDialogListener {
             exampleKey();
         }));
 
-
         menuItems.add(new MenuItem("Menu Item with Sub menu", subList1, null));
+        menuItems.add(new MenuItem("Barcode Scanner", iListMenuItem -> {
+            new TokenBarcodeScanner(new WeakReference<>(MainActivity.this),data -> {
+                Toast.makeText(this, "Barcode Data: " + data, Toast.LENGTH_SHORT).show();
+            });
+        }));
 
     }
 
