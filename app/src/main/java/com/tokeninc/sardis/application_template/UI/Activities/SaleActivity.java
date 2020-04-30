@@ -47,7 +47,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         amount = getIntent().getExtras().getInt("Amount");
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, "Satış Tipi", false);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, "Satış Tipi", false, null);
         addFragment(R.id.container, fragment, false);
     }
 

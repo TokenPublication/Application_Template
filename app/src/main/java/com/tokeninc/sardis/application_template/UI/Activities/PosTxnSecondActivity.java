@@ -65,7 +65,7 @@ public class PosTxnSecondActivity extends BaseActivity {
         setContentView(R.layout.activity_pos_txn);
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "", false);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "", false, null);
         addFragment(R.id.container, fragment, false);
     }
 

@@ -35,7 +35,7 @@ public class MainActivity extends BaseActivity implements InfoDialogListener {
         setContentView(R.layout.activity_main);
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "", false);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "", false, null);
         addFragment(R.id.container, fragment, false);
     }
 

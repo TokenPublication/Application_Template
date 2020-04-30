@@ -4,18 +4,31 @@ import android.os.Bundle;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.token.uicomponents.infodialog.InfoDialog;
 import com.token.uicomponents.infodialog.InfoDialogListener;
+import com.token.uicomponents.timeoutmanager.TimeOutActivity;
 import com.tokeninc.cardservicebinding.CardServiceBinding;
 import com.tokeninc.cardservicebinding.CardServiceListener;
 
-public abstract class BaseActivity extends AppCompatActivity implements CardServiceListener {
+public abstract class BaseActivity extends TimeOutActivity implements CardServiceListener {
 
     protected CardServiceBinding cardServiceBinding;
+
+    /**
+     * Returns time out value in seconds for activities which extend
+     * @see TimeOutActivity
+     * In case of any user interaction, timeout timer will be reset.
+     *
+     * If any activity will not have time out,
+     * override this method from that activity and @return '0'.
+     */
+    @Override
+    protected int getTimeOutSec() {
+        return 60;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
