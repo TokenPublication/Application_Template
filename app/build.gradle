@@ -4,9 +4,9 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.tokeninc.sardis.application_template"
-        minSdkVersion 25
+        minSdkVersion 28
         targetSdkVersion 28
-        versionCode 2
+        versionCode 3
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
