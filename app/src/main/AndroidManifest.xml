@@ -48,6 +48,18 @@
         </activity>
         <activity android:name=".UI.Activities.EditLineActivity" />
         <activity android:name=".UI.Activities.PosTxnSecondActivity" />
+        <activity android:name=".UI.Activities.TriggerActivity" >
+            <intent-filter>
+                <action android:name="BatchClose_Action" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="Parameter_Action" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
 
         <meta-data android:name="app_name" android:value="BNK_000_TMPLT" />
 

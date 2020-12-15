@@ -2,8 +2,10 @@ package com.tokeninc.sardis.application_template.UI.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import com.tokeninc.sardis.application_template.R;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 public class DummySaleActivity extends BaseActivity implements View.OnClickListener {
 
@@ -157,9 +160,17 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             bundle.putString("merchantSlipData", PrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.MERCHANT_SLIP));
          //  bundle.putByteArray("merchantSlipBitmapData",PrintHelper.getBitmap(getApplicationContext()));
         }
+        bundle.putString("ApprovalCode", getApprovalCode());
         resultIntent.putExtras(bundle);
         setResult(Activity.RESULT_OK,resultIntent);
         finish();
+    }
+
+    private String getApprovalCode() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        int approvalCode = sharedPref.getInt("ApprovalCode", 0);
+        sharedPref.edit().putInt("ApprovalCode", ++approvalCode).apply();
+        return String.format(Locale.ENGLISH, "%06d", approvalCode);
     }
 
     @Override
