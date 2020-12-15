@@ -1,11 +1,19 @@
 package com.tokeninc.sardis.application_template.Helpers;
 
+import android.content.Context;
+
+import com.token.printerlib.PrinterDefinitions.Alignment;
+import com.token.printerlib.PrinterDefinitions;
+import com.token.printerlib.StyledString;
 import com.tokeninc.sardis.application_template.Entity.SampleReceipt;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
-import com.tokeninc.sardis.application_template.UI.Printer.PrinterDefinitions;
-import com.tokeninc.sardis.application_template.UI.Printer.PrinterDefinitions.Alignment;
-import com.tokeninc.sardis.application_template.UI.Printer.StyledString;
+import com.tokeninc.sardis.application_template.R;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -100,4 +108,38 @@ public class PrintHelper {
 
         return styledText.toString();
     }
+
+    public static byte[] getBitmap(Context context) {
+        return getBitmapReceiptArray(context, R.raw.ziraat_fis);
+    }
+
+    public static byte[] getBitmapReceiptArray(Context context, int resourceId) {
+
+        byte[] bitmap;
+        try
+        {
+            InputStream inStream = context.getResources().openRawResource(resourceId);
+            bitmap = new byte[inStream.available()];
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            byte[] buff = new byte[10240];
+            int i = Integer.MAX_VALUE;
+
+            while ((i = inStream.read(buff, 0, buff.length)) > 0) {
+                baos.write(buff, 0, i);
+            }
+
+            bitmap = baos.toByteArray(); // be sure to close InputStream in calling function
+
+            inStream.close();
+        }
+        catch (IOException e)
+        {
+            bitmap = null;
+            e.printStackTrace();
+        }
+
+        return bitmap;
+    }
+
 }

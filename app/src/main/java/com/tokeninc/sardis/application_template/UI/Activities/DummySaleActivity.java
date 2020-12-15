@@ -10,7 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.example.printertest.IPrinterService;
+import com.token.printerlib.IPrinterService;
+import com.token.printerlib.StyledString;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.Entity.SampleReceipt;
@@ -18,7 +19,6 @@ import com.tokeninc.sardis.application_template.Entity.SlipType;
 import com.tokeninc.sardis.application_template.Helpers.PrintHelper;
 import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
-import com.tokeninc.sardis.application_template.UI.Printer.StyledString;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -151,9 +151,11 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
 
         if (slipType == SlipType.CARDHOLDER_SLIP || slipType == SlipType.BOTH_SLIPS) {
             bundle.putString("customerSlipData", PrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.CARDHOLDER_SLIP));
+          //  bundle.putByteArray("customerSlipBitmapData",PrintHelper.getBitmap(getApplicationContext()));
         }
         if (slipType == SlipType.MERCHANT_SLIP || slipType == SlipType.BOTH_SLIPS) {
             bundle.putString("merchantSlipData", PrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.MERCHANT_SLIP));
+         //  bundle.putByteArray("merchantSlipBitmapData",PrintHelper.getBitmap(getApplicationContext()));
         }
         resultIntent.putExtras(bundle);
         setResult(Activity.RESULT_OK,resultIntent);
