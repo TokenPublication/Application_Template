@@ -17,7 +17,7 @@ import com.tokeninc.sardis.application_template.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PosTxnSecondActivity extends BaseActivity {
+public class InfoDialogActivity extends BaseActivity {
 
     class InfoDialogItem implements IListMenuItem {
 
@@ -65,7 +65,7 @@ public class PosTxnSecondActivity extends BaseActivity {
         setContentView(R.layout.activity_pos_txn);
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "", false, null);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "Info Dialog", true, R.drawable.token_logo);
         addFragment(R.id.container, fragment, false);
     }
 
@@ -85,7 +85,10 @@ public class PosTxnSecondActivity extends BaseActivity {
         menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Connecting,"Connecting", listener, null));
         menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Downloading, "Downloading", listener, null));
         menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Uploading, "Uploading", listener, null));
-        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Processing, "Installing", listener, null));
+        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Processing, "Processing", listener, null));
+        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.Progress, "Progress", listener, null));
+        menuItems.add(new InfoDialogItem(InfoDialog.InfoType.None, "None", listener, null));
+
     }
 
     private void showPopup(InfoDialogItem item){

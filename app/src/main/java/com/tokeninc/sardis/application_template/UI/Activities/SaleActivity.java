@@ -100,11 +100,11 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void showInfoDialog() {
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Connecting, "Bağlanıyor...", false);
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Bağlanıyor", false);
         new Handler().postDelayed(() -> {
-            dialog.update(InfoDialog.InfoType.Processing, "İşlem yapılıyor...");
+            dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı \n Onay kodu: 000002");
             new Handler().postDelayed(() -> {
-                dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı!");
+                dialog.update(InfoDialog.InfoType.Progress, "Belge Oluşturuluyor");
                 new Handler().postDelayed(() -> {
                     dialog.dismiss();
                     if (card instanceof ICCCard)

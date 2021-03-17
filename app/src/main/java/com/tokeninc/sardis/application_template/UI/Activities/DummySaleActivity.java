@@ -18,7 +18,7 @@ import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.Entity.SampleReceipt;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
-import com.tokeninc.sardis.application_template.Helpers.PrintHelper;
+import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.SalePrintHelper;
 import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
 
@@ -153,11 +153,11 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         bundle.putInt("SlipType", slipType.value);
 
         if (slipType == SlipType.CARDHOLDER_SLIP || slipType == SlipType.BOTH_SLIPS) {
-            bundle.putString("customerSlipData", PrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.CARDHOLDER_SLIP));
+            bundle.putString("customerSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.CARDHOLDER_SLIP));
           //  bundle.putByteArray("customerSlipBitmapData",PrintHelper.getBitmap(getApplicationContext()));
         }
         if (slipType == SlipType.MERCHANT_SLIP || slipType == SlipType.BOTH_SLIPS) {
-            bundle.putString("merchantSlipData", PrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.MERCHANT_SLIP));
+            bundle.putString("merchantSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.MERCHANT_SLIP));
          //  bundle.putByteArray("merchantSlipBitmapData",PrintHelper.getBitmap(getApplicationContext()));
         }
         bundle.putString("ApprovalCode", getApprovalCode());

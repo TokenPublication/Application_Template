@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:text="Satış"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="35sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,7 +28,7 @@
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         tools:text="100 TL"
-        android:textSize="24sp"
+        android:textSize="40sp"
         android:textColorHint="@color/white"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,12 +41,14 @@
         android:id="@+id/btnSale"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
-        android:text="Satış"
+        android:text="SATIŞ"
         android:onClick="onClick"
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAmount"/>
+        app:layout_constraintTop_toBottomOf="@+id/tvAmount"
+        android:background="@drawable/button_blue"
+        android:textColor="#fff"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerLayout"
@@ -59,54 +61,64 @@
             android:id="@+id/btnSuccess"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="10dp"
-            android:text="SUCCESS"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/button_blue"
             android:onClick="onClick"
+            android:text="SUCCESS"
+            android:textColor="#fff"
             app:layout_constraintBottom_toTopOf="@+id/btnCancel"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/btnError"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="ERROR"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/button_blue"
             android:onClick="onClick"
+            android:text="ERROR"
+            android:textColor="#fff"
             app:layout_constraintBottom_toTopOf="@+id/btnCancel"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="10dp"/>
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <Button
             android:id="@+id/btnCancel"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="CANCELED"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/button_blue"
             android:onClick="onClick"
+            android:text="CANCELED"
+            android:textColor="#fff"
             app:layout_constraintBottom_toTopOf="@+id/btnUnable"
-            app:layout_constraintStart_toStartOf="@id/btnSuccess"/>
+            app:layout_constraintStart_toStartOf="@id/btnSuccess" />
 
         <Button
             android:id="@+id/btnOffline"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="OFFLINE_DECLINE"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/button_blue"
             android:onClick="onClick"
+            android:text="OFFLINE_DECLINE"
+            android:textColor="#fff"
             app:layout_constraintBottom_toTopOf="@+id/btnUnable"
-            app:layout_constraintEnd_toEndOf="@+id/btnError"/>
+            app:layout_constraintEnd_toEndOf="@+id/btnError" />
 
         <Button
             android:id="@+id/btnUnable"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="40dp"
             android:layout_marginBottom="20dp"
             android:text="UNABLE_DECLINE"
             android:onClick="onClick"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/btnSuccess"/>
+            app:layout_constraintStart_toStartOf="@id/btnSuccess"
+            android:background="@drawable/button_blue"
+            android:textColor="#fff"/>
 
         <Button
             android:id="@+id/btnOnlineDecline"
@@ -117,7 +129,9 @@
             android:text="ONLINE_DECLINE"
             android:onClick="onClick"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnError"/>
+            app:layout_constraintEnd_toEndOf="@+id/btnError"
+            android:background="@drawable/button_blue"
+            android:textColor="#fff"/>
 
         <CheckBox
             android:id="@+id/cbCustomer"
@@ -126,7 +140,7 @@
             android:text="Customer Slip"
             android:textColor="@color/white"
             android:checked="false"
-            android:buttonTint="@color/white"
+            android:buttonTint="@color/color_token"
             android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toTopOf="@+id/btnSuccess"
             app:layout_constraintStart_toStartOf="parent"
@@ -139,7 +153,7 @@
             android:text="Merchant Slip"
             android:textColor="@color/white"
             android:checked="false"
-            android:buttonTint="@color/white"
+            android:buttonTint="@color/color_token"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/cbCustomer"
@@ -162,6 +176,5 @@
         app:layout_constraintTop_toTopOf="@+id/containerLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template.Helpers;
+package com.tokeninc.sardis.application_template.Helpers.PrintHelpers;
 
 import android.content.Context;
 
@@ -18,7 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class PrintHelper {
+public class SalePrintHelper {
 
     public static String getFormattedText(SampleReceipt receipt, SlipType slipType)
     {
