@@ -11,5 +11,5 @@
     <color name="black_overlay">#66000000</color>
     <color name="black">#000000</color>
     <color name="transparent_black">#a0000000</color>
-
+    <color name="color_token">#45ABE0</color>
 </resources>
