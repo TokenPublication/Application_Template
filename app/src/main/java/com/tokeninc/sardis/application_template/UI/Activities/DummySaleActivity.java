@@ -6,9 +6,11 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -18,6 +20,8 @@ import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.Entity.SampleReceipt;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
+import com.tokeninc.sardis.application_template.Helpers.DataBase.DatabaseHelper;
+import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.DateUtil;
 import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.SalePrintHelper;
 import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
@@ -25,6 +29,7 @@ import com.tokeninc.sardis.application_template.R;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DummySaleActivity extends BaseActivity implements View.OnClickListener {
 
@@ -124,7 +129,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     }
 
 
-    private void prepareDummyResponse(ResponseCode code) {
+    public void prepareDummyResponse(ResponseCode code) {
         CheckBox cbMerchant = findViewById(R.id.cbMerchant);
         CheckBox cbCustomer = findViewById(R.id.cbCustomer);
 
@@ -140,7 +145,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     }
 
     //TODO Data has to be returned to Payment Gateway after sale operation completed via template below using actual data.
-    private void onSaleResponseRetrieved(Integer price, ResponseCode code, Boolean hasSlip, SlipType slipType, String cardNo, String ownerName) {
+    public void onSaleResponseRetrieved(Integer price, ResponseCode code, Boolean hasSlip, SlipType slipType, String cardNo, String ownerName) {
         Intent resultIntent = new Intent();
         Bundle bundle = new Bundle();
         bundle.putInt("ResponseCode", code.ordinal());
@@ -201,6 +206,5 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         }
         return mService;
     }
-
 
 }

@@ -64,6 +64,9 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        <activity android:name=".UI.Activities.ExamplesActivity" />
+        <activity android:name=".UI.Activities.PosOperations.RefundActivity" />
+        <activity android:name=".UI.Activities.PosOperations.SalesActivity" />
 
         <meta-data android:name="app_name" android:value="BNK_000_TMPLT" />
 

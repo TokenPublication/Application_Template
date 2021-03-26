@@ -2,6 +2,8 @@ package com.tokeninc.sardis.application_template.UI.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -22,6 +24,9 @@ import com.tokeninc.sardis.application_template.Entity.ICCCard;
 import com.tokeninc.sardis.application_template.Entity.ICard;
 import com.tokeninc.sardis.application_template.Entity.MSRCard;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
+import com.tokeninc.sardis.application_template.Helpers.DataBase.DataModel;
+import com.tokeninc.sardis.application_template.Helpers.DataBase.DatabaseHelper;
+import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.DateUtil;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 
@@ -32,6 +37,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class SaleActivity extends BaseActivity implements View.OnClickListener {
 
@@ -40,15 +46,18 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     private List<IListMenuItem> menuItemList;
     private ICard card;
 
+    DatabaseHelper databaseHelper;
+    String card_no, sale_amount;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sale);
         //Prevent screen from turning of when sale is active
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        databaseHelper = new DatabaseHelper(this);
 
         amount = getIntent().getExtras().getInt("Amount");
-
         prepareData();
         ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, "Satış Tipi", false, null);
         addFragment(R.id.container, fragment, false);
@@ -118,7 +127,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
-    private void finishSale(ResponseCode code) {
+    public void finishSale(ResponseCode code) {
         Bundle bundle = new Bundle();
         bundle.putInt("ResponseCode", code.ordinal());
         if (card != null) {
@@ -129,6 +138,9 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         result.putExtras(bundle);
         setResult(Activity.RESULT_OK, result);
 
+        card_no = String.valueOf(card.getCardNumber());
+        sale_amount = String.valueOf(amount);
+        databaseHelper.SaveSaleToDB(card_no, sale_amount);
         finish();
     }
 
