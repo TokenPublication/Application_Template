@@ -9,10 +9,10 @@ import com.token.uicomponents.ListMenuFragment.ListMenuFragment;
 import com.token.uicomponents.infodialog.InfoDialog;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Helpers.DataBase.DatabaseHelper;
-import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.PrintHelper;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Activities.PosOperations.RefundActivity;
-import com.tokeninc.sardis.application_template.UI.Activities.PosOperations.SalesActivity;
+import com.tokeninc.sardis.application_template.UI.Activities.PosOperations.TransactionsActivity;
+import com.tokeninc.sardis.application_template.UI.Activities.PosOperations.VoidActivity;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 
 import java.util.ArrayList;
@@ -22,12 +22,15 @@ public class MainActivity extends BaseActivity {
 
     private List<IListMenuItem> menuItems = new ArrayList<>();
     DatabaseHelper databaseHelper;
+    VoidActivity voidActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         databaseHelper = new DatabaseHelper(this);
+        databaseHelper.createTables();
+        voidActivity = new VoidActivity();
 
         prepareData();
         ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "Pos İşlemleri", false, R.drawable.token_logo);
@@ -37,7 +40,7 @@ public class MainActivity extends BaseActivity {
     private void prepareData() {
 
         menuItems.add(new MenuItem("Satışlar", iListMenuItem -> {
-            Intent myIntent = new Intent(MainActivity.this, SalesActivity.class);
+            Intent myIntent = new Intent(MainActivity.this, TransactionsActivity.class);
             startActivity(myIntent);
         }));
 
@@ -66,6 +69,23 @@ public class MainActivity extends BaseActivity {
             startActivity(myIntent);
         }));
 
+        menuItems.add(new MenuItem("Get Sale Data", iListMenuItem -> {
+            Intent myIntent = new Intent(MainActivity.this, VoidActivity.class);
+            startActivity(myIntent);
+        }));
+
+     /*   menuItems.add(new MenuItem("Get Info", iListMenuItem -> {
+            com.tokeninc.sardis.application_template.Helpers.DeviceInfo deviceInfo = new com.tokeninc.sardis.application_template.Helpers.DeviceInfo(mContext.get());
+            deviceInfo.getFields(results -> {
+                        resultArray = results;
+                        onResponded = true;
+                    }, com.tokeninc.sardis.application_template.Helpers.DeviceInfo.MessageCodes.GET_LYNX_VERSION,
+                    com.tokeninc.sardis.application_template.Helpers.DeviceInfo.MessageCodes.GET_MODEM_VERSION,
+                    com.tokeninc.sardis.application_template.Helpers.DeviceInfo.MessageCodes.GET_FISCAL_ID,
+                    com.tokeninc.sardis.application_template.Helpers.DeviceInfo.MessageCodes.GET_IMEI_NUMBER,
+                    com.tokeninc.sardis.application_template.Helpers.DeviceInfo.MessageCodes.GET_IMSI_NUMBER);
+
+        }));*/
 
 
     }

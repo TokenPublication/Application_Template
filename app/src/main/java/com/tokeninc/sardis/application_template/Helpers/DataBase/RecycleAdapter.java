@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokeninc.sardis.application_template.R;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Myholder> {
@@ -44,9 +45,17 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Myholder
         DataModel dataModel=dataModelArrayList.get(position);
         holder.card_no.setText(dataModel.getCard_no());
         holder.process_time.setText(dataModel.getProcess_time());
-        holder.sale_amount.setText(dataModel.getSale_amount());
+        holder.sale_amount.setText(FormatAmount(dataModel.getSale_amount()));
         holder.approval_code.setText(dataModel.getApproval_code());
         holder.serial_no.setText(dataModel.getSerial_no());
+    }
+
+    public static String FormatAmount(String d){
+        String number = d;
+        double amount = Double.parseDouble(number);
+        DecimalFormat formatter = new DecimalFormat("#,###.00");
+        String formatted = formatter.format(amount / 100);
+        return formatted;
     }
 
     @Override

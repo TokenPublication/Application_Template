@@ -20,7 +20,6 @@ import com.token.uicomponents.CustomInput.InputValidator;
 import com.token.uicomponents.ListMenuFragment.IListMenuItem;
 import com.token.uicomponents.ListMenuFragment.ListMenuFragment;
 import com.token.uicomponents.infodialog.InfoDialog;
-import com.tokeninc.deviceinfo.DeviceInfo;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Helpers.DataBase.DatabaseHelper;
 import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.PrintHelper;
@@ -33,19 +32,16 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+//import com.tokeninc.deviceinfo.DeviceInfo;
+
 public class SettingsActivity extends BaseActivity {
 
-    private CustomInputView inputMerchantId;
-    private CustomInputView inputTerminalId;
-    private TextView btnSave;
-    private InputListFragment hostFragment;
-    private ViewGroup setupLayout;
+    private InputListFragment hostFragment, TidMidFragment;
     private ListMenuFragment menuFragment;
     private String terminalId;
-    private String merchantId;
+    private String merchantId, ip_no, port_no;
     private static Context context;
     DatabaseHelper databaseHelper;
-    private WeakReference<AppCompatActivity> mContext;
     private boolean isBankActivateAction = true, DB_getAllTransactionsCount = true;
 
     public SettingsActivity() {
@@ -61,7 +57,6 @@ public class SettingsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         SettingsActivity.context = getApplicationContext();
-        setupLayout = findViewById(R.id.setupLayout);
         databaseHelper = new DatabaseHelper(this);
 
         isBankActivateAction = getIntent() != null && getIntent().getAction() != null
@@ -76,10 +71,10 @@ public class SettingsActivity extends BaseActivity {
         }
     }
 
-    public void showMenu() {
+    private void showMenu() {
         List<IListMenuItem> menuItems = new ArrayList<>();
         menuItems.add(new MenuItem("Kurulum", iListMenuItem -> {
-            setupLayout.setVisibility(View.VISIBLE);
+            addTidMidFragment();
         }));
         menuItems.add(new MenuItem("Host Ayarları", iListMenuItem -> addIpFragment()));
 
@@ -87,20 +82,6 @@ public class SettingsActivity extends BaseActivity {
                 true, R.drawable.token_logo);
         addFragment(R.id.container, menuFragment, false);
 
-        inputMerchantId = findViewById(R.id.inputMerchantId);
-        inputTerminalId = findViewById(R.id.inputTerminalId);
-
-        inputTerminalId.setText("");
-        inputMerchantId.setText("");
-
-        inputMerchantId.setFormat(new CustomInputFormat("Merchant No", EditTextInputType.Number, 10, "İş Yeri No Geçersiz!",
-                customInputFormat -> !customInputFormat.getText().isEmpty()));
-        inputTerminalId.setFormat(new CustomInputFormat("Terminal ID", EditTextInputType.Text, 8, "Terminal No Geçersiz!",
-                customInputFormat -> !customInputFormat.getText().isEmpty()));
-        btnSave = findViewById(R.id.btnSave);
-        btnSave.setOnClickListener((v) -> {
-            onSaveClicked();
-        });
     }
 
     private void addIpFragment() {
@@ -128,8 +109,10 @@ public class SettingsActivity extends BaseActivity {
                 return customInputFormat.getText().length() >= 2 && Integer.parseInt(customInputFormat.getText()) > 0;
             }
         }));
+        inputList.get(0).setText(databaseHelper.getIP_NO());
+        inputList.get(1).setText(databaseHelper.getPort());
 
-             hostFragment = InputListFragment.newInstance(inputList, "Kaydet", new InputListFragment.ButtonListener() {
+        hostFragment = InputListFragment.newInstance(inputList, "Kaydet", new InputListFragment.ButtonListener() {
             @Override
             public void onButtonAction(List<String> list) {
                 // TODO If Batch Close SUCCESS
@@ -137,31 +120,55 @@ public class SettingsActivity extends BaseActivity {
                 new Handler().postDelayed(() -> {
                     // TODO Set Host Settings
                     dialog.update(InfoDialog.InfoType.Confirmed, "Activation Completed");
+
+                    ip_no = inputList.get(0).getText();
+                    port_no = inputList.get(1).getText();
+
+                    databaseHelper.updateIP_NO(ip_no);
+                    databaseHelper.updatePort(port_no);
+
                     new Handler().postDelayed(() -> {
                         dialog.dismiss();
                     }, 2000);
                 }, 2000);
-                // TODO Else Do Batch Close than set Host
             }
         });
         addFragment(R.id.secondContainer, hostFragment, true);
     }
 
-    private void onSaveClicked() {
-        boolean terminalIdValid = inputTerminalId.isValid();
-        boolean merchantIdValid = inputMerchantId.isValid();
-        if (terminalIdValid && merchantIdValid) {
-            terminalId = inputTerminalId.getText();
-            merchantId = inputMerchantId.getText();
-            inputTerminalId.setText("");
-            inputMerchantId.setText("");
-            startActivation();
+    private void addTidMidFragment() {
+        List<CustomInputFormat> inputList = new ArrayList<>();
+        inputList.add(new CustomInputFormat("Merchant NO", EditTextInputType.Number, 10, "İş Yeri No Geçersiz!", new InputValidator() {
+                @Override
+                public boolean validate(CustomInputFormat input) {
+                    return input.getText().length() == 10;
+                }
+        }));
 
-            databaseHelper.dropDataTidMid();
-            databaseHelper.insertDataTidMid(merchantId,terminalId);
+        inputList.add(new CustomInputFormat("Terminal NO", EditTextInputType.Text, 8, "Terminal No Geçersiz!", new InputValidator() {
+            @Override
+            public boolean validate(CustomInputFormat input) {
+                return input.getText().length() == 8;
+            }
+        }));
 
-            setupLayout.setVisibility(View.GONE);
-        }
+        inputList.get(0).setText(databaseHelper.getMerchantId());
+        inputList.get(1).setText(databaseHelper.getTerminalId());
+
+        TidMidFragment = InputListFragment.newInstance(inputList, "Kaydet", new InputListFragment.ButtonListener() {
+            @Override
+            public void onButtonAction(List<String> list) {
+
+                merchantId = inputList.get(0).getText();
+                terminalId = inputList.get(1).getText();
+
+                databaseHelper.updateMerchantId(merchantId);
+                databaseHelper.updateTerminalId(terminalId);
+
+                startActivation();
+            }
+        });
+        addFragment(R.id.thirdContainer, TidMidFragment, true);
     }
 
     private void startActivation() {
@@ -203,7 +210,7 @@ public class SettingsActivity extends BaseActivity {
 
     public void insertActivation(Context context, String terminalId, String merchantId) {
 
-        DeviceInfo deviceInfo = new DeviceInfo(context);
+     /*   DeviceInfo deviceInfo = new DeviceInfo(context);
         deviceInfo.setBankParams(new DeviceInfo.DeviceInfoBankParamsSetterHandler() {
             @Override
             public void onReturn(boolean success) {
@@ -211,16 +218,7 @@ public class SettingsActivity extends BaseActivity {
                 //If it's successfully written, you will get result as true
             }
         },terminalId, merchantId);
-        Log.i("Terminal ID: " +terminalId, "Merchant ID: " + merchantId);
+        Log.i("Terminal ID: " +terminalId, "Merchant ID: " + merchantId);*/
     }
 
-    @Override
-    public void onBackPressed() {
-        if (setupLayout.getVisibility() == View.VISIBLE) {
-            setupLayout.setVisibility(View.GONE);
-        }
-        else {
-            super.onBackPressed();
-        }
-    }
 }

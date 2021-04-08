@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template.UI.Activities;
+package com.tokeninc.sardis.application_template.UI.Activities.PosOperations;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,17 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.Toast;
-
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
-import com.token.uicomponents.ListMenuFragment.IListMenuItem;
-import com.token.uicomponents.ListMenuFragment.ListMenuFragment;
-import com.token.uicomponents.ListMenuFragment.MenuItemClickListener;
 import com.token.uicomponents.infodialog.InfoDialog;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.CardReadType;
@@ -24,78 +16,67 @@ import com.tokeninc.sardis.application_template.Entity.ICCCard;
 import com.tokeninc.sardis.application_template.Entity.ICard;
 import com.tokeninc.sardis.application_template.Entity.MSRCard;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
-import com.tokeninc.sardis.application_template.Helpers.DataBase.DataModel;
 import com.tokeninc.sardis.application_template.Helpers.DataBase.DatabaseHelper;
-import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.DateUtil;
 import com.tokeninc.sardis.application_template.R;
-import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
+public class VoidActivity extends BaseActivity {
 
-public class SaleActivity extends BaseActivity implements View.OnClickListener {
-
-    private int amount = 0;
-
-    private List<IListMenuItem> menuItemList;
     private ICard card;
-
+    private int amount = 1000;
     DatabaseHelper databaseHelper;
-    String card_no, sale_amount;
+    String  batch_no;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sale);
-        //Prevent screen from turning of when sale is active
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        setContentView(R.layout.activity_void);
+
         databaseHelper = new DatabaseHelper(this);
 
-        amount = getIntent().getExtras().getInt("Amount");
-        prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, "Satış Tipi", false, null);
-        addFragment(R.id.container, fragment, false);
+        getSaleData("1");
     }
 
-    private void prepareData() {
-        menuItemList = new ArrayList<>();
-        menuItemList.add(new MenuItem("Satış", new MenuItemClickListener() {
-            @Override
-            public void onClick(IListMenuItem menuItem) {
-                readCard();
-            }
-        }));
-        menuItemList.add(new MenuItem("Taksitli Satış", (menuItem) -> readCard()));
-        menuItemList.add(new MenuItem("Puan Satış", (menuItem) -> readCard()));
-        menuItemList.add(new MenuItem("Kampanya Satış", (menuItem) -> readCard()));
-    }
+    public void getSaleData(String myCode){
+        databaseHelper = new DatabaseHelper(this);
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.btnSetConfig:
-                setConfig();
-                break;
+        String currentBatchNo = String.valueOf(databaseHelper.getBatchNo());
+
+        Cursor cursor = db.rawQuery("SELECT * FROM sale_table WHERE sale_id = " + myCode, null);
+
+        if (cursor.moveToNext()) {
+            batch_no = cursor.getString(cursor.getColumnIndexOrThrow("batch_no"));
+            cursor.close();
         }
+
+        if (!currentBatchNo.equals(batch_no)){
+            /**
+             * İADE
+             */
+
+            showRefund();
+
+        }
+        else{
+            /**
+             * İPTAL
+             */
+            showRefund();
+        }
+        db.close();
+
     }
 
-    /**
-     * Read card data and return result with data back to payment gateway.
-     * @see DummySaleActivity onSaleResponseRetrieved(Integer, ResponseCode, Boolean, SlipType)
-     *
-     */
     private void readCard() {
         try {
             JSONObject obj = new JSONObject();
             obj.put("forceOnline", 1);
             obj.put("zeroAmount", 0);
             obj.put("fallback", 1);
+
+            //obj.put("cardReadTypes", 5);
 
             cardServiceBinding.getCard(amount, 40, obj.toString());
         }
@@ -104,6 +85,16 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+
+    public void showRefund(){
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "İşlem iptal ediliyor", false);
+            new Handler().postDelayed(() -> {
+                    dialog.dismiss();
+                    readCard();
+            }, 3000);
+    }
+
+
     private void takeOutICC() {
         cardServiceBinding.takeOutICC(40);
     }
@@ -111,7 +102,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     private void showInfoDialog() {
         InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Bağlanıyor", false);
         new Handler().postDelayed(() -> {
-            dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı \n Onay kodu: 000002");
+            dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı \n Onay kodu: 002301");
             new Handler().postDelayed(() -> {
                 dialog.update(InfoDialog.InfoType.Progress, "Belge Oluşturuluyor");
                 new Handler().postDelayed(() -> {
@@ -120,13 +111,14 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
                         takeOutICC();
                     else {
                         finishSale(ResponseCode.SUCCESS);
+
                     }
-                }, 2000);
-            }, 2000);
-        }, 2000);
+                }, 3000);
+            }, 3000);
+        }, 3000);
     }
 
-    public void finishSale(ResponseCode code) {
+    private void finishSale(ResponseCode code) {
         Bundle bundle = new Bundle();
         bundle.putInt("ResponseCode", code.ordinal());
         if (card != null) {
@@ -137,31 +129,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         result.putExtras(bundle);
         setResult(Activity.RESULT_OK, result);
 
-        card_no = String.valueOf(card.getCardNumber());
-        sale_amount = String.valueOf(amount);
-        databaseHelper.SaveSaleToDB(card_no, sale_amount);
         finish();
-    }
-
-    private void setConfig() {
-        try {
-            InputStream xmlStream = getApplicationContext().getAssets().open("custom_emv_config.xml");
-            //String conf = xmlStream.toString();
-            //Log.d(TAG, "conf string: " + conf);
-            BufferedReader r = new BufferedReader(new InputStreamReader(xmlStream));
-            StringBuilder total = new StringBuilder();
-            for (String line; (line = r.readLine()) != null; ) {
-                Log.d("emv_config", "conf line: " + line);
-                total.append(line).append('\n');
-            }
-            //Log.d(TAG, "conf string: " + total.toString());
-            int setConfigResult = cardServiceBinding.setEMVConfiguration(total.toString());
-            Toast.makeText(getApplicationContext(), "setEMVConfiguration res=" + setConfigResult, Toast.LENGTH_SHORT).show();
-            Log.d("emv_config", "setEMVConfiguration: " + setConfigResult);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -178,8 +146,6 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             int type = json.getInt("mCardReadType");
 
             if (type == CardReadType.CLCard.value) {
-                ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
-                this.card = card;
                 showInfoDialog();
             }
 
@@ -210,4 +176,5 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     public void onICCTakeOut() {
         finishSale(ResponseCode.SUCCESS);
     }
+
 }

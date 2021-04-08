@@ -64,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat_regular"
-        android:text="Approval Code: "
+        android:text="Transaction NO: "
         app:layout_constraintStart_toStartOf="@id/titleCardNo"
         app:layout_constraintTop_toBottomOf="@+id/titleDate"
         android:layout_marginTop="10dp"/>
@@ -111,7 +111,7 @@
         app:layout_constraintTop_toTopOf="@+id/tvSN"
         android:textColor="@color/white"
         android:fontFamily="@font/montserrat_regular"
-        android:text="SN:"
+        android:text="ID:"
         android:textSize="12sp"
         android:layout_marginEnd="5dp"/>
 

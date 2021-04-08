@@ -67,10 +67,8 @@ public class PrintHelper extends BasePrintHelper {
             addTextToNewLine(styledText, "Grup No: ", PrinterDefinitions.Alignment.Left);
             addText(styledText, batch_no, PrinterDefinitions.Alignment.Right);
         }
-
-        if (tx_no.equals("")){
-            addTextToNewLine(styledText, "İşlem Yok", PrinterDefinitions.Alignment.Left);
-            addText(styledText, tx_no, PrinterDefinitions.Alignment.Right);
+        if (tx_no.equals("") || tx_no.equals("null") || tx_no.equals("0")){
+            addTextToNewLine(styledText, "İşlem Yok", PrinterDefinitions.Alignment.Center);
         }
         else{
             addTextToNewLine(styledText, "İşlem Sayısı: ", PrinterDefinitions.Alignment.Left);

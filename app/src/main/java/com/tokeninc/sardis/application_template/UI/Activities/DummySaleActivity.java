@@ -118,7 +118,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     private SampleReceipt getSampleReceipt(String cardNo, String ownerName) {
         SampleReceipt receipt = new SampleReceipt();
         receipt.setMerchantName("TOKEN FINTECH");
-        receipt.setMerchantID("26854222228");
+        receipt.setMerchantID("c");
         receipt.setPosID("000002AC");
         receipt.setCardNo(cardNo);
         receipt.setFullName(ownerName);

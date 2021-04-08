@@ -16,7 +16,7 @@ import com.tokeninc.sardis.application_template.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SalesActivity extends BaseActivity implements View.OnClickListener {
+public class TransactionsActivity extends BaseActivity implements View.OnClickListener {
     DatabaseHelper database;
     List<DataModel> dataModel;
 
@@ -25,7 +25,7 @@ public class SalesActivity extends BaseActivity implements View.OnClickListener 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_void);
+        setContentView(R.layout.activity_transactions);
 
         rvTransactions = findViewById(R.id.rvTransactions);
         dataModel =new ArrayList<DataModel>();
@@ -33,7 +33,7 @@ public class SalesActivity extends BaseActivity implements View.OnClickListener 
     }
 
     public void readDataSQLite(){
-        database = new DatabaseHelper(SalesActivity.this);
+        database = new DatabaseHelper(TransactionsActivity.this);
         dataModel =  database.getData();
         RecycleAdapter adapter = new RecycleAdapter(dataModel);
         rvTransactions.setAdapter(adapter);
