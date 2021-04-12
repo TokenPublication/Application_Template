@@ -61,25 +61,25 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); //Prevent screen from turning of when sale is active
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "Pos İşlemleri", false, R.drawable.token_logo);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "Pos Operations", false, R.drawable.token_logo);
         addFragment(R.id.container, fragment, false);
     }
 
     private void prepareData() {
 
-        menuItems.add(new MenuItem("Eşlenikli İade", iListMenuItem -> {
+        menuItems.add(new MenuItem("Matched Return", iListMenuItem -> {
             showMatchedReturnFragment();
         }));
 
-        menuItems.add(new MenuItem("Peşin İade", iListMenuItem -> {
+        menuItems.add(new MenuItem("Cash Return", iListMenuItem -> {
             showReturnFragment();
         }));
 
-        menuItems.add(new MenuItem("Taksitli İade", iListMenuItem -> {
+        menuItems.add(new MenuItem("Installment Return", iListMenuItem -> {
             showInstallments();
         }));
 
-        menuItems.add(new MenuItem("Puan İade", iListMenuItem -> {
+        menuItems.add(new MenuItem("Loyalty Return", iListMenuItem -> {
             showReturnFragment();
         }));
 
