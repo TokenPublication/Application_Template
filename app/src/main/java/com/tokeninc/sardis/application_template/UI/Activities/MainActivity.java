@@ -69,7 +69,7 @@ public class MainActivity extends BaseActivity {
             startActivity(myIntent);
         }));
 
-        menuItems.add(new MenuItem("Get Sale Data", iListMenuItem -> {
+        menuItems.add(new MenuItem("Get Card Data", iListMenuItem -> {
             Intent myIntent = new Intent(MainActivity.this, VoidActivity.class);
             startActivity(myIntent);
         }));

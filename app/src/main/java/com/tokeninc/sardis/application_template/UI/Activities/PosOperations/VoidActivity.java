@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Handler;
+
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
@@ -16,57 +16,51 @@ import com.tokeninc.sardis.application_template.Entity.ICCCard;
 import com.tokeninc.sardis.application_template.Entity.ICard;
 import com.tokeninc.sardis.application_template.Entity.MSRCard;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
-import com.tokeninc.sardis.application_template.Helpers.DataBase.DatabaseHelper;
+import com.tokeninc.sardis.application_template.Helpers.DataBase.BinDbHelper;
 import com.tokeninc.sardis.application_template.R;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class VoidActivity extends BaseActivity {
 
     private ICard card;
-    private int amount = 1000;
-    DatabaseHelper databaseHelper;
-    String  batch_no;
+    BinDbHelper binDbHelper;
+
+    String card_no;
+    String CardNo, card_type_info, card_range_start, card_range_end, list_ID, pan_length, payment_system, bank_id;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_void);
 
-        databaseHelper = new DatabaseHelper(this);
-
-        getSaleData("1");
+        binDbHelper = new BinDbHelper(this);
+        try {
+            binDbHelper.copyDataBase();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        readCard();
     }
 
-    public void getSaleData(String myCode){
-        databaseHelper = new DatabaseHelper(this);
-        SQLiteDatabase db = databaseHelper.getReadableDatabase();
-
-        String currentBatchNo = String.valueOf(databaseHelper.getBatchNo());
-
-        Cursor cursor = db.rawQuery("SELECT * FROM sale_table WHERE sale_id = " + myCode, null);
+    public void matchCard(){
+        SQLiteDatabase db = binDbHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM bkm_binlist WHERE " +CardNo +" BETWEEN cardrangestart AND cardrangeend" , null);
 
         if (cursor.moveToNext()) {
-            batch_no = cursor.getString(cursor.getColumnIndexOrThrow("batch_no"));
+            card_type_info = cursor.getString(cursor.getColumnIndexOrThrow("cardtype_açıklama"));
+            card_range_start = cursor.getString(cursor.getColumnIndexOrThrow("cardrangestart"));
+            card_range_end = cursor.getString(cursor.getColumnIndexOrThrow("cardrangeend"));
+            list_ID = cursor.getString(cursor.getColumnIndexOrThrow("ID"));
+            pan_length = cursor.getString(cursor.getColumnIndexOrThrow("panlength"));
+            payment_system = cursor.getString(cursor.getColumnIndexOrThrow("paymentsystem"));
+            bank_id = cursor.getString(cursor.getColumnIndexOrThrow("bankid"));
             cursor.close();
         }
-
-        if (!currentBatchNo.equals(batch_no)){
-            /**
-             * İADE
-             */
-
-            showRefund();
-
-        }
-        else{
-            /**
-             * İPTAL
-             */
-            showRefund();
-        }
         db.close();
-
     }
 
     private void readCard() {
@@ -75,61 +69,47 @@ public class VoidActivity extends BaseActivity {
             obj.put("forceOnline", 1);
             obj.put("zeroAmount", 0);
             obj.put("fallback", 1);
-
-            //obj.put("cardReadTypes", 5);
-
-            cardServiceBinding.getCard(amount, 40, obj.toString());
+            obj.put("showAmount", 0);
+           // obj.put("cardReadTypes", 4);
+            cardServiceBinding.getCard(0, 40, obj.toString());
         }
         catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
-    public void showRefund(){
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "İşlem iptal ediliyor", false);
-            new Handler().postDelayed(() -> {
-                    dialog.dismiss();
-                    readCard();
-            }, 3000);
-    }
-
-
-    private void takeOutICC() {
-        cardServiceBinding.takeOutICC(40);
-    }
-
     private void showInfoDialog() {
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Bağlanıyor", false);
-        new Handler().postDelayed(() -> {
-            dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı \n Onay kodu: 002301");
-            new Handler().postDelayed(() -> {
-                dialog.update(InfoDialog.InfoType.Progress, "Belge Oluşturuluyor");
-                new Handler().postDelayed(() -> {
-                    dialog.dismiss();
-                    if (card instanceof ICCCard)
-                        takeOutICC();
-                    else {
-                        finishSale(ResponseCode.SUCCESS);
 
-                    }
-                }, 3000);
-            }, 3000);
-        }, 3000);
+        finishRead(ResponseCode.SUCCESS);
+
+        matchCard();
+
+        showInfoDialog(InfoDialog.InfoType.Confirmed,
+                "Card No: " +card_no
+                        +"\nRange Start: " +card_range_start
+                        +"\nRange End:   " +card_range_end
+                        +"\nCard Type: " +card_type_info
+                        +"\nPan Length: " +pan_length
+                        +"\nPayment System: "+payment_system
+                        +"\nBank ID: " +bank_id
+                        +"\nID: " +list_ID, true);
     }
 
-    private void finishSale(ResponseCode code) {
+    private void finishRead(ResponseCode code) {
         Bundle bundle = new Bundle();
         bundle.putInt("ResponseCode", code.ordinal());
         if (card != null) {
             bundle.putString("CardOwner", card.getOwnerName());
             bundle.putString("CardNumber", card.getCardNumber());
+            card_no = String.valueOf(card.getCardNumber());
+
+            String CardNoFirstTen = StringUtils.left(card_no, 10);
+            String ZeroS = StringUtils.repeat('0', 3);
+            CardNo = CardNoFirstTen + ZeroS;
         }
         Intent result = new Intent();
         result.putExtras(bundle);
         setResult(Activity.RESULT_OK, result);
-
-        finish();
     }
 
     @Override
@@ -146,6 +126,8 @@ public class VoidActivity extends BaseActivity {
             int type = json.getInt("mCardReadType");
 
             if (type == CardReadType.CLCard.value) {
+                ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
+                this.card = card;
                 showInfoDialog();
             }
 
@@ -156,11 +138,8 @@ public class VoidActivity extends BaseActivity {
             }if (type == CardReadType.ICC2MSR.value || type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
                 MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
                 this.card = card;
-                cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);
-                //TODO Do transaction after pin verification
+                cardServiceBinding.getOnlinePIN(0, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);
             }
-            //TODO
-            //..check and process other read types
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -174,7 +153,7 @@ public class VoidActivity extends BaseActivity {
 
     @Override
     public void onICCTakeOut() {
-        finishSale(ResponseCode.SUCCESS);
+        finishRead(ResponseCode.SUCCESS);
     }
 
 }
