@@ -61,14 +61,14 @@ public class VoidActivity extends BaseActivity {
             /**
              * İADE
              */
-            showVoid();
+            showRefund();
 
         }
         else{
             /**
              * İPTAL
              */
-            showRefund();
+            showVoid();
         }
         db.close();
 
