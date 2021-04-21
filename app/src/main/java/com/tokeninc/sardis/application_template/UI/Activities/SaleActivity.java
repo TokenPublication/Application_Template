@@ -156,6 +156,8 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             bundle.putString("TID", databaseHelper.getTerminalId()); //#7 Terminal ID
             bundle.putInt("TxnNo", databaseHelper.getTxNo());
 
+            bundle.putString("RefundInfo", String.valueOf(databaseHelper.getSaleID()));
+
             // if Response Code is success && Transaction Code is not Loyalty Sale
             bundle.putInt("RefNo", databaseHelper.getSaleID());
         }

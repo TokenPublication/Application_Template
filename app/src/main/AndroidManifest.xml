@@ -67,7 +67,17 @@
         <activity android:name=".UI.Activities.ExamplesActivity" />
         <activity android:name=".UI.Activities.PosOperations.RefundActivity" />
         <activity android:name=".UI.Activities.PosOperations.TransactionsActivity" />
-        <activity android:name=".UI.Activities.PosOperations.VoidActivity" />
+
+        <activity android:name=".UI.Activities.PosOperations.VoidActivity" >
+
+        <intent-filter>
+            <action android:name="Refund_Action" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <data android:mimeType="text/plain" />
+        </intent-filter>
+
+    </activity>
+
 
         <meta-data android:name="app_name" android:value="BNK_000_TMPLT" />
 

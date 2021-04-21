@@ -22,6 +22,7 @@ import com.tokeninc.sardis.application_template.Helpers.DataBase.DatabaseHelper;
 import com.tokeninc.sardis.application_template.R;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class VoidActivity extends BaseActivity {
     private String amount = "";
     DatabaseHelper databaseHelper;
     String  batch_no;
+    String refNo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,8 +41,41 @@ public class VoidActivity extends BaseActivity {
         setContentView(R.layout.activity_void);
 
         databaseHelper = new DatabaseHelper(this);
+        checkExtras();
 
-        getSaleData("8");
+        //getSaleData("8");
+    }
+
+
+    private void checkExtras() {
+        if (getIntent().getExtras() == null || getIntent().getExtras().getString("RefundInfo") == null) {
+          //  finishWithResult();
+        }
+        else {
+            String refundInfo = getIntent().getStringExtra("RefundInfo");
+            try {
+                JSONObject json = new JSONObject(refundInfo);
+
+                if (json.has("RefNo")) {
+                    refNo = json.getString("RefNo");
+                    getSaleData(refNo);
+                }
+                //this.amount = json.getInt("Amount");
+
+
+
+               /* if (batchNo == BatchDB.getInstance(this).getBatchNo()) {
+                 //   tranType = VOID;
+                }*/
+                else {
+                  //  tranType = REFUND;
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+               // finishWithResult();
+            }
+        }
     }
 
     public void getSaleData(String myCode){
