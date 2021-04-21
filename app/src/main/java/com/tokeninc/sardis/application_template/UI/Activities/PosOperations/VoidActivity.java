@@ -40,7 +40,7 @@ public class VoidActivity extends BaseActivity {
 
         databaseHelper = new DatabaseHelper(this);
 
-        getSaleData("2");
+        getSaleData("8");
     }
 
     public void getSaleData(String myCode){

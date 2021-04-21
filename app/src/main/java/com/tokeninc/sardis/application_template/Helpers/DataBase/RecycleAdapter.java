@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
 
 import java.text.DecimalFormat;
@@ -45,7 +46,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Myholder
         DataModel dataModel=dataModelArrayList.get(position);
         holder.card_no.setText(dataModel.getCard_no());
         holder.process_time.setText(dataModel.getProcess_time());
-        holder.sale_amount.setText(FormatAmount(dataModel.getSale_amount()));
+        holder.sale_amount.setText(StringHelper.getAmount(Integer.parseInt(dataModel.getSale_amount())));
         holder.approval_code.setText(dataModel.getApproval_code());
         holder.serial_no.setText(dataModel.getSerial_no());
     }
