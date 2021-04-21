@@ -50,6 +50,9 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     DatabaseHelper databaseHelper;
     String card_no, sale_amount;
 
+    public static String shareCardNo = null;
+    public static String shareCardOwner = null;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,39 +130,18 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         }, 2000);
     }
 
-    public String MaskTheCardNo(String cardNoSTR){
-        // CREATE A MASKED CARD NO
-        // First 6 and Last 4 digit is visible, others are masked with '*' Card No can be 16,17,18 Digits...
-        // 123456******0987
-        String CardNoFirstSix = StringUtils.left(cardNoSTR, 6);
-        String CardNoLastFour =  cardNoSTR.substring(cardNoSTR.length() - 4);
-        int LenCardNo = cardNoSTR.length();
-        int astrixNo = LenCardNo - 10;
-        String AstrixS = StringUtils.repeat('*', astrixNo);
-        String CardNoMasked = CardNoFirstSix + AstrixS + CardNoLastFour;
-
-        return CardNoMasked;
-    }
-
     public void finishSale(ResponseCode code) {
         Bundle bundle = new Bundle();
         bundle.putInt("ResponseCode", code.ordinal()); // #1 Response Code
         if (card != null) {
+            SaleActivity.shareCardNo = card.getCardNumber();
+            SaleActivity.shareCardOwner = card.getCardNumber();
+
             bundle.putString("CardOwner", card.getOwnerName()); // Optional
             bundle.putString("CardNumber", card.getCardNumber()); // Optional, Card No can be masked
             bundle.putInt("PaymentStatus",0); // #2 Payment Status
             bundle.putInt("Amount", amount); // #3 Amount
             bundle.putBoolean("IsSlip", true); // #4 Slip
-            bundle.putInt("BatchNo", databaseHelper.getBatchNo());
-            bundle.putString("CardNo", MaskTheCardNo(card.getCardNumber())); //#5 Card No "MASKED"
-            bundle.putString("MID", databaseHelper.getMerchantId()); //#6 Merchant ID
-            bundle.putString("TID", databaseHelper.getTerminalId()); //#7 Terminal ID
-            bundle.putInt("TxnNo", databaseHelper.getTxNo());
-
-            bundle.putString("RefundInfo", String.valueOf(databaseHelper.getSaleID()));
-
-            // if Response Code is success && Transaction Code is not Loyalty Sale
-            bundle.putInt("RefNo", databaseHelper.getSaleID());
         }
         Intent result = new Intent();
         result.putExtras(bundle);

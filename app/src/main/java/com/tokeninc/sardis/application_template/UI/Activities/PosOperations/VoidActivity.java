@@ -20,6 +20,7 @@ import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.Helpers.DataBase.BinDbHelper;
 import com.tokeninc.sardis.application_template.Helpers.DataBase.DatabaseHelper;
 import com.tokeninc.sardis.application_template.R;
+import com.tokeninc.sardis.application_template.UI.Activities.MainActivity;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
@@ -33,7 +34,7 @@ public class VoidActivity extends BaseActivity {
     private String amount = "";
     DatabaseHelper databaseHelper;
     String  batch_no;
-    String refNo;
+    private int resultCode = Activity.RESULT_OK;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,43 +43,28 @@ public class VoidActivity extends BaseActivity {
 
         databaseHelper = new DatabaseHelper(this);
         checkExtras();
-
-        //getSaleData("8");
     }
-
 
     private void checkExtras() {
         if (getIntent().getExtras() == null || getIntent().getExtras().getString("RefundInfo") == null) {
-          //  finishWithResult();
+            finish();
+            Intent myIntent = new Intent(VoidActivity.this, MainActivity.class);
+            startActivity(myIntent);
         }
         else {
-            String refundInfo = getIntent().getStringExtra("RefundInfo");
             try {
-                JSONObject json = new JSONObject(refundInfo);
+                getSaleData(getIntent().getStringExtra("RefundInfo"), getIntent().getIntExtra("Amount", 0));
 
-                if (json.has("RefNo")) {
-                    refNo = json.getString("RefNo");
-                    getSaleData(refNo);
-                }
-                //this.amount = json.getInt("Amount");
-
-
-
-               /* if (batchNo == BatchDB.getInstance(this).getBatchNo()) {
-                 //   tranType = VOID;
-                }*/
-                else {
-                  //  tranType = REFUND;
-                }
-
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-               // finishWithResult();
+                finish();
+                Intent myIntent = new Intent(VoidActivity.this, MainActivity.class);
+                startActivity(myIntent);
             }
         }
     }
 
-    public void getSaleData(String myCode){
+    public void getSaleData(String myCode, Integer Amount){
         databaseHelper = new DatabaseHelper(this);
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
@@ -166,7 +152,7 @@ public class VoidActivity extends BaseActivity {
                         takeOutICC();
                     else {
                         finishSale(ResponseCode.SUCCESS);
-
+                        finishWithResult();
                     }
                 }, 3000);
             }, 3000);
@@ -184,7 +170,7 @@ public class VoidActivity extends BaseActivity {
         result.putExtras(bundle);
         setResult(Activity.RESULT_OK, result);
 
-        finish();
+        finishWithResult();
     }
 
     @Override
@@ -231,5 +217,8 @@ public class VoidActivity extends BaseActivity {
     public void onICCTakeOut() {
         finishSale(ResponseCode.SUCCESS);
     }
-
+    private void finishWithResult() {
+        setResult(resultCode);
+        finish();
+    }
 }
