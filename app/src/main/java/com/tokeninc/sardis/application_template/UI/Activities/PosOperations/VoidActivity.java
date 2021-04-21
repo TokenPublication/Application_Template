@@ -29,7 +29,7 @@ import java.io.IOException;
 public class VoidActivity extends BaseActivity {
 
     private ICard card;
-    private String amount;
+    private String amount = "";
     DatabaseHelper databaseHelper;
     String  batch_no;
 
@@ -40,7 +40,7 @@ public class VoidActivity extends BaseActivity {
 
         databaseHelper = new DatabaseHelper(this);
 
-        getSaleData("1");
+        getSaleData("2");
     }
 
     public void getSaleData(String myCode){
@@ -61,7 +61,6 @@ public class VoidActivity extends BaseActivity {
             /**
              * İADE
              */
-
             showVoid();
 
         }
@@ -84,7 +83,15 @@ public class VoidActivity extends BaseActivity {
 
             //obj.put("cardReadTypes", 5);
 
-            cardServiceBinding.getCard(Integer.parseInt(amount), 40, obj.toString());
+            if(amount.equals("")){
+                obj.put("showAmount", 0);
+                cardServiceBinding.getCard(0, 40, obj.toString());
+            }
+            else{
+                obj.put("showAmount", 1);
+                cardServiceBinding.getCard(Integer.parseInt(amount), 40, obj.toString());
+            }
+
         }
         catch (Exception e) {
             e.printStackTrace();
