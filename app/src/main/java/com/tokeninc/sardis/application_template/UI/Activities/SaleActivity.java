@@ -2,8 +2,6 @@ package com.tokeninc.sardis.application_template.UI.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -30,7 +28,6 @@ import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.DateUtil;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -136,12 +133,6 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         if (card != null) {
             SaleActivity.shareCardNo = card.getCardNumber();
             SaleActivity.shareCardOwner = card.getCardNumber();
-
-            bundle.putString("CardOwner", card.getOwnerName()); // Optional
-            bundle.putString("CardNumber", card.getCardNumber()); // Optional, Card No can be masked
-            bundle.putInt("PaymentStatus",0); // #2 Payment Status
-            bundle.putInt("Amount", amount); // #3 Amount
-            bundle.putBoolean("IsSlip", true); // #4 Slip
         }
         Intent result = new Intent();
         result.putExtras(bundle);

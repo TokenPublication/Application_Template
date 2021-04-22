@@ -1,6 +1,7 @@
 package com.tokeninc.sardis.application_template.UI.Activities;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -25,6 +26,9 @@ import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.DateUtil;
 import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.SalePrintHelper;
 import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -167,7 +171,8 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             bundle.putInt("TxnNo", databaseHelper.getTxNo());
             bundle.putInt("SlipType", slipType.value);
 
-            bundle.putString("RefundInfo", String.valueOf(databaseHelper.getSaleID()));
+            bundle.putString("RefundInfo", getRefundInfo(ResponseCode.SUCCESS));
+            bundle.putString("RefNo", String.valueOf(databaseHelper.getSaleID()));
 
         if (slipType == SlipType.CARDHOLDER_SLIP || slipType == SlipType.BOTH_SLIPS) {
             bundle.putString("customerSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.CARDHOLDER_SLIP));
@@ -181,6 +186,22 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         resultIntent.putExtras(bundle);
         setResult(Activity.RESULT_OK,resultIntent);
         finish();
+    }
+
+    private String getRefundInfo(ResponseCode response) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("BatchNo", databaseHelper.getBatchNo());
+            json.put("TxnNo", databaseHelper.getTxNo());
+            json.put("Amount", amount);
+            json.put("RefNo", String.valueOf(databaseHelper.getSaleID()));
+            json.put("MID", databaseHelper.getMerchantId());
+            json.put("TID", databaseHelper.getTerminalId());
+            json.put("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
     }
 
     private String getApprovalCode() {

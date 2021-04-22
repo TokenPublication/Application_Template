@@ -35,6 +35,8 @@ public class VoidActivity extends BaseActivity {
     DatabaseHelper databaseHelper;
     String  batch_no;
     private int resultCode = Activity.RESULT_OK;
+    public int Amount = 0;
+    public String refNo = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,19 +54,27 @@ public class VoidActivity extends BaseActivity {
             startActivity(myIntent);
         }
         else {
+            String refundInfo = getIntent().getStringExtra("RefundInfo");
             try {
-                getSaleData(getIntent().getStringExtra("RefundInfo"), getIntent().getIntExtra("Amount", 0));
+                JSONObject json = new JSONObject(refundInfo);
 
-            } catch (Exception e) {
+                if (json.has("RefNo")) {
+                    refNo = json.getString("RefNo");
+                }
+                this.Amount = json.getInt("Amount");
+
+                if(!refNo.equals("") && Amount != 0) {
+                    getSaleData(refNo);
+                }
+
+            } catch (JSONException e) {
                 e.printStackTrace();
-                finish();
-                Intent myIntent = new Intent(VoidActivity.this, MainActivity.class);
-                startActivity(myIntent);
+                finishWithResult();
+            }
             }
         }
-    }
 
-    public void getSaleData(String myCode, Integer Amount){
+    public void getSaleData(String myCode){
         databaseHelper = new DatabaseHelper(this);
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
@@ -90,6 +100,7 @@ public class VoidActivity extends BaseActivity {
              * İPTAL
              */
             showVoid();
+            Amount = Integer.parseInt(amount);
         }
         db.close();
 
@@ -104,15 +115,8 @@ public class VoidActivity extends BaseActivity {
 
             //obj.put("cardReadTypes", 5);
 
-            if(amount.equals("")){
-                obj.put("showAmount", 0);
-                cardServiceBinding.getCard(0, 40, obj.toString());
-            }
-            else{
-                obj.put("showAmount", 1);
-                cardServiceBinding.getCard(Integer.parseInt(amount), 40, obj.toString());
-            }
-
+            obj.put("showAmount", 1);
+            cardServiceBinding.getCard(Amount, 40, obj.toString());
         }
         catch (Exception e) {
             e.printStackTrace();
