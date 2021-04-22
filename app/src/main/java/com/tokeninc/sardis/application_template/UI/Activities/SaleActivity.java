@@ -184,7 +184,6 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
                 this.card = card;
                 showInfoDialog();
             }
-
             if (type == CardReadType.ICC.value) {
                 ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
                 this.card = card;

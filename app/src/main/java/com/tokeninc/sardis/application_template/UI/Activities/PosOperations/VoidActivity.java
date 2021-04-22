@@ -17,16 +17,12 @@ import com.tokeninc.sardis.application_template.Entity.ICCCard;
 import com.tokeninc.sardis.application_template.Entity.ICard;
 import com.tokeninc.sardis.application_template.Entity.MSRCard;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
-import com.tokeninc.sardis.application_template.Helpers.DataBase.BinDbHelper;
 import com.tokeninc.sardis.application_template.Helpers.DataBase.DatabaseHelper;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Activities.MainActivity;
 
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
 
 public class VoidActivity extends BaseActivity {
 
@@ -89,16 +85,11 @@ public class VoidActivity extends BaseActivity {
         }
 
         if (!currentBatchNo.equals(batch_no)){
-            /**
-             * İADE
-             */
+            /* REFUND */
             showRefund();
-
         }
         else{
-            /**
-             * İPTAL
-             */
+            /* VOID */
             showVoid();
             Amount = Integer.parseInt(amount);
         }
@@ -124,7 +115,7 @@ public class VoidActivity extends BaseActivity {
     }
 
     public void showVoid(){
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "İşlem iptal ediliyor", false);
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Transaction canceling", false);
         new Handler().postDelayed(() -> {
             dialog.dismiss();
             readCard();
@@ -132,7 +123,7 @@ public class VoidActivity extends BaseActivity {
     }
 
     public void showRefund(){
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "İşlem iade ediliyor", false);
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "The transaction is being refunded", false);
         new Handler().postDelayed(() -> {
             dialog.dismiss();
             readCard();
@@ -145,11 +136,11 @@ public class VoidActivity extends BaseActivity {
     }
 
     private void showInfoDialog() {
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Bağlanıyor", false);
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Connecting", false);
         new Handler().postDelayed(() -> {
-            dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı \n Onay kodu: 002301");
+            dialog.update(InfoDialog.InfoType.Confirmed, "Transaction Successful \n Confirmation code: 002301");
             new Handler().postDelayed(() -> {
-                dialog.update(InfoDialog.InfoType.Progress, "Belge Oluşturuluyor");
+                dialog.update(InfoDialog.InfoType.Progress, "Printing the receipt");
                 new Handler().postDelayed(() -> {
                     dialog.dismiss();
                     if (card instanceof ICCCard)

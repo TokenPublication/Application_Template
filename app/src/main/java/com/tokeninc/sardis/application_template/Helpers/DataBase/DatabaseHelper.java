@@ -339,6 +339,7 @@ public void batchClose(){
                 db.insert(TX_INFO,null,contentValues);
             }
 
+            // No activation check in app temp. That's why TID and MID information is filled in automatically when the application is loaded.
             String terminal_id = String.valueOf(getTerminalId());
             String merchant_id = String.valueOf(getMerchantId());
             String ip_no = String.valueOf(getIP_NO());
@@ -358,49 +359,4 @@ public void batchClose(){
             e.printStackTrace();
         }
     }
-
-
-
-//////////////////////////////////////////////
-
-    public void getSaleData(String myCode){
-        SQLiteDatabase db = this.getReadableDatabase();
-        String currentBatchNo = String.valueOf(getBatchNo());
-
-
-        Cursor cursor = db.rawQuery("SELECT * FROM old_sale_table WHERE sale_id = " + myCode, null);
-
-        if (cursor.moveToNext()) {
-            card_no = cursor.getString(cursor.getColumnIndex("card_no"));
-            sale_amount = cursor.getString(cursor.getColumnIndexOrThrow("sale_amount"));
-            process_time = cursor.getString(cursor.getColumnIndexOrThrow("process_time"));
-            sale_id = cursor.getString(cursor.getColumnIndexOrThrow("sale_id"));
-            tx_no = cursor.getString(cursor.getColumnIndexOrThrow("tx_no"));
-            batch_no = cursor.getString(cursor.getColumnIndexOrThrow("batch_no"));
-            cursor.close();
-        }
-
-        Log.d("Get Sale Data", "Card No: " +card_no);
-        Log.d("Get Sale Data", "Sale Amount: " +sale_amount);
-        Log.d("Get Sale Data", "Process Time: " +process_time);
-        Log.d("Get Sale Data", "Sale ID: " +sale_id);
-        Log.d("Get Sale Data", "TX No:" +tx_no);
-        Log.d("Get Sale Data", "Batch No: " + batch_no);
-
-
-        if (!currentBatchNo.equals(batch_no)){
-            /**
-             * İADE
-             */
-        }
-        else{
-            /**
-             * İPTAL
-             */
-        }
-        db.close();
-    }
-
-
-
 }

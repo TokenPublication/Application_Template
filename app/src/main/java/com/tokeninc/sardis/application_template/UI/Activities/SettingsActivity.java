@@ -73,12 +73,12 @@ public class SettingsActivity extends BaseActivity {
 
     private void showMenu() {
         List<IListMenuItem> menuItems = new ArrayList<>();
-        menuItems.add(new MenuItem("Kurulum", iListMenuItem -> {
+        menuItems.add(new MenuItem("Setup", iListMenuItem -> {
             addTidMidFragment();
         }));
-        menuItems.add(new MenuItem("Host Ayarları", iListMenuItem -> addIpFragment()));
+        menuItems.add(new MenuItem("Host Settings", iListMenuItem -> addIpFragment()));
 
-        menuFragment = ListMenuFragment.newInstance(menuItems, "Ayarlar",
+        menuFragment = ListMenuFragment.newInstance(menuItems, "Settings",
                 true, R.drawable.token_logo);
         addFragment(R.id.container, menuFragment, false);
 
@@ -86,7 +86,7 @@ public class SettingsActivity extends BaseActivity {
 
     private void addIpFragment() {
         List<CustomInputFormat> inputList = new ArrayList<>();
-        inputList.add(new CustomInputFormat("IP", EditTextInputType.IpAddress, null, "Geçersiz IP!", new InputValidator() {
+        inputList.add(new CustomInputFormat("IP", EditTextInputType.IpAddress, null, "Invalid IP!", new InputValidator() {
             @Override
             public boolean validate(CustomInputFormat customInputFormat) {
                 String text = customInputFormat.getText();
@@ -103,7 +103,7 @@ public class SettingsActivity extends BaseActivity {
             }
         }));
 
-        inputList.add(new CustomInputFormat("Port", EditTextInputType.Number, 4, "Geçersiz Port!", new InputValidator() {
+        inputList.add(new CustomInputFormat("Port", EditTextInputType.Number, 4, "Invalid Port!", new InputValidator() {
             @Override
             public boolean validate(CustomInputFormat customInputFormat) {
                 return customInputFormat.getText().length() >= 2 && Integer.parseInt(customInputFormat.getText()) > 0;
@@ -112,7 +112,7 @@ public class SettingsActivity extends BaseActivity {
         inputList.get(0).setText(databaseHelper.getIP_NO());
         inputList.get(1).setText(databaseHelper.getPort());
 
-        hostFragment = InputListFragment.newInstance(inputList, "Kaydet", new InputListFragment.ButtonListener() {
+        hostFragment = InputListFragment.newInstance(inputList, "Save", new InputListFragment.ButtonListener() {
             @Override
             public void onButtonAction(List<String> list) {
                 // TODO If Batch Close SUCCESS
@@ -138,14 +138,14 @@ public class SettingsActivity extends BaseActivity {
 
     private void addTidMidFragment() {
         List<CustomInputFormat> inputList = new ArrayList<>();
-        inputList.add(new CustomInputFormat("Merchant NO", EditTextInputType.Number, 10, "İş Yeri No Geçersiz!", new InputValidator() {
+        inputList.add(new CustomInputFormat("Merchant No", EditTextInputType.Number, 10, "Invalid Merchant No!", new InputValidator() {
                 @Override
                 public boolean validate(CustomInputFormat input) {
                     return input.getText().length() == 10;
                 }
         }));
 
-        inputList.add(new CustomInputFormat("Terminal NO", EditTextInputType.Text, 8, "Terminal No Geçersiz!", new InputValidator() {
+        inputList.add(new CustomInputFormat("Terminal No", EditTextInputType.Text, 8, "Invalid Terminal No!", new InputValidator() {
             @Override
             public boolean validate(CustomInputFormat input) {
                 return input.getText().length() == 8;
@@ -155,7 +155,7 @@ public class SettingsActivity extends BaseActivity {
         inputList.get(0).setText(databaseHelper.getMerchantId());
         inputList.get(1).setText(databaseHelper.getTerminalId());
 
-        TidMidFragment = InputListFragment.newInstance(inputList, "Kaydet", new InputListFragment.ButtonListener() {
+        TidMidFragment = InputListFragment.newInstance(inputList, "Save", new InputListFragment.ButtonListener() {
             @Override
             public void onButtonAction(List<String> list) {
 
@@ -173,8 +173,6 @@ public class SettingsActivity extends BaseActivity {
 
     private void startActivation() {
         if (DB_getAllTransactionsCount == true) {
-
-            insertActivation(context, terminalId, merchantId );
 
             InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Processing, "Starting Activation...", false);
                 new Handler(Looper.myLooper()).postDelayed(() -> {
@@ -207,18 +205,4 @@ public class SettingsActivity extends BaseActivity {
             }, 2000);
         }
     }
-
-    public void insertActivation(Context context, String terminalId, String merchantId) {
-
-     /*   DeviceInfo deviceInfo = new DeviceInfo(context);
-        deviceInfo.setBankParams(new DeviceInfo.DeviceInfoBankParamsSetterHandler() {
-            @Override
-            public void onReturn(boolean success) {
-                //Handle result, it might not be written for some case.
-                //If it's successfully written, you will get result as true
-            }
-        },terminalId, merchantId);
-        Log.i("Terminal ID: " +terminalId, "Merchant ID: " + merchantId);*/
-    }
-
 }

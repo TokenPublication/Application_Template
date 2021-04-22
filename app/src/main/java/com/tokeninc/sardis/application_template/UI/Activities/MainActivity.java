@@ -33,22 +33,23 @@ public class MainActivity extends BaseActivity {
         voidActivity = new VoidActivity();
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "Pos İşlemleri", false, R.drawable.token_logo);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "Pos Operations", false, R.drawable.token_logo);
         addFragment(R.id.container, fragment, false);
     }
 
     private void prepareData() {
 
-        menuItems.add(new MenuItem("Satışlar", iListMenuItem -> {
+        menuItems.add(new MenuItem("Sales", iListMenuItem -> {
             Intent myIntent = new Intent(MainActivity.this, TransactionsActivity.class);
             startActivity(myIntent);
         }));
 
-        menuItems.add(new MenuItem("İade", iListMenuItem -> {
+        menuItems.add(new MenuItem("Refund", iListMenuItem -> {
             Intent myIntent = new Intent(MainActivity.this, RefundActivity.class);
             startActivity(myIntent);
         }));
         menuItems.add(new MenuItem("Settings", iListMenuItem -> {
+            // Settings Activity is in service menu.
             Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(myIntent);
         }));
@@ -68,24 +69,6 @@ public class MainActivity extends BaseActivity {
             Intent myIntent = new Intent(MainActivity.this, ExamplesActivity.class);
             startActivity(myIntent);
         }));
-
-        menuItems.add(new MenuItem("Get Card Data", iListMenuItem -> {
-            Intent myIntent = new Intent(MainActivity.this, VoidActivity.class);
-            startActivity(myIntent);
-        }));
-
-     /*   menuItems.add(new MenuItem("Get Info", iListMenuItem -> {
-            com.tokeninc.sardis.application_template.Helpers.DeviceInfo deviceInfo = new com.tokeninc.sardis.application_template.Helpers.DeviceInfo(mContext.get());
-            deviceInfo.getFields(results -> {
-                        resultArray = results;
-                        onResponded = true;
-                    }, com.tokeninc.sardis.application_template.Helpers.DeviceInfo.MessageCodes.GET_LYNX_VERSION,
-                    com.tokeninc.sardis.application_template.Helpers.DeviceInfo.MessageCodes.GET_MODEM_VERSION,
-                    com.tokeninc.sardis.application_template.Helpers.DeviceInfo.MessageCodes.GET_FISCAL_ID,
-                    com.tokeninc.sardis.application_template.Helpers.DeviceInfo.MessageCodes.GET_IMEI_NUMBER,
-                    com.tokeninc.sardis.application_template.Helpers.DeviceInfo.MessageCodes.GET_IMSI_NUMBER);
-
-        }));*/
 
 
     }

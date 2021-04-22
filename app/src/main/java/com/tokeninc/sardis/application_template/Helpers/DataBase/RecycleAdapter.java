@@ -51,14 +51,6 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Myholder
         holder.serial_no.setText(dataModel.getSerial_no());
     }
 
-    public static String FormatAmount(String d){
-        String number = d;
-        double amount = Double.parseDouble(number);
-        DecimalFormat formatter = new DecimalFormat("#,###.00");
-        String formatted = formatter.format(amount / 100);
-        return formatted;
-    }
-
     @Override
     public int getItemCount() {
         return dataModelArrayList.size();

@@ -90,13 +90,13 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
     private void showMatchedReturnFragment() { // EŞLENİKLİ İADE
         List<CustomInputFormat> inputList = new ArrayList<>();
 
-        inputOrgAmount = new CustomInputFormat("Orijinal Tutar", Amount, null, "Geçersiz Tutar",
+        inputOrgAmount = new CustomInputFormat("Original Amount", Amount, null, "Invalid Amount",
                 input -> {
                     int amount = input.getText().isEmpty() ? 0 : Integer.parseInt(input.getText());
                     return amount > 0;
                 });
         inputList.add(inputOrgAmount);
-        inputRetAmount = new CustomInputFormat("İade Tutarı", Amount, null, "Geçersiz Tutar",
+        inputRetAmount = new CustomInputFormat("Refund Amount", Amount, null, "Invalid Amount",
                 input -> {
                     int amount = input.getText().isEmpty() ? 0 : Integer.parseInt(input.getText());
                     int original = inputOrgAmount.getText().isEmpty() ? 0 : Integer.parseInt(inputOrgAmount.getText());
@@ -104,16 +104,16 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
                 });
         inputList.add(inputRetAmount);
 
-            inputRefNo = new CustomInputFormat("Ref No", EditTextInputType.Number, 10, "Ref No geçersiz (10 hane)",
+            inputRefNo = new CustomInputFormat("Ref No", EditTextInputType.Number, 10, "Ref No invalid (10 digits)",
                     customInputFormat -> {
                         return !isCurrentDay(inputTranDate.getText()) || isCurrentDay(inputTranDate.getText()) && customInputFormat.getText().length() == 10;
                     });
             inputList.add(inputRefNo);
-            inputAuthCode = new CustomInputFormat("Onay Kodu", EditTextInputType.Number, 6, "Onay kodu geçersiz (6 hane)",
+            inputAuthCode = new CustomInputFormat("Confirmation code", EditTextInputType.Number, 6, "Confirmation code is invalid (6 digits)",
                     customInputFormat -> customInputFormat.getText().length() == 6);
             inputList.add(inputAuthCode);
 
-        inputTranDate = new CustomInputFormat("İşlem Tarihi", EditTextInputType.Date, null, "İşlem tarihi geçersiz",
+        inputTranDate = new CustomInputFormat("Transaction date", EditTextInputType.Date, null, "Transaction date is invalid",
                 customInputFormat -> {
                     try {
                         String[] array = customInputFormat.getText().split("/");
@@ -128,8 +128,8 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
         );
         inputList.add(inputTranDate);
 
-        InputListFragment fragment = InputListFragment.newInstance(inputList, "Satış İade", list -> {
-
+        InputListFragment fragment = InputListFragment.newInstance(inputList, "Sales Returns", list -> {
+            readCard();
         });
         addFragment(R.id.container, fragment, true);
     }
@@ -138,7 +138,7 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
     int myNum = 0;
     public void showReturnFragment() { // İADE
         List<CustomInputFormat> inputList = new ArrayList<>();
-        inputList.add(new CustomInputFormat("İade Tutarı", Amount, null, "Hatalı tutar", input -> {
+        inputList.add(new CustomInputFormat("Refund Amount", Amount, null, "Invalid Amount", input -> {
             int ListAmount = input.getText().isEmpty() ? 0 : Integer.parseInt(input.getText());
             try {
                 amount = ListAmount;
@@ -147,7 +147,7 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
             }
             return ListAmount > 0;
         }));
-        InputListFragment fragment = InputListFragment.newInstance(inputList, "Satış İade", list -> {
+        InputListFragment fragment = InputListFragment.newInstance(inputList, "Sales Return", list -> {
             readCard();
         });
         addFragment(R.id.container, fragment, true);
@@ -162,12 +162,12 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
         int maxInst = 12;
         List<IListMenuItem> menuItems = new ArrayList<>();
         for (int i = 2; i <= maxInst; i++) {
-            MenuItem menuItem = new MenuItem(i + " Taksit", listener);
+            MenuItem menuItem = new MenuItem(i + " Installment", listener);
             //menuItem.setArg(i);
             menuItems.add(menuItem);
         }
 
-        instFragment = ListMenuFragment.newInstance(menuItems, "Taksitli İade", true, R.drawable.token_logo);
+        instFragment = ListMenuFragment.newInstance(menuItems, "Installment Returns", true, R.drawable.token_logo);
         addFragment(R.id.container, instFragment, true);
     }
 
@@ -190,24 +190,24 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void showInfoDialog() {
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Bağlanıyor", false);
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Connecting", false);
         new Handler().postDelayed(() -> {
-            dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı \n Onay kodu: 000782");
+            dialog.update(InfoDialog.InfoType.Confirmed, "Transaction Successful \n Confirmation code: 000782");
             new Handler().postDelayed(() -> {
-                dialog.update(InfoDialog.InfoType.Progress, "Belge Oluşturuluyor");
+                dialog.update(InfoDialog.InfoType.Progress, "Printing the receipt");
                 new Handler().postDelayed(() -> {
                     dialog.dismiss();
                     if (card instanceof ICCCard)
                         takeOutICC();
                     else {
-                        finishSale(ResponseCode.SUCCESS);
+                        finishRefund(ResponseCode.SUCCESS);
                     }
                 }, 2000);
             }, 2000);
         }, 2000);
     }
 
-    private void finishSale(ResponseCode code) {
+    private void finishRefund(ResponseCode code) {
         Bundle bundle = new Bundle();
         bundle.putInt("ResponseCode", code.ordinal());
         if (card != null) {
@@ -234,6 +234,11 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
             JSONObject json = new JSONObject(cardData);
             int type = json.getInt("mCardReadType");
 
+            if (type == CardReadType.CLCard.value) {
+                ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
+                this.card = card;
+                showInfoDialog();
+            }
             if (type == CardReadType.ICC.value) {
                 ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
                 this.card = card;
@@ -242,6 +247,7 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
                 MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
                 this.card = card;
                 cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);
+                showInfoDialog();
                 //TODO Do transaction after pin verification
             }
             //TODO
@@ -259,7 +265,7 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
 
     @Override
     public void onICCTakeOut() {
-        finishSale(ResponseCode.SUCCESS);
+        finishRefund(ResponseCode.SUCCESS);
     }
 
 
