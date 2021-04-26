@@ -1,14 +1,17 @@
 package com.tokeninc.sardis.application_template.UI.Activities;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -18,23 +21,32 @@ import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.Entity.SampleReceipt;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
+import com.tokeninc.sardis.application_template.Helpers.DataBase.DatabaseHelper;
+import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.DateUtil;
 import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.SalePrintHelper;
 import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DummySaleActivity extends BaseActivity implements View.OnClickListener {
 
     int amount = 0;
     public static final int bottomMargin = 120;
+    DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dummy_sale);
+
+        databaseHelper = new DatabaseHelper(this);
 
         //get data from payment gateway and process
         Bundle bundle = getIntent().getExtras();
@@ -124,7 +136,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     }
 
 
-    private void prepareDummyResponse(ResponseCode code) {
+    public void prepareDummyResponse(ResponseCode code) {
         CheckBox cbMerchant = findViewById(R.id.cbMerchant);
         CheckBox cbCustomer = findViewById(R.id.cbCustomer);
 
@@ -140,17 +152,27 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     }
 
     //TODO Data has to be returned to Payment Gateway after sale operation completed via template below using actual data.
-    private void onSaleResponseRetrieved(Integer price, ResponseCode code, Boolean hasSlip, SlipType slipType, String cardNo, String ownerName) {
+    public void onSaleResponseRetrieved(Integer price, ResponseCode code, Boolean hasSlip, SlipType slipType, String cardNo, String ownerName) {
+
         Intent resultIntent = new Intent();
         Bundle bundle = new Bundle();
-        bundle.putInt("ResponseCode", code.ordinal());
-        bundle.putInt("PaymentStatus",0);
-        bundle.putInt("Amount",price);
-        bundle.putBoolean("IsSlip", hasSlip);
-        bundle.putInt("BatchNo",0);
-        bundle.putInt("TxnNo",0);
-        bundle.putInt("Amount2", price);
-        bundle.putInt("SlipType", slipType.value);
+        bundle.putInt("ResponseCode", code.ordinal()); // #1 Response Code
+
+            bundle.putString("CardOwner", SaleActivity.shareCardOwner); // Optional
+            bundle.putString("CardNumber", SaleActivity.shareCardNo); // Optional, Card No can be masked
+            bundle.putInt("PaymentStatus", 0); // #2 Payment Status
+            bundle.putInt("Amount", price); // #3 Amount
+            bundle.putInt("Amount2", price);
+            bundle.putBoolean("IsSlip", hasSlip);
+            bundle.putInt("BatchNo", databaseHelper.getBatchNo());
+            bundle.putString("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo)); //#5 Card No "MASKED"
+            bundle.putString("MID", databaseHelper.getMerchantId()); //#6 Merchant ID
+            bundle.putString("TID", databaseHelper.getTerminalId()); //#7 Terminal ID
+            bundle.putInt("TxnNo", databaseHelper.getTxNo());
+            bundle.putInt("SlipType", slipType.value);
+
+            bundle.putString("RefundInfo", getRefundInfo(ResponseCode.SUCCESS));
+            bundle.putString("RefNo", String.valueOf(databaseHelper.getSaleID()));
 
         if (slipType == SlipType.CARDHOLDER_SLIP || slipType == SlipType.BOTH_SLIPS) {
             bundle.putString("customerSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.CARDHOLDER_SLIP));
@@ -164,6 +186,22 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         resultIntent.putExtras(bundle);
         setResult(Activity.RESULT_OK,resultIntent);
         finish();
+    }
+
+    private String getRefundInfo(ResponseCode response) {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("BatchNo", databaseHelper.getBatchNo());
+            json.put("TxnNo", databaseHelper.getTxNo());
+            json.put("Amount", amount);
+            json.put("RefNo", String.valueOf(databaseHelper.getSaleID()));
+            json.put("MID", databaseHelper.getMerchantId());
+            json.put("TID", databaseHelper.getTerminalId());
+            json.put("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json.toString();
     }
 
     private String getApprovalCode() {
@@ -201,6 +239,5 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         }
         return mService;
     }
-
 
 }

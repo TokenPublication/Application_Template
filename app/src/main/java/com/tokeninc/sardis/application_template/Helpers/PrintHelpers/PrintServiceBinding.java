@@ -45,4 +45,14 @@ public class PrintServiceBinding {
         };
         executeRunnable();
     }
+
+    public void printBitmap(String name, int verticalMargin) {
+        runnable = () -> {
+            try {
+                printerService.printBitmap(name, verticalMargin);
+            }
+            catch (RemoteException e) {}
+        };
+        executeRunnable();
+    }
 }

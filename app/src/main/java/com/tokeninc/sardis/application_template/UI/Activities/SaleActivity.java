@@ -22,6 +22,9 @@ import com.tokeninc.sardis.application_template.Entity.ICCCard;
 import com.tokeninc.sardis.application_template.Entity.ICard;
 import com.tokeninc.sardis.application_template.Entity.MSRCard;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
+import com.tokeninc.sardis.application_template.Helpers.DataBase.DataModel;
+import com.tokeninc.sardis.application_template.Helpers.DataBase.DatabaseHelper;
+import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.DateUtil;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 
@@ -32,6 +35,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class SaleActivity extends BaseActivity implements View.OnClickListener {
 
@@ -40,31 +44,37 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     private List<IListMenuItem> menuItemList;
     private ICard card;
 
+    DatabaseHelper databaseHelper;
+    String card_no, sale_amount;
+
+    public static String shareCardNo = null;
+    public static String shareCardOwner = null;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sale);
         //Prevent screen from turning of when sale is active
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        databaseHelper = new DatabaseHelper(this);
 
         amount = getIntent().getExtras().getInt("Amount");
-
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, "Satış Tipi", false, null);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, "Sale Type", false, null);
         addFragment(R.id.container, fragment, false);
     }
 
     private void prepareData() {
         menuItemList = new ArrayList<>();
-        menuItemList.add(new MenuItem("Satış", new MenuItemClickListener() {
+        menuItemList.add(new MenuItem("Sale", new MenuItemClickListener() {
             @Override
             public void onClick(IListMenuItem menuItem) {
                 readCard();
             }
         }));
-        menuItemList.add(new MenuItem("Taksitli Satış", (menuItem) -> readCard()));
-        menuItemList.add(new MenuItem("Puan Satış", (menuItem) -> readCard()));
-        menuItemList.add(new MenuItem("Kampanya Satış", (menuItem) -> readCard()));
+        menuItemList.add(new MenuItem("Installment Sale", (menuItem) -> readCard()));
+        menuItemList.add(new MenuItem("Loyalty Sale", (menuItem) -> readCard()));
+        menuItemList.add(new MenuItem("Campaign Sale", (menuItem) -> readCard()));
     }
 
     @Override
@@ -100,11 +110,11 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void showInfoDialog() {
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Bağlanıyor", false);
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Connecting", false);
         new Handler().postDelayed(() -> {
-            dialog.update(InfoDialog.InfoType.Confirmed, "İşlem Başarılı \n Onay kodu: 000002");
+            dialog.update(InfoDialog.InfoType.Confirmed, "Success \n Approval Code: 000002");
             new Handler().postDelayed(() -> {
-                dialog.update(InfoDialog.InfoType.Progress, "Belge Oluşturuluyor");
+                dialog.update(InfoDialog.InfoType.Progress, "Printing the receipt");
                 new Handler().postDelayed(() -> {
                     dialog.dismiss();
                     if (card instanceof ICCCard)
@@ -117,18 +127,21 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         }, 2000);
     }
 
-
-    private void finishSale(ResponseCode code) {
+    public void finishSale(ResponseCode code) {
         Bundle bundle = new Bundle();
-        bundle.putInt("ResponseCode", code.ordinal());
+        bundle.putInt("ResponseCode", code.ordinal()); // #1 Response Code
         if (card != null) {
-            bundle.putString("CardOwner", card.getOwnerName());
-            bundle.putString("CardNumber", card.getCardNumber());
+            SaleActivity.shareCardNo = card.getCardNumber();
+            SaleActivity.shareCardOwner = card.getCardNumber();
         }
         Intent result = new Intent();
         result.putExtras(bundle);
         setResult(Activity.RESULT_OK, result);
 
+        // ADD Sale Data to DB
+        card_no = String.valueOf(card.getCardNumber());
+        sale_amount = String.valueOf(amount);
+        databaseHelper.SaveSaleToDB(card_no, sale_amount);
         finish();
     }
 
@@ -166,11 +179,16 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             JSONObject json = new JSONObject(cardData);
             int type = json.getInt("mCardReadType");
 
+            if (type == CardReadType.CLCard.value) {
+                ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
+                this.card = card;
+                showInfoDialog();
+            }
             if (type == CardReadType.ICC.value) {
                 ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
                 this.card = card;
                 showInfoDialog();
-            } else if (type == CardReadType.ICC2MSR.value || type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
+            }if (type == CardReadType.ICC2MSR.value || type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
                 MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
                 this.card = card;
                 cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);

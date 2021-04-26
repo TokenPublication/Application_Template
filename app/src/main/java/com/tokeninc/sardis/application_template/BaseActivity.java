@@ -12,11 +12,14 @@ import com.token.uicomponents.infodialog.InfoDialogListener;
 import com.token.uicomponents.timeoutmanager.TimeOutActivity;
 import com.tokeninc.cardservicebinding.CardServiceBinding;
 import com.tokeninc.cardservicebinding.CardServiceListener;
+import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.PrintServiceBinding;
 
 public abstract class BaseActivity extends TimeOutActivity implements CardServiceListener {
 
     protected CardServiceBinding cardServiceBinding;
+    protected PrintServiceBinding printService;
 
+    protected final int TIME_OUT = 60;
     /**
      * Returns time out value in seconds for activities which extend
      * @see TimeOutActivity
@@ -34,6 +37,7 @@ public abstract class BaseActivity extends TimeOutActivity implements CardServic
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         cardServiceBinding = new CardServiceBinding(this, this);
+        printService = new PrintServiceBinding();
     }
 
     @Override
