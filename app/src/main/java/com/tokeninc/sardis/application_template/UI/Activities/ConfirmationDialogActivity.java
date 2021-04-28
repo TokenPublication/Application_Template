@@ -13,6 +13,12 @@ import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+*
+* [ConfirmationDialog](https://developer.tokeninc.com/pos-projects/token%20integrations/ui-ux/ui-components)
+*
+* */
+
 public class ConfirmationDialogActivity extends BaseActivity implements InfoDialogListener {
 
     private List<IListMenuItem> menuItems = new ArrayList<>();

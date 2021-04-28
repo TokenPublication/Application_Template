@@ -22,9 +22,8 @@ import com.tokeninc.sardis.application_template.Entity.ICCCard;
 import com.tokeninc.sardis.application_template.Entity.ICard;
 import com.tokeninc.sardis.application_template.Entity.MSRCard;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
-import com.tokeninc.sardis.application_template.Helpers.DataBase.DataModel;
 import com.tokeninc.sardis.application_template.Helpers.DataBase.DatabaseHelper;
-import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.DateUtil;
+import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 
@@ -35,7 +34,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class SaleActivity extends BaseActivity implements View.OnClickListener {
 
@@ -47,8 +45,9 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     DatabaseHelper databaseHelper;
     String card_no, sale_amount;
 
-    public static String shareCardNo = null;
-    public static String shareCardOwner = null;
+    public static String shareCardNo = "****";
+    public static String shareCardOwner = "****";
+    Boolean isCL = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,7 +111,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     private void showInfoDialog() {
         InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Connecting", false);
         new Handler().postDelayed(() -> {
-            dialog.update(InfoDialog.InfoType.Confirmed, "Success \n Approval Code: 000002");
+            dialog.update(InfoDialog.InfoType.Confirmed, "Success \n Approval Code: " + StringHelper.GenerateApprovalCode(String.valueOf(databaseHelper.getBatchNo()), String.valueOf(databaseHelper.getTxNo()), String.valueOf(databaseHelper.getSaleID())));
             new Handler().postDelayed(() -> {
                 dialog.update(InfoDialog.InfoType.Progress, "Printing the receipt");
                 new Handler().postDelayed(() -> {
@@ -132,7 +131,12 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         bundle.putInt("ResponseCode", code.ordinal()); // #1 Response Code
         if (card != null) {
             SaleActivity.shareCardNo = card.getCardNumber();
-            SaleActivity.shareCardOwner = card.getCardNumber();
+            if (isCL){
+                SaleActivity.shareCardOwner = "***** *****";
+            }
+            else{
+                SaleActivity.shareCardOwner = card.getOwnerName();
+            }
         }
         Intent result = new Intent();
         result.putExtras(bundle);
@@ -148,15 +152,12 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     private void setConfig() {
         try {
             InputStream xmlStream = getApplicationContext().getAssets().open("custom_emv_config.xml");
-            //String conf = xmlStream.toString();
-            //Log.d(TAG, "conf string: " + conf);
             BufferedReader r = new BufferedReader(new InputStreamReader(xmlStream));
             StringBuilder total = new StringBuilder();
             for (String line; (line = r.readLine()) != null; ) {
                 Log.d("emv_config", "conf line: " + line);
                 total.append(line).append('\n');
             }
-            //Log.d(TAG, "conf string: " + total.toString());
             int setConfigResult = cardServiceBinding.setEMVConfiguration(total.toString());
             Toast.makeText(getApplicationContext(), "setEMVConfiguration res=" + setConfigResult, Toast.LENGTH_SHORT).show();
             Log.d("emv_config", "setEMVConfiguration: " + setConfigResult);
@@ -182,6 +183,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             if (type == CardReadType.CLCard.value) {
                 ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
                 this.card = card;
+                isCL = true;
                 showInfoDialog();
             }
             if (type == CardReadType.ICC.value) {

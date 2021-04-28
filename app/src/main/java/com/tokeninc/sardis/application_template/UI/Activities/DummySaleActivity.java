@@ -1,17 +1,14 @@
 package com.tokeninc.sardis.application_template.UI.Activities;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -22,7 +19,6 @@ import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.Entity.SampleReceipt;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
 import com.tokeninc.sardis.application_template.Helpers.DataBase.DatabaseHelper;
-import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.DateUtil;
 import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.SalePrintHelper;
 import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
@@ -33,7 +29,6 @@ import org.json.JSONObject;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class DummySaleActivity extends BaseActivity implements View.OnClickListener {
 
@@ -125,13 +120,15 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     private SampleReceipt getSampleReceipt(String cardNo, String ownerName) {
         SampleReceipt receipt = new SampleReceipt();
         receipt.setMerchantName("TOKEN FINTECH");
-        receipt.setMerchantID("26854222228");
-        receipt.setPosID("000002AC");
-        receipt.setCardNo(cardNo);
+        receipt.setMerchantID(databaseHelper.getMerchantId());
+        receipt.setPosID(databaseHelper.getTerminalId());
+        receipt.setCardNo(StringHelper.maskCardNumber(cardNo));
         receipt.setFullName(ownerName);
         receipt.setAmount(StringHelper.getAmount(amount));
-        receipt.setGroupNo("0001");
+        receipt.setGroupNo(String.valueOf(databaseHelper.getBatchNo()));
         receipt.setAid("A0000000000031010");
+        receipt.setSerialNo(String.valueOf(databaseHelper.getSaleID()));
+        receipt.setApprovalCode(StringHelper.GenerateApprovalCode(String.valueOf(databaseHelper.getBatchNo()), String.valueOf(databaseHelper.getTxNo()), String.valueOf(databaseHelper.getSaleID())));
         return receipt;
     }
 
@@ -165,9 +162,11 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             bundle.putInt("Amount2", price);
             bundle.putBoolean("IsSlip", hasSlip);
             bundle.putInt("BatchNo", databaseHelper.getBatchNo());
-            bundle.putString("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo)); //#5 Card No "MASKED"
-            bundle.putString("MID", databaseHelper.getMerchantId()); //#6 Merchant ID
-            bundle.putString("TID", databaseHelper.getTerminalId()); //#7 Terminal ID
+            if(!SaleActivity.shareCardNo.equals("****")) { // For without card Success response
+                bundle.putString("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo)); //#5 Card No "MASKED"
+            }
+            bundle.putString("MID", databaseHelper.getMerchantId()); // #6 Merchant ID
+            bundle.putString("TID", databaseHelper.getTerminalId()); // #7 Terminal ID
             bundle.putInt("TxnNo", databaseHelper.getTxNo());
             bundle.putInt("SlipType", slipType.value);
 
@@ -175,11 +174,11 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             bundle.putString("RefNo", String.valueOf(databaseHelper.getSaleID()));
 
         if (slipType == SlipType.CARDHOLDER_SLIP || slipType == SlipType.BOTH_SLIPS) {
-            bundle.putString("customerSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.CARDHOLDER_SLIP));
+            bundle.putString("customerSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(SaleActivity.shareCardNo, SaleActivity.shareCardOwner), SlipType.CARDHOLDER_SLIP));
           //  bundle.putByteArray("customerSlipBitmapData",PrintHelper.getBitmap(getApplicationContext()));
         }
         if (slipType == SlipType.MERCHANT_SLIP || slipType == SlipType.BOTH_SLIPS) {
-            bundle.putString("merchantSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.MERCHANT_SLIP));
+            bundle.putString("merchantSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(SaleActivity.shareCardNo, SaleActivity.shareCardOwner), SlipType.MERCHANT_SLIP));
          //  bundle.putByteArray("merchantSlipBitmapData",PrintHelper.getBitmap(getApplicationContext()));
         }
         bundle.putString("ApprovalCode", getApprovalCode());
@@ -197,7 +196,9 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             json.put("RefNo", String.valueOf(databaseHelper.getSaleID()));
             json.put("MID", databaseHelper.getMerchantId());
             json.put("TID", databaseHelper.getTerminalId());
-            json.put("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo));
+            if(!SaleActivity.shareCardNo.equals("****")) {
+                json.put("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

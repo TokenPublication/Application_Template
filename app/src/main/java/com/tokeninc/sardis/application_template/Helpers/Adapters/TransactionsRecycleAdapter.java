@@ -1,4 +1,4 @@
-package com.tokeninc.sardis.application_template.Helpers.DataBase;
+package com.tokeninc.sardis.application_template.Helpers.Adapters;
 
 
 import android.view.LayoutInflater;
@@ -8,23 +8,23 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tokeninc.sardis.application_template.Helpers.DataBase.DataModel;
 import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
-public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Myholder> {
+public class TransactionsRecycleAdapter extends RecyclerView.Adapter<TransactionsRecycleAdapter.MyHolder> {
     List<DataModel> dataModelArrayList;
 
-    public RecycleAdapter(List<DataModel> dataModelArrayList) {
+    public TransactionsRecycleAdapter(List<DataModel> dataModelArrayList) {
         this.dataModelArrayList = dataModelArrayList;
     }
 
-    class Myholder extends RecyclerView.ViewHolder{
+    class MyHolder extends RecyclerView.ViewHolder{
         TextView card_no, process_time, sale_amount, approval_code, serial_no;
 
-        public Myholder(View itemView) {
+        public MyHolder(View itemView) {
             super(itemView);
 
             card_no = (TextView) itemView.findViewById(R.id.textCardNo);
@@ -36,15 +36,15 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.Myholder
     }
 
     @Override
-    public Myholder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_transaction,parent,false);
-        return new Myholder(view);
+        return new MyHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(Myholder holder, int position) {
+    public void onBindViewHolder(MyHolder holder, int position) {
         DataModel dataModel=dataModelArrayList.get(position);
-        holder.card_no.setText(dataModel.getCard_no());
+        holder.card_no.setText(StringHelper.maskCardNumber(dataModel.getCard_no()));
         holder.process_time.setText(dataModel.getProcess_time());
         holder.sale_amount.setText(StringHelper.getAmount(Integer.parseInt(dataModel.getSale_amount())));
         holder.approval_code.setText(dataModel.getApproval_code());

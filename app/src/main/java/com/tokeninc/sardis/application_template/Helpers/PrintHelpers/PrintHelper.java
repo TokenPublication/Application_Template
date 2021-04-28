@@ -53,9 +53,19 @@ public class PrintHelper extends BasePrintHelper {
         return styledText.toString();
     }
 
-    public static String PrintBatchClose(String batch_no, String tx_no)
+    public static String PrintBatchClose(String batch_no, String tx_no, String MID, String TID)
     {
         StyledString styledText = new StyledString();
+
+        addTextToNewLine(styledText, "TOKEN", PrinterDefinitions.Alignment.Center);
+        addTextToNewLine(styledText, "FINTECH", PrinterDefinitions.Alignment.Center);
+
+        addTextToNewLine(styledText, "İŞYERİ NO: ", PrinterDefinitions.Alignment.Left);
+        addText(styledText, MID, PrinterDefinitions.Alignment.Right);
+
+        addTextToNewLine(styledText, "TERMİNAL NO: ", PrinterDefinitions.Alignment.Left);
+        addText(styledText, TID, PrinterDefinitions.Alignment.Right);
+
         addTextToNewLine(styledText, " ", PrinterDefinitions.Alignment.Center);
         addTextToNewLine(styledText, "Grup Kapama Başarılı", PrinterDefinitions.Alignment.Center);
         addTextToNewLine(styledText, " ", PrinterDefinitions.Alignment.Center);

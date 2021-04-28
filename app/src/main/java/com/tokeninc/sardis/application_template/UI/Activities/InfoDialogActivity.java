@@ -17,6 +17,12 @@ import com.tokeninc.sardis.application_template.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+ *
+ * [InfoDialog](https://developer.tokeninc.com/pos-projects/token%20integrations/ui-ux/ui-components)
+ *
+ * */
+
 public class InfoDialogActivity extends BaseActivity {
 
     class InfoDialogItem implements IListMenuItem {

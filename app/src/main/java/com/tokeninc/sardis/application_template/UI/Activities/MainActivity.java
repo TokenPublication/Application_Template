@@ -39,7 +39,7 @@ public class MainActivity extends BaseActivity {
 
     private void prepareData() {
 
-        menuItems.add(new MenuItem("Sales", iListMenuItem -> {
+        menuItems.add(new MenuItem("Transactions", iListMenuItem -> {
             Intent myIntent = new Intent(MainActivity.this, TransactionsActivity.class);
             startActivity(myIntent);
         }));
@@ -49,7 +49,7 @@ public class MainActivity extends BaseActivity {
             startActivity(myIntent);
         }));
         menuItems.add(new MenuItem("Settings", iListMenuItem -> {
-            // Settings Activity is in service menu.
+            // Settings Activity is in service menu, We can shortcut from here.
             Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(myIntent);
         }));

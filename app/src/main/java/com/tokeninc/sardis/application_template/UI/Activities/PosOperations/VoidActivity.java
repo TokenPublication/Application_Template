@@ -24,6 +24,12 @@ import com.tokeninc.sardis.application_template.UI.Activities.MainActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/*
+*
+* This Activity is triggered from PaymentGateway to demonstrate "Refund" and "Void" actions.
+*
+* */
+
 public class VoidActivity extends BaseActivity {
 
     private ICard card;
