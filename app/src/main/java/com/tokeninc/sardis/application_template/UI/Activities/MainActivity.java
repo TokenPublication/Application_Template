@@ -48,11 +48,6 @@ public class MainActivity extends BaseActivity {
             Intent myIntent = new Intent(MainActivity.this, RefundActivity.class);
             startActivity(myIntent);
         }));
-        menuItems.add(new MenuItem("Settings", iListMenuItem -> {
-            // Settings Activity is in service menu, We can shortcut from here.
-            Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(myIntent);
-        }));
 
         menuItems.add(new MenuItem("Batch Close", iListMenuItem -> {
             InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Processing, "Batch Close", false);
