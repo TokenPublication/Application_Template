@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -162,6 +163,18 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             int setConfigResult = cardServiceBinding.setEMVConfiguration(total.toString());
             Toast.makeText(getApplicationContext(), "setEMVConfiguration res=" + setConfigResult, Toast.LENGTH_SHORT).show();
             Log.d("emv_config", "setEMVConfiguration: " + setConfigResult);
+
+            InputStream xmlCLStream = getApplicationContext().getAssets().open("custom_emv_cl_config.xml");
+            BufferedReader rCL = new BufferedReader(new InputStreamReader(xmlCLStream));
+            StringBuilder totalCL = new StringBuilder();
+            for (String line; (line = rCL.readLine()) != null; ) {
+                Log.d("emv_config", "conf line: " + line);
+                totalCL.append(line).append('\n');
+            }
+
+            int setCLConfigResult = cardServiceBinding.setEMVCLConfiguration(totalCL.toString());
+            Toast.makeText(getApplicationContext(), "setEMVConfiguration res=" + setCLConfigResult, Toast.LENGTH_SHORT).show();
+            Log.d("emv_config", "setEMVConfiguration: " + setCLConfigResult);
 
             SharedPreferences.Editor editor = getSharedPreferences("EMVConfigPreferences", MODE_PRIVATE).edit();
             editor.putString("EMVConfig", "ConfigBound");
