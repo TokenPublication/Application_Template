@@ -352,8 +352,8 @@ public void batchClose(){
 
             if ( terminal_id.equals("") || terminal_id.equals("null") && merchant_id.equals("") || merchant_id.equals("null") && ip_no.equals("") || ip_no.equals("null") && port_no.equals("") || port_no.equals("null"))
             {
-                contentValues2.put(TERMINAL_ID, "000002AC");
-                contentValues2.put(MERCHANT_ID, "26854222228");
+                contentValues2.put(TERMINAL_ID, "000005BB");
+                contentValues2.put(MERCHANT_ID, "52487539624");
                 contentValues2.put(IP, "192.168.1.1");
                 contentValues2.put(PORT, "1040");
                 db.insert(ACT_TABLE,null,contentValues2);

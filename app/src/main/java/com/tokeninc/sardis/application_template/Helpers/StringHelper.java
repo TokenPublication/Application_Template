@@ -36,6 +36,7 @@ public class StringHelper {
 
 
     public static String maskCardNumber(String cardNo) {
+        // 1234 **** **** 7890
         String prefix = cardNo.substring(0, 4);
         String suffix = cardNo.substring(cardNo.length() - 4);
         StringBuilder masked = new StringBuilder(prefix);

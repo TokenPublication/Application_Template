@@ -2,6 +2,7 @@ package com.tokeninc.sardis.application_template.UI.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -161,9 +162,23 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             int setConfigResult = cardServiceBinding.setEMVConfiguration(total.toString());
             Toast.makeText(getApplicationContext(), "setEMVConfiguration res=" + setConfigResult, Toast.LENGTH_SHORT).show();
             Log.d("emv_config", "setEMVConfiguration: " + setConfigResult);
+
+            SharedPreferences.Editor editor = getSharedPreferences("EMVConfigPreferences", MODE_PRIVATE).edit();
+            editor.putString("EMVConfig", "ConfigBound");
+            editor.apply();
         }
         catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onCardServiceConnected() {
+        SharedPreferences prefs = getSharedPreferences("EMVConfigPreferences", MODE_PRIVATE);
+        String EMVStatus = prefs.getString("EMVConfig", "No name defined");
+
+        if(!EMVStatus.equals("ConfigBound")) {
+            setConfig();
         }
     }
 
@@ -194,6 +209,8 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
                 MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
                 this.card = card;
                 cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);
+                showInfoDialog();
+
                 //TODO Do transaction after pin verification
             }
             //TODO
