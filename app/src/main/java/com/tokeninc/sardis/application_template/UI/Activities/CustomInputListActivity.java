@@ -11,15 +11,21 @@ import com.tokeninc.sardis.application_template.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
 /*
-This activity shows how to use edit line list and info fragment
+*
+* This activity shows how to use custom input edit lines as list and info fragment
+*
+*[InputListFragment](https://developer.tokeninc.com/pos-projects/token%20integrations/ui-ux/ui-components)
+*
  */
-public class EditLineActivity extends BaseActivity {
+
+public class CustomInputListActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_editline);
+        setContentView(R.layout.activity_custom_input_list);
 
         InputValidator validator = new InputValidator() {
             @Override

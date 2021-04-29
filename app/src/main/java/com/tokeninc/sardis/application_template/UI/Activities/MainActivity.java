@@ -39,18 +39,13 @@ public class MainActivity extends BaseActivity {
 
     private void prepareData() {
 
-        menuItems.add(new MenuItem("Sales", iListMenuItem -> {
+        menuItems.add(new MenuItem("Transactions", iListMenuItem -> {
             Intent myIntent = new Intent(MainActivity.this, TransactionsActivity.class);
             startActivity(myIntent);
         }));
 
         menuItems.add(new MenuItem("Refund", iListMenuItem -> {
             Intent myIntent = new Intent(MainActivity.this, RefundActivity.class);
-            startActivity(myIntent);
-        }));
-        menuItems.add(new MenuItem("Settings", iListMenuItem -> {
-            // Settings Activity is in service menu.
-            Intent myIntent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(myIntent);
         }));
 

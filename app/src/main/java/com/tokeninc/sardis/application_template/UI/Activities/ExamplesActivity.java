@@ -69,7 +69,7 @@ public class ExamplesActivity  extends BaseActivity implements InfoDialogListene
         menuItems.add(new MenuItem("Custom Input List", new MenuItemClickListener<MenuItem>() {
             @Override
             public void onClick(MenuItem menuItem) {
-                Intent myIntent = new Intent(ExamplesActivity.this, EditLineActivity.class);
+                Intent myIntent = new Intent(ExamplesActivity.this, CustomInputListActivity.class);
                 startActivity(myIntent);
             }
         }));

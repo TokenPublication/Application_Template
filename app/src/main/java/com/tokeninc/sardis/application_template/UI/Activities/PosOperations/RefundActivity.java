@@ -36,6 +36,12 @@ import java.util.List;
 
 import static com.token.uicomponents.CustomInput.EditTextInputType.Amount;
 
+/*
+*
+* This activity demonstrates the usage of the Refund menus, can be copied and used exactly same.
+*
+* */
+
 public class RefundActivity extends BaseActivity implements View.OnClickListener {
 
     private ICard card;
@@ -44,7 +50,6 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
     private CustomInputFormat inputTranDate;
     private CustomInputFormat inputOrgAmount;
     private CustomInputFormat inputRetAmount;
-    private CustomInputFormat inputMerID;
     private CustomInputFormat inputRefNo;
     private CustomInputFormat inputAuthCode;
 
@@ -67,25 +72,23 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
 
     private void prepareData() {
 
-        menuItems.add(new MenuItem("Matched Return", iListMenuItem -> {
+        menuItems.add(new MenuItem("Matched Refund", iListMenuItem -> {
             showMatchedReturnFragment();
         }));
 
-        menuItems.add(new MenuItem("Cash Return", iListMenuItem -> {
+        menuItems.add(new MenuItem("Cash Refund", iListMenuItem -> {
             showReturnFragment();
         }));
 
-        menuItems.add(new MenuItem("Installment Return", iListMenuItem -> {
+        menuItems.add(new MenuItem("Installment Refund", iListMenuItem -> {
             showInstallments();
         }));
 
-        menuItems.add(new MenuItem("Loyalty Return", iListMenuItem -> {
+        menuItems.add(new MenuItem("Loyalty Refund", iListMenuItem -> {
             showReturnFragment();
         }));
 
     }
-
-
 
     private void showMatchedReturnFragment() { // EŞLENİKLİ İADE
         List<CustomInputFormat> inputList = new ArrayList<>();
@@ -128,14 +131,14 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
         );
         inputList.add(inputTranDate);
 
-        InputListFragment fragment = InputListFragment.newInstance(inputList, "Sales Returns", list -> {
+        InputListFragment fragment = InputListFragment.newInstance(inputList, "Refund", list -> {
+            data = list;
+            amount = Integer.parseInt(list.get(1));
             readCard();
         });
         addFragment(R.id.container, fragment, true);
     }
 
-
-    int myNum = 0;
     public void showReturnFragment() { // İADE
         List<CustomInputFormat> inputList = new ArrayList<>();
         inputList.add(new CustomInputFormat("Refund Amount", Amount, null, "Invalid Amount", input -> {
@@ -147,7 +150,7 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
             }
             return ListAmount > 0;
         }));
-        InputListFragment fragment = InputListFragment.newInstance(inputList, "Sales Return", list -> {
+        InputListFragment fragment = InputListFragment.newInstance(inputList, "Refund", list -> {
             readCard();
         });
         addFragment(R.id.container, fragment, true);
@@ -167,7 +170,7 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
             menuItems.add(menuItem);
         }
 
-        instFragment = ListMenuFragment.newInstance(menuItems, "Installment Returns", true, R.drawable.token_logo);
+        instFragment = ListMenuFragment.newInstance(menuItems, "Installment Refund", true, R.drawable.token_logo);
         addFragment(R.id.container, instFragment, true);
     }
 
@@ -189,6 +192,8 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
         cardServiceBinding.takeOutICC(40);
     }
 
+
+    // Creates a dummy response for Refund.
     private void showInfoDialog() {
         InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Connecting", false);
         new Handler().postDelayed(() -> {

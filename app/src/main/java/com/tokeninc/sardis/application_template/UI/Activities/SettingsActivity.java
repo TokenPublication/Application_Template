@@ -4,16 +4,10 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.token.uicomponents.CustomInput.CustomInputFormat;
-import com.token.uicomponents.CustomInput.CustomInputView;
 import com.token.uicomponents.CustomInput.EditTextInputType;
 import com.token.uicomponents.CustomInput.InputListFragment;
 import com.token.uicomponents.CustomInput.InputValidator;
@@ -28,11 +22,15 @@ import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-//import com.tokeninc.deviceinfo.DeviceInfo;
+/*
+ *
+ * This activity demonstrates the usage of the Settings menus, can be copied and used exactly same other than dummy responses.
+ * Settings Activity has to appear under TLauncher > Settings > System Settings > Service Applications > Banking Setup > Application Template.
+ *
+ * */
 
 public class SettingsActivity extends BaseActivity {
 
@@ -116,7 +114,12 @@ public class SettingsActivity extends BaseActivity {
             @Override
             public void onButtonAction(List<String> list) {
                 // TODO If Batch Close SUCCESS
-                InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Batch Close: Success", false);
+
+                // Dummy response for Host and IP settings.
+                InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Batch Close...", false);
+                new Handler().postDelayed(() -> {
+                    dialog.update(InfoDialog.InfoType.Confirmed, "Batch Close: Success");
+                    databaseHelper.batchClose();
                 new Handler().postDelayed(() -> {
                     // TODO Set Host Settings
                     dialog.update(InfoDialog.InfoType.Confirmed, "Activation Completed");
@@ -129,6 +132,7 @@ public class SettingsActivity extends BaseActivity {
 
                     new Handler().postDelayed(() -> {
                         dialog.dismiss();
+                        }, 2000);
                     }, 2000);
                 }, 2000);
             }
@@ -171,8 +175,9 @@ public class SettingsActivity extends BaseActivity {
         addFragment(R.id.thirdContainer, TidMidFragment, true);
     }
 
+    // Dummy activation response
     private void startActivation() {
-        if (DB_getAllTransactionsCount == true) {
+        if (DB_getAllTransactionsCount) {
 
             InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Processing, "Starting Activation...", false);
                 new Handler(Looper.myLooper()).postDelayed(() -> {

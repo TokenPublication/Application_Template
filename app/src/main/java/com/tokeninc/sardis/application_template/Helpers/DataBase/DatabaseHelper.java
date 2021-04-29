@@ -2,24 +2,17 @@ package com.tokeninc.sardis.application_template.Helpers.DataBase;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.DateUtil;
 import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.PrintHelper;
 import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.PrintServiceBinding;
-import com.tokeninc.sardis.application_template.UI.Activities.ExamplesActivity;
-import com.tokeninc.sardis.application_template.UI.Activities.MainActivity;
-import com.tokeninc.sardis.application_template.UI.Activities.PosOperations.VoidActivity;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.String.format;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -45,7 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     String sale_db, act_db, tx_info_table;
 
-    String process_time, batch_no, tx_no, sale_id, card_no, sale_amount;
+    String process_time, batch_no, tx_no, sale_id;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE, null, 1);
@@ -111,6 +104,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             stringBuffer.append(dataModel);
             data.add(dataModel);
         }
+        cursor.close();
+        db.close();
         return data;
     }
 
@@ -142,6 +137,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues v = new ContentValues();
             v.put(BATCH, batch_no);
             update(db, TX_INFO, null, v);
+            db.close();
         }
         catch (Exception e)
         {
@@ -161,6 +157,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues v = new ContentValues();
             v.put(TX, tx_no);
             update(db, TX_INFO, null, v);
+            db.close();
         }
         catch (Exception e)
         {
@@ -181,6 +178,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues v = new ContentValues();
             v.put(SALE_ID, sale_id_no);
             update(db, TX_INFO, null, v);
+            db.close();
         }
         catch (Exception e)
         {
@@ -198,6 +196,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues v = new ContentValues();
             v.put(MERCHANT_ID, merchant_id);
             update(db, ACT_TABLE, null, v);
+            db.close();
         }
         catch (Exception e)
         {
@@ -215,6 +214,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues v = new ContentValues();
             v.put(TERMINAL_ID, terminal_id);
             update(db, ACT_TABLE, null, v);
+            db.close();
         }
         catch (Exception e)
         {
@@ -232,6 +232,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues v = new ContentValues();
             v.put(IP, ip_no);
             update(db, ACT_TABLE, null, v);
+            db.close();
         }
         catch (Exception e)
         {
@@ -249,6 +250,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             ContentValues v = new ContentValues();
             v.put(PORT, port_no);
             update(db, ACT_TABLE, null, v);
+            db.close();
         }
         catch (Exception e)
         {
@@ -271,7 +273,10 @@ public void batchClose(){
 
         String txNo = String.valueOf(getTxNo());
 
-        printService.print(PrintHelper.PrintBatchClose(batchNo, txNo));
+        String MID = getMerchantId();
+        String TID = getTerminalId();
+
+        printService.print(PrintHelper.PrintBatchClose(batchNo, txNo, MID, TID));
 
         updateTxNo("0");
 
@@ -339,7 +344,7 @@ public void batchClose(){
                 db.insert(TX_INFO,null,contentValues);
             }
 
-            // No activation check in app temp. That's why TID and MID information is filled in automatically when the application is loaded.
+            // No activation check in app temp. That's why MID, TID, IP and PORT information is filled in, when the application is loaded.
             String terminal_id = String.valueOf(getTerminalId());
             String merchant_id = String.valueOf(getMerchantId());
             String ip_no = String.valueOf(getIP_NO());
@@ -347,16 +352,36 @@ public void batchClose(){
 
             if ( terminal_id.equals("") || terminal_id.equals("null") && merchant_id.equals("") || merchant_id.equals("null") && ip_no.equals("") || ip_no.equals("null") && port_no.equals("") || port_no.equals("null"))
             {
-                contentValues2.put(TERMINAL_ID, "000002AC");
-                contentValues2.put(MERCHANT_ID, "26854222228");
+                contentValues2.put(TERMINAL_ID, "000005BB");
+                contentValues2.put(MERCHANT_ID, "52487539624");
                 contentValues2.put(IP, "192.168.1.1");
                 contentValues2.put(PORT, "1040");
                 db.insert(ACT_TABLE,null,contentValues2);
             }
+
+            db.close();
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
+    }
+
+    public boolean CheckTableIsEmpty(){
+        boolean empty = true;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cur = db.rawQuery("SELECT COUNT(*) FROM sale_table", null);
+        if (cur != null && cur.moveToFirst()) {
+            empty = (cur.getInt (0) == 0);
+        }
+        cur.close();
+        db.close();
+        return empty;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        this.close();
+        super.finalize();
     }
 }

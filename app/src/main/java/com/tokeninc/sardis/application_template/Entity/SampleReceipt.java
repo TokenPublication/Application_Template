@@ -9,6 +9,8 @@ public class SampleReceipt {
     private String amount;
     private String groupNo;
     private String aid;
+    private String serialNo;
+    private String approvalCode;
 
     public String getMerchantName() {
         return merchantName;
@@ -62,9 +64,7 @@ public class SampleReceipt {
         return groupNo;
     }
 
-    public void setGroupNo(String groupNo) {
-        this.groupNo = groupNo;
-    }
+    public void setGroupNo(String groupNo) { this.groupNo = groupNo; }
 
     public String getAid() {
         return aid;
@@ -72,5 +72,17 @@ public class SampleReceipt {
 
     public void setAid(String aid) {
         this.aid = aid;
+    }
+
+    public String getSerialNo() { return serialNo; }
+
+    public void setSerialNo(String serialNo) {
+        this.serialNo = serialNo;
+    }
+
+    public String getApprovalCode() { return approvalCode; }
+
+    public void setApprovalCode(String approvalCode) {
+        this.approvalCode = approvalCode;
     }
 }

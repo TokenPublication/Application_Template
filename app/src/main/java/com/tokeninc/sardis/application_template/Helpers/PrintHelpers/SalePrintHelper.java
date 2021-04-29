@@ -86,8 +86,8 @@ public class SalePrintHelper {
         styledText.setFontFace(PrinterDefinitions.Font_E.Sans_Bold);
         styledText.setFontSize(12);
         styledText.newLine();
-        styledText.addTextToLine("SN: " + "0001");
-        styledText.addTextToLine("ONAY KODU: " + "235188", Alignment.Right);
+        styledText.addTextToLine("SN: " + receipt.getSerialNo());
+        styledText.addTextToLine("ONAY KODU: " + receipt.getApprovalCode(), Alignment.Right);
 
         styledText.setFontSize(8);
         styledText.setFontFace(PrinterDefinitions.Font_E.Sans_Semi_Bold);
@@ -105,7 +105,6 @@ public class SalePrintHelper {
 
         styledText.printBitmap("ykb", 20);
         styledText.addSpace(100);
-
         return styledText.toString();
     }
 
