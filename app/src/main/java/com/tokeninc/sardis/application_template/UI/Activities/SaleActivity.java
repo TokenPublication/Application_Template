@@ -84,6 +84,10 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             case R.id.btnSetConfig:
                 setConfig();
                 break;
+            case R.id.btnSetCLConfig:
+                setCLConfig();
+                break;
+
         }
     }
 
@@ -163,7 +167,14 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             int setConfigResult = cardServiceBinding.setEMVConfiguration(total.toString());
             Toast.makeText(getApplicationContext(), "setEMVConfiguration res=" + setConfigResult, Toast.LENGTH_SHORT).show();
             Log.d("emv_config", "setEMVConfiguration: " + setConfigResult);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void setCLConfig() {
+        try {
             InputStream xmlCLStream = getApplicationContext().getAssets().open("custom_emv_cl_config.xml");
             BufferedReader rCL = new BufferedReader(new InputStreamReader(xmlCLStream));
             StringBuilder totalCL = new StringBuilder();
@@ -171,14 +182,9 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
                 Log.d("emv_config", "conf line: " + line);
                 totalCL.append(line).append('\n');
             }
-
             int setCLConfigResult = cardServiceBinding.setEMVCLConfiguration(totalCL.toString());
-            Toast.makeText(getApplicationContext(), "setEMVConfiguration res=" + setCLConfigResult, Toast.LENGTH_SHORT).show();
-            Log.d("emv_config", "setEMVConfiguration: " + setCLConfigResult);
-
-            SharedPreferences.Editor editor = getSharedPreferences("EMVConfigPreferences", MODE_PRIVATE).edit();
-            editor.putString("EMVConfig", "ConfigBound");
-            editor.apply();
+            Toast.makeText(getApplicationContext(), "setEMVCLConfiguration res=" + setCLConfigResult, Toast.LENGTH_SHORT).show();
+            Log.d("emv_config", "setEMVCLConfiguration: " + setCLConfigResult);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -186,14 +192,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
-    public void onCardServiceConnected() {
-        SharedPreferences prefs = getSharedPreferences("EMVConfigPreferences", MODE_PRIVATE);
-        String EMVStatus = prefs.getString("EMVConfig", "No name defined");
-
-        if(!EMVStatus.equals("ConfigBound")) {
-            setConfig();
-        }
-    }
+    public void onCardServiceConnected() { }
 
     @Override
     public void onBackPressed() {
