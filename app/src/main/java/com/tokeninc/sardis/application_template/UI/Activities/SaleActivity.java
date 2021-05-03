@@ -47,6 +47,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
 
     int cardReadType = 0;
     String cardNumber = "**** ****";
+    String cardOwner = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,27 +61,11 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         Bundle bundle = getIntent().getExtras();
         amount = bundle.getInt("Amount");
         cardReadType = bundle.getInt("CardReadType");
+        cardNumber = bundle.getString("CardNumber");
 
-        checkExtras();
         prepareData();
         ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, "Sale Type", false, null);
         addFragment(R.id.container, fragment, false);
-    }
-
-    private void checkExtras() {
-        if (getIntent().getExtras() == null || getIntent().getExtras().getString("CardData") == null) {
-        }
-        else {
-            String Info = getIntent().getStringExtra("CardData");
-            try {
-                JSONObject json = new JSONObject(Info);
-                cardReadType = json.getInt("mCardReadType");
-                cardNumber = json.getString("mCardNumber");
-            } catch (JSONException e) {
-                e.printStackTrace();
-
-            }
-        }
     }
 
     private void prepareData() {
@@ -121,7 +106,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             obj.put("fallback", 1);
             obj.put("cardReadType",3);
 
-            if(cardReadType == CardReadType.ICC.value) {
+            if(cardReadType == CardReadType.ICC.value || cardReadType == CardReadType.MSR.value) {
                 obj.put("showCardScreen", 0);
             }
             if(cardReadType == CardReadType.MSR.value){
@@ -163,12 +148,18 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         // Finish the sale and return the values to the DummySaleActivity
         Bundle bundle = new Bundle();
         bundle.putInt("ResponseCode", code.ordinal()); // #1 Response Code
-        bundle.putString("sCardNumber", card.getCardNumber());
+
         bundle.putInt("sCardReadType", cardReadType);
 
-        if(cardReadType != CardReadType.CLCard.value) {
+        if(cardReadType != CardReadType.CLCard.value && cardReadType != CardReadType.MSR.value) {
             bundle.putString("sCardOwner", card.getOwnerName());
+            bundle.putString("sCardNumber", card.getCardNumber());
         }
+        else{
+            bundle.putString("sCardOwner", cardOwner);
+            bundle.putString("sCardNumber", cardNumber);
+        }
+
 
         Intent result = new Intent();
         result.putExtras(bundle);

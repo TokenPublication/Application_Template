@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.token.printerlib.IPrinterService;
 import com.token.printerlib.StyledString;
 import com.tokeninc.sardis.application_template.BaseActivity;
+import com.tokeninc.sardis.application_template.Entity.CardReadType;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.Entity.SampleReceipt;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
@@ -32,10 +33,10 @@ import java.util.Locale;
 
 public class DummySaleActivity extends BaseActivity implements View.OnClickListener {
 
+    DatabaseHelper databaseHelper;
+
     int amount = 0;
     int cardReadType = 0;
-
-    DatabaseHelper databaseHelper;
     String cardNumber = "**** ****";
     String cardOwner = "";
 
@@ -52,12 +53,26 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         cardReadType = bundle.getInt("CardReadType");
         TextView tvAmount = findViewById(R.id.tvAmount);
         tvAmount.setText(StringHelper.getAmount(amount));
+        checkExtras();
     }
+    private void checkExtras() {
+        if (getIntent().getExtras().getString("CardData") != null && cardReadType == CardReadType.MSR.value) {
+            String Info = getIntent().getStringExtra("CardData");
+            try {
+                JSONObject json = new JSONObject(Info);
+                cardReadType = json.getInt("mCardReadType");
+                cardNumber = json.getString("mCardNumber");
+            } catch (JSONException e) {
+                e.printStackTrace();
 
+            }
+        }
+    }
     private void doSale() {
         Intent intent = new Intent(this, SaleActivity.class);
         intent.putExtra("Amount", amount);
         intent.putExtra("CardReadType", cardReadType);
+        intent.putExtra("CardNumber", cardNumber);
         startActivityForResult(intent, 0);
     }
 
