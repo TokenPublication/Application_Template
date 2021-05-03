@@ -34,12 +34,10 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
 
     int amount = 0;
     int cardReadType = 0;
-    public static final int bottomMargin = 120;
+
     DatabaseHelper databaseHelper;
-
-    public static String shareCardData = null;
-    public static int shareCardType = 0;
-
+    String cardNumber = "**** ****";
+    String cardOwner = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,16 +49,15 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         //get data from payment gateway and process
         Bundle bundle = getIntent().getExtras();
         amount = bundle.getInt("Amount");
-        shareCardType = bundle.getInt("CardReadType");
+        cardReadType = bundle.getInt("CardReadType");
         TextView tvAmount = findViewById(R.id.tvAmount);
         tvAmount.setText(StringHelper.getAmount(amount));
-        Object cardReadType = bundle.get("CardReadType"); //Could be any type
-        Object cardData = bundle.get("CardData"); //indeterminate for the moment.
     }
 
-    private void doSale(Object cardReadType, Object cardData) {
+    private void doSale() {
         Intent intent = new Intent(this, SaleActivity.class);
         intent.putExtra("Amount", amount);
+        intent.putExtra("CardReadType", cardReadType);
         startActivityForResult(intent, 0);
     }
 
@@ -69,19 +66,16 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             int responseCode = data.getIntExtra("ResponseCode", ResponseCode.CANCELLED.ordinal());
-            String cardNo = "**** **** **** ";
-            String owner = "";
-            if (data.hasExtra("CardOwner")) {
-                owner = data.getStringExtra("CardOwner");
+            if (data.hasExtra("sCardOwner")) {
+                cardOwner = data.getStringExtra("sCardOwner");
             }
-            if (data.hasExtra("CardNumber")) {
-                String number = data.getStringExtra("CardNumber");
-                if (number.length() >= 4) {
-                    cardNo = cardNo + number.substring(number.length() - 4);
-                }
+            if (data.hasExtra("sCardNumber")) {
+                cardNumber = data.getStringExtra("sCardNumber");
             }
 
-            onSaleResponseRetrieved(amount, ResponseCode.values()[responseCode], true, SlipType.BOTH_SLIPS, cardNo, owner);
+            databaseHelper.SaveSaleToDB(cardNumber, String.valueOf(amount));
+
+            onSaleResponseRetrieved(amount, ResponseCode.values()[responseCode], true, SlipType.BOTH_SLIPS, cardNumber, cardOwner);
         }
     }
 
@@ -89,7 +83,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnSale:
-                doSale(null, null);
+                doSale();
                 break;
             case R.id.btnSuccess:
                 prepareDummyResponse(ResponseCode.SUCCESS);
@@ -161,20 +155,15 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         Bundle bundle = new Bundle();
         bundle.putInt("ResponseCode", code.ordinal()); // #1 Response Code
 
-            bundle.putString("CardOwner", SaleActivity.shareCardOwner); // Optional
-            bundle.putString("CardNumber", SaleActivity.shareCardNo); // Optional, Card No can be masked
+            bundle.putString("CardOwner", cardOwner); // Optional
+            bundle.putString("CardNumber", cardNumber); // Optional, Card No can be masked
             bundle.putInt("PaymentStatus", 0); // #2 Payment Status
             bundle.putInt("Amount", price); // #3 Amount
             bundle.putInt("Amount2", price);
             bundle.putBoolean("IsSlip", hasSlip);
             bundle.putInt("BatchNo", databaseHelper.getBatchNo());
 
-            if(DummySaleActivity.shareCardType == 2) {
-                bundle.putString("CardNo", StringHelper.MaskTheCardNo(DummySaleActivity.shareCardData));
-            }
-            else {
-                bundle.putString("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo)); //#5 Card No "MASKED"
-            }
+            bundle.putString("CardNo", StringHelper.MaskTheCardNo(cardNumber)); //#5 Card No "MASKED"
 
             bundle.putString("MID", databaseHelper.getMerchantId()); //#6 Merchant ID
             bundle.putString("TID", databaseHelper.getTerminalId()); //#7 Terminal ID
@@ -207,14 +196,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             json.put("RefNo", String.valueOf(databaseHelper.getSaleID()));
             json.put("MID", databaseHelper.getMerchantId());
             json.put("TID", databaseHelper.getTerminalId());
-
-            if(DummySaleActivity.shareCardType == 2) {
-                json.put("CardNo", StringHelper.MaskTheCardNo(DummySaleActivity.shareCardData));
-            }
-            else {
-                json.put("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo)); //#5 Card No "MASKED"
-            }
-
+            json.put("CardNo", StringHelper.MaskTheCardNo(cardNumber));
         } catch (JSONException e) {
             e.printStackTrace();
         }

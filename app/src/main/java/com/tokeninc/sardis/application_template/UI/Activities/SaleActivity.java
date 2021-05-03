@@ -2,10 +2,8 @@ package com.tokeninc.sardis.application_template.UI.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -29,6 +27,7 @@ import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -45,10 +44,9 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     private ICard card;
 
     DatabaseHelper databaseHelper;
-    String card_no, sale_amount;
 
-    public static String shareCardNo = null;
-    public static String shareCardOwner = null;
+    int cardReadType = 0;
+    String cardNumber = "**** ****";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,12 +54,33 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_sale);
         //Prevent screen from turning of when sale is active
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
         databaseHelper = new DatabaseHelper(this);
 
-        amount = getIntent().getExtras().getInt("Amount");
+        Bundle bundle = getIntent().getExtras();
+        amount = bundle.getInt("Amount");
+        cardReadType = bundle.getInt("CardReadType");
+
+        checkExtras();
         prepareData();
         ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, "Sale Type", false, null);
         addFragment(R.id.container, fragment, false);
+    }
+
+    private void checkExtras() {
+        if (getIntent().getExtras() == null || getIntent().getExtras().getString("CardData") == null) {
+        }
+        else {
+            String Info = getIntent().getStringExtra("CardData");
+            try {
+                JSONObject json = new JSONObject(Info);
+                cardReadType = json.getInt("mCardReadType");
+                cardNumber = json.getString("mCardNumber");
+            } catch (JSONException e) {
+                e.printStackTrace();
+
+            }
+        }
     }
 
     private void prepareData() {
@@ -86,7 +105,6 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             case R.id.btnSetCLConfig:
                 setCLConfig();
                 break;
-
         }
     }
 
@@ -103,12 +121,11 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             obj.put("fallback", 1);
             obj.put("cardReadType",3);
 
-            if(DummySaleActivity.shareCardType == 1) {
+            if(cardReadType == CardReadType.ICC.value) {
                 obj.put("showCardScreen", 0);
             }
-
-            if(DummySaleActivity.shareCardType == 2){
-                cardServiceBinding.getOnlinePIN(amount, DummySaleActivity.shareCardData, 0x0A01, 0, 4, 8, 30);
+            if(cardReadType == CardReadType.MSR.value){
+                cardServiceBinding.getOnlinePIN(amount, cardNumber, 0x0A01, 0, 4, 8, 30);
                 showInfoDialog();
             }
             else {
@@ -143,25 +160,19 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     }
 
     public void finishSale(ResponseCode code) {
+        // Finish the sale and return the values to the DummySaleActivity
         Bundle bundle = new Bundle();
         bundle.putInt("ResponseCode", code.ordinal()); // #1 Response Code
-        if (card != null) {
-            SaleActivity.shareCardNo = card.getCardNumber();
-            SaleActivity.shareCardOwner = card.getCardNumber();
+        bundle.putString("sCardNumber", card.getCardNumber());
+        bundle.putInt("sCardReadType", cardReadType);
+
+        if(cardReadType != CardReadType.CLCard.value) {
+            bundle.putString("sCardOwner", card.getOwnerName());
         }
+
         Intent result = new Intent();
         result.putExtras(bundle);
         setResult(Activity.RESULT_OK, result);
-
-        // ADD Sale Data to DB
-        if(DummySaleActivity.shareCardType == 2) {
-            card_no = DummySaleActivity.shareCardData;
-        }
-        else {
-            card_no = String.valueOf(card.getCardNumber());
-        }
-        sale_amount = String.valueOf(amount);
-        databaseHelper.SaveSaleToDB(card_no, sale_amount);
         finish();
     }
 
@@ -218,6 +229,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             int type = json.getInt("mCardReadType");
 
             if (type == CardReadType.CLCard.value) {
+                cardReadType = CardReadType.CLCard.value;
                 ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
                 this.card = card;
                 showInfoDialog();
