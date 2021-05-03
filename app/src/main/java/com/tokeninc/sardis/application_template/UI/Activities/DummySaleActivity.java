@@ -33,8 +33,13 @@ import java.util.Locale;
 public class DummySaleActivity extends BaseActivity implements View.OnClickListener {
 
     int amount = 0;
+    int cardReadType = 0;
     public static final int bottomMargin = 120;
     DatabaseHelper databaseHelper;
+
+    public static String shareCardData = null;
+    public static int shareCardType = 0;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +51,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         //get data from payment gateway and process
         Bundle bundle = getIntent().getExtras();
         amount = bundle.getInt("Amount");
+        shareCardType = bundle.getInt("CardReadType");
         TextView tvAmount = findViewById(R.id.tvAmount);
         tvAmount.setText(StringHelper.getAmount(amount));
         Object cardReadType = bundle.get("CardReadType"); //Could be any type
@@ -162,11 +168,16 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             bundle.putInt("Amount2", price);
             bundle.putBoolean("IsSlip", hasSlip);
             bundle.putInt("BatchNo", databaseHelper.getBatchNo());
-            if(!SaleActivity.shareCardNo.equals("****")) { // For without card Success response
+
+            if(DummySaleActivity.shareCardType == 2) {
+                bundle.putString("CardNo", StringHelper.MaskTheCardNo(DummySaleActivity.shareCardData));
+            }
+            else {
                 bundle.putString("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo)); //#5 Card No "MASKED"
             }
-            bundle.putString("MID", databaseHelper.getMerchantId()); // #6 Merchant ID
-            bundle.putString("TID", databaseHelper.getTerminalId()); // #7 Terminal ID
+
+            bundle.putString("MID", databaseHelper.getMerchantId()); //#6 Merchant ID
+            bundle.putString("TID", databaseHelper.getTerminalId()); //#7 Terminal ID
             bundle.putInt("TxnNo", databaseHelper.getTxNo());
             bundle.putInt("SlipType", slipType.value);
 
@@ -174,11 +185,11 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             bundle.putString("RefNo", String.valueOf(databaseHelper.getSaleID()));
 
         if (slipType == SlipType.CARDHOLDER_SLIP || slipType == SlipType.BOTH_SLIPS) {
-            bundle.putString("customerSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(SaleActivity.shareCardNo, SaleActivity.shareCardOwner), SlipType.CARDHOLDER_SLIP));
+            bundle.putString("customerSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.CARDHOLDER_SLIP));
           //  bundle.putByteArray("customerSlipBitmapData",PrintHelper.getBitmap(getApplicationContext()));
         }
         if (slipType == SlipType.MERCHANT_SLIP || slipType == SlipType.BOTH_SLIPS) {
-            bundle.putString("merchantSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(SaleActivity.shareCardNo, SaleActivity.shareCardOwner), SlipType.MERCHANT_SLIP));
+            bundle.putString("merchantSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.MERCHANT_SLIP));
          //  bundle.putByteArray("merchantSlipBitmapData",PrintHelper.getBitmap(getApplicationContext()));
         }
         bundle.putString("ApprovalCode", getApprovalCode());
@@ -196,9 +207,14 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             json.put("RefNo", String.valueOf(databaseHelper.getSaleID()));
             json.put("MID", databaseHelper.getMerchantId());
             json.put("TID", databaseHelper.getTerminalId());
-            if(!SaleActivity.shareCardNo.equals("****")) {
-                json.put("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo));
+
+            if(DummySaleActivity.shareCardType == 2) {
+                json.put("CardNo", StringHelper.MaskTheCardNo(DummySaleActivity.shareCardData));
             }
+            else {
+                json.put("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo)); //#5 Card No "MASKED"
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }

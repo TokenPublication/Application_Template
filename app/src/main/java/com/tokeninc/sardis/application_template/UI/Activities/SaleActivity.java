@@ -47,9 +47,8 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     DatabaseHelper databaseHelper;
     String card_no, sale_amount;
 
-    public static String shareCardNo = "****";
-    public static String shareCardOwner = "****";
-    Boolean isCL = false;
+    public static String shareCardNo = null;
+    public static String shareCardOwner = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -102,8 +101,19 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             obj.put("forceOnline", 1);
             obj.put("zeroAmount", 0);
             obj.put("fallback", 1);
+            obj.put("cardReadType",3);
 
-            cardServiceBinding.getCard(amount, 40, obj.toString());
+            if(DummySaleActivity.shareCardType == 1) {
+                obj.put("showCardScreen", 0);
+            }
+
+            if(DummySaleActivity.shareCardType == 2){
+                cardServiceBinding.getOnlinePIN(amount, DummySaleActivity.shareCardData, 0x0A01, 0, 4, 8, 30);
+                showInfoDialog();
+            }
+            else {
+                cardServiceBinding.getCard(amount, 40, obj.toString());
+            }
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -137,19 +147,19 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         bundle.putInt("ResponseCode", code.ordinal()); // #1 Response Code
         if (card != null) {
             SaleActivity.shareCardNo = card.getCardNumber();
-            if (isCL){
-                SaleActivity.shareCardOwner = "***** *****";
-            }
-            else{
-                SaleActivity.shareCardOwner = card.getOwnerName();
-            }
+            SaleActivity.shareCardOwner = card.getCardNumber();
         }
         Intent result = new Intent();
         result.putExtras(bundle);
         setResult(Activity.RESULT_OK, result);
 
         // ADD Sale Data to DB
-        card_no = String.valueOf(card.getCardNumber());
+        if(DummySaleActivity.shareCardType == 2) {
+            card_no = DummySaleActivity.shareCardData;
+        }
+        else {
+            card_no = String.valueOf(card.getCardNumber());
+        }
         sale_amount = String.valueOf(amount);
         databaseHelper.SaveSaleToDB(card_no, sale_amount);
         finish();
@@ -210,24 +220,20 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             if (type == CardReadType.CLCard.value) {
                 ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
                 this.card = card;
-                isCL = true;
                 showInfoDialog();
             }
             if (type == CardReadType.ICC.value) {
                 ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
                 this.card = card;
                 showInfoDialog();
-            }if (type == CardReadType.ICC2MSR.value || type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
-                MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
-                this.card = card;
-                cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);
-                showInfoDialog();
-
-                //TODO Do transaction after pin verification
             }
-            //TODO
-            //..check and process other read types
+            if (type == CardReadType.ICC2MSR.value || type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
+            MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
+            this.card = card;
+            cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);
+            showInfoDialog();
         }
+    }
         catch (Exception e) {
             e.printStackTrace();
         }
