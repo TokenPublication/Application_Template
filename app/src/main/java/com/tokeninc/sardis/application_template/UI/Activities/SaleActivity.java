@@ -45,6 +45,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     DatabaseHelper databaseHelper;
 
     int cardReadType = 0;
+    String cardData;
     String cardNumber = "**** ****";
     String cardOwner = "";
 
@@ -60,36 +61,40 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         Bundle bundle = getIntent().getExtras();
         amount = bundle.getInt("Amount");
         cardReadType = bundle.getInt("CardReadType");
+        cardData = bundle.getString("CardData");
 
-        checkExtras();
-        prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, "Sale Type", false, null);
-        addFragment(R.id.container, fragment, false);
+        if (cardReadType == CardReadType.NONE.value || cardReadType == CardReadType.ICC.value) {
+            readCard();
+        }else{
+            getCardDataFromBundle();
+            prepareSaleMenu();
+        }
     }
 
-    public void checkExtras(){
-        if (getIntent().getExtras().getString("CardData") != null && cardReadType == CardReadType.MSR.value) {
-            String cardData = getIntent().getStringExtra("CardData");
-            try {
-                ICard card = new Gson().fromJson(cardData, MSRCard.class);
-                this.card = card;
-            } catch (Exception e) {
-                e.printStackTrace();
+    public void getCardDataFromBundle(){
+        if (cardReadType == CardReadType.MSR.value ) {
+            if(getIntent().getExtras().getString("CardData") != null) {
+                String cardData = getIntent().getStringExtra("CardData");
+                try {
+                    ICard card = new Gson().fromJson(cardData, MSRCard.class);
+                    this.card = card;
+                    cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    private void prepareData() {
+    private void prepareSaleMenu() {
         menuItemList = new ArrayList<>();
-        menuItemList.add(new MenuItem("Sale", new MenuItemClickListener() {
-            @Override
-            public void onClick(IListMenuItem menuItem) {
-                readCard();
-            }
-        }));
-        menuItemList.add(new MenuItem("Installment Sale", (menuItem) -> readCard()));
-        menuItemList.add(new MenuItem("Loyalty Sale", (menuItem) -> readCard()));
-        menuItemList.add(new MenuItem("Campaign Sale", (menuItem) -> readCard()));
+        menuItemList.add(new MenuItem("Sale", (menuItem) -> showInfoDialog()));
+        menuItemList.add(new MenuItem("Installment Sale", (menuItem) -> showInfoDialog()));
+        menuItemList.add(new MenuItem("Loyalty Sale", (menuItem) -> showInfoDialog()));
+        menuItemList.add(new MenuItem("Campaign Sale", (menuItem) -> showInfoDialog()));
+
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, "Sale Type", false, null);
+        addFragment(R.id.container, fragment, false);
     }
 
     @Override
@@ -111,20 +116,15 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
      */
     private void readCard() {
         try {
-            if(cardReadType == CardReadType.MSR.value ){
-                cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);
-                showInfoDialog();
-            }else{
-                JSONObject obj = new JSONObject();
-                obj.put("forceOnline", 1);
-                obj.put("zeroAmount", 0);
-                obj.put("fallback", 1);
-                obj.put("cardReadType",3);
-                if(cardReadType == CardReadType.ICC.value) {
-                    obj.put("showCardScreen", 0);
-                }
-                cardServiceBinding.getCard(amount, 40, obj.toString());
+            JSONObject obj = new JSONObject();
+            obj.put("forceOnline", 1);
+            obj.put("zeroAmount", 0);
+            obj.put("fallback", 1);
+            obj.put("cardReadType",3);
+            if(cardReadType == CardReadType.ICC.value) {
+                obj.put("showCardScreen", 0);
             }
+            cardServiceBinding.getCard(amount, 40, obj.toString());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -224,6 +224,8 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     public void onCardDataReceived(String cardData) {
 
         try {
+            prepareSaleMenu();
+
             JSONObject json = new JSONObject(cardData);
             int type = json.getInt("mCardReadType");
 
@@ -231,20 +233,17 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
                 cardReadType = CardReadType.CLCard.value;
                 ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
                 this.card = card;
-                showInfoDialog();
             }
-            if (type == CardReadType.ICC.value) {
+            else if (type == CardReadType.ICC.value) {
                 ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
                 this.card = card;
-                showInfoDialog();
             }
-            if (type == CardReadType.ICC2MSR.value || type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
-            MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
-            this.card = card;
-            cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);
-            showInfoDialog();
+            else if (type == CardReadType.ICC2MSR.value || type == CardReadType.MSR.value || type == CardReadType.KeyIn.value) {
+                MSRCard card = new Gson().fromJson(cardData, MSRCard.class);
+                this.card = card;
+                cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);
+            }
         }
-    }
         catch (Exception e) {
             e.printStackTrace();
         }
@@ -252,7 +251,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onPinReceived(String pin) {
-        showInfoDialog();
+        prepareSaleMenu();
     }
 
     @Override

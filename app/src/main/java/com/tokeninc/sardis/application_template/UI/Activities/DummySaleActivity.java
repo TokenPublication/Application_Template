@@ -55,15 +55,9 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         Bundle bundle = getIntent().getExtras();
         amount = bundle.getInt("Amount");
         cardReadType = bundle.getInt("CardReadType");
+        cardData = getIntent().getStringExtra("CardData");
         TextView tvAmount = findViewById(R.id.tvAmount);
         tvAmount.setText(StringHelper.getAmount(amount));
-        checkExtras();
-    }
-
-    private void checkExtras() {
-        if (getIntent().getExtras().getString("CardData") != null && cardReadType == CardReadType.MSR.value) {
-            cardData = getIntent().getStringExtra("CardData");
-        }
     }
 
     private void doSale() {
