@@ -12,10 +12,12 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.token.printerlib.IPrinterService;
 import com.token.printerlib.StyledString;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.CardReadType;
+import com.tokeninc.sardis.application_template.Entity.MSRCard;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.Entity.SampleReceipt;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
@@ -27,6 +29,7 @@ import com.tokeninc.sardis.application_template.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
@@ -39,6 +42,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     int cardReadType = 0;
     String cardNumber = "**** ****";
     String cardOwner = "";
+    String cardData;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,24 +59,18 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         tvAmount.setText(StringHelper.getAmount(amount));
         checkExtras();
     }
+
     private void checkExtras() {
         if (getIntent().getExtras().getString("CardData") != null && cardReadType == CardReadType.MSR.value) {
-            String Info = getIntent().getStringExtra("CardData");
-            try {
-                JSONObject json = new JSONObject(Info);
-                cardReadType = json.getInt("mCardReadType");
-                cardNumber = json.getString("mCardNumber");
-            } catch (JSONException e) {
-                e.printStackTrace();
-
-            }
+            cardData = getIntent().getStringExtra("CardData");
         }
     }
+
     private void doSale() {
         Intent intent = new Intent(this, SaleActivity.class);
         intent.putExtra("Amount", amount);
         intent.putExtra("CardReadType", cardReadType);
-        intent.putExtra("CardNumber", cardNumber);
+        intent.putExtra("CardData", cardData);
         startActivityForResult(intent, 0);
     }
 

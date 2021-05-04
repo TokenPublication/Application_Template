@@ -27,7 +27,6 @@ import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -61,11 +60,23 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         Bundle bundle = getIntent().getExtras();
         amount = bundle.getInt("Amount");
         cardReadType = bundle.getInt("CardReadType");
-        cardNumber = bundle.getString("CardNumber");
 
+        checkExtras();
         prepareData();
         ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, "Sale Type", false, null);
         addFragment(R.id.container, fragment, false);
+    }
+
+    public void checkExtras(){
+        if (getIntent().getExtras().getString("CardData") != null && cardReadType == CardReadType.MSR.value) {
+            String cardData = getIntent().getStringExtra("CardData");
+            try {
+                ICard card = new Gson().fromJson(cardData, MSRCard.class);
+                this.card = card;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void prepareData() {
@@ -100,20 +111,18 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
      */
     private void readCard() {
         try {
-            JSONObject obj = new JSONObject();
-            obj.put("forceOnline", 1);
-            obj.put("zeroAmount", 0);
-            obj.put("fallback", 1);
-            obj.put("cardReadType",3);
-
-            if(cardReadType == CardReadType.ICC.value || cardReadType == CardReadType.MSR.value) {
-                obj.put("showCardScreen", 0);
-            }
-            if(cardReadType == CardReadType.MSR.value){
-                cardServiceBinding.getOnlinePIN(amount, cardNumber, 0x0A01, 0, 4, 8, 30);
+            if(cardReadType == CardReadType.MSR.value ){
+                cardServiceBinding.getOnlinePIN(amount, card.getCardNumber(), 0x0A01, 0, 4, 8, 30);
                 showInfoDialog();
-            }
-            else {
+            }else{
+                JSONObject obj = new JSONObject();
+                obj.put("forceOnline", 1);
+                obj.put("zeroAmount", 0);
+                obj.put("fallback", 1);
+                obj.put("cardReadType",3);
+                if(cardReadType == CardReadType.ICC.value) {
+                    obj.put("showCardScreen", 0);
+                }
                 cardServiceBinding.getCard(amount, 40, obj.toString());
             }
         }
@@ -151,7 +160,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
 
         bundle.putInt("sCardReadType", cardReadType);
 
-        if(cardReadType != CardReadType.CLCard.value && cardReadType != CardReadType.MSR.value) {
+        if(cardReadType != CardReadType.CLCard.value) {
             bundle.putString("sCardOwner", card.getOwnerName());
             bundle.putString("sCardNumber", card.getCardNumber());
         }
@@ -159,7 +168,6 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             bundle.putString("sCardOwner", cardOwner);
             bundle.putString("sCardNumber", cardNumber);
         }
-
 
         Intent result = new Intent();
         result.putExtras(bundle);
