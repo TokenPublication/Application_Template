@@ -12,9 +12,12 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.token.printerlib.IPrinterService;
 import com.token.printerlib.StyledString;
 import com.tokeninc.sardis.application_template.BaseActivity;
+import com.tokeninc.sardis.application_template.Entity.CardReadType;
+import com.tokeninc.sardis.application_template.Entity.MSRCard;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.Entity.SampleReceipt;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
@@ -26,15 +29,20 @@ import com.tokeninc.sardis.application_template.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Locale;
 
 public class DummySaleActivity extends BaseActivity implements View.OnClickListener {
 
-    int amount = 0;
-    public static final int bottomMargin = 120;
     DatabaseHelper databaseHelper;
+
+    int amount = 0;
+    int cardReadType = 0;
+    String cardNumber = "**** ****";
+    String cardOwner = "";
+    String cardData;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,15 +54,17 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         //get data from payment gateway and process
         Bundle bundle = getIntent().getExtras();
         amount = bundle.getInt("Amount");
+        cardReadType = bundle.getInt("CardReadType");
+        cardData = getIntent().getStringExtra("CardData");
         TextView tvAmount = findViewById(R.id.tvAmount);
         tvAmount.setText(StringHelper.getAmount(amount));
-        Object cardReadType = bundle.get("CardReadType"); //Could be any type
-        Object cardData = bundle.get("CardData"); //indeterminate for the moment.
     }
 
-    private void doSale(Object cardReadType, Object cardData) {
+    private void doSale() {
         Intent intent = new Intent(this, SaleActivity.class);
         intent.putExtra("Amount", amount);
+        intent.putExtra("CardReadType", cardReadType);
+        intent.putExtra("CardData", cardData);
         startActivityForResult(intent, 0);
     }
 
@@ -63,19 +73,16 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             int responseCode = data.getIntExtra("ResponseCode", ResponseCode.CANCELLED.ordinal());
-            String cardNo = "**** **** **** ";
-            String owner = "";
-            if (data.hasExtra("CardOwner")) {
-                owner = data.getStringExtra("CardOwner");
+            if (data.hasExtra("sCardOwner")) {
+                cardOwner = data.getStringExtra("sCardOwner");
             }
-            if (data.hasExtra("CardNumber")) {
-                String number = data.getStringExtra("CardNumber");
-                if (number.length() >= 4) {
-                    cardNo = cardNo + number.substring(number.length() - 4);
-                }
+            if (data.hasExtra("sCardNumber")) {
+                cardNumber = data.getStringExtra("sCardNumber");
             }
 
-            onSaleResponseRetrieved(amount, ResponseCode.values()[responseCode], true, SlipType.BOTH_SLIPS, cardNo, owner);
+            databaseHelper.SaveSaleToDB(cardNumber, String.valueOf(amount));
+
+            onSaleResponseRetrieved(amount, ResponseCode.values()[responseCode], true, SlipType.BOTH_SLIPS, cardNumber, cardOwner);
         }
     }
 
@@ -83,7 +90,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnSale:
-                doSale(null, null);
+                doSale();
                 break;
             case R.id.btnSuccess:
                 prepareDummyResponse(ResponseCode.SUCCESS);
@@ -155,18 +162,18 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         Bundle bundle = new Bundle();
         bundle.putInt("ResponseCode", code.ordinal()); // #1 Response Code
 
-            bundle.putString("CardOwner", SaleActivity.shareCardOwner); // Optional
-            bundle.putString("CardNumber", SaleActivity.shareCardNo); // Optional, Card No can be masked
+            bundle.putString("CardOwner", cardOwner); // Optional
+            bundle.putString("CardNumber", cardNumber); // Optional, Card No can be masked
             bundle.putInt("PaymentStatus", 0); // #2 Payment Status
             bundle.putInt("Amount", price); // #3 Amount
             bundle.putInt("Amount2", price);
             bundle.putBoolean("IsSlip", hasSlip);
             bundle.putInt("BatchNo", databaseHelper.getBatchNo());
-            if(!SaleActivity.shareCardNo.equals("****")) { // For without card Success response
-                bundle.putString("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo)); //#5 Card No "MASKED"
-            }
-            bundle.putString("MID", databaseHelper.getMerchantId()); // #6 Merchant ID
-            bundle.putString("TID", databaseHelper.getTerminalId()); // #7 Terminal ID
+
+            bundle.putString("CardNo", StringHelper.MaskTheCardNo(cardNumber)); //#5 Card No "MASKED"
+
+            bundle.putString("MID", databaseHelper.getMerchantId()); //#6 Merchant ID
+            bundle.putString("TID", databaseHelper.getTerminalId()); //#7 Terminal ID
             bundle.putInt("TxnNo", databaseHelper.getTxNo());
             bundle.putInt("SlipType", slipType.value);
 
@@ -174,11 +181,11 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             bundle.putString("RefNo", String.valueOf(databaseHelper.getSaleID()));
 
         if (slipType == SlipType.CARDHOLDER_SLIP || slipType == SlipType.BOTH_SLIPS) {
-            bundle.putString("customerSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(SaleActivity.shareCardNo, SaleActivity.shareCardOwner), SlipType.CARDHOLDER_SLIP));
+            bundle.putString("customerSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.CARDHOLDER_SLIP));
           //  bundle.putByteArray("customerSlipBitmapData",PrintHelper.getBitmap(getApplicationContext()));
         }
         if (slipType == SlipType.MERCHANT_SLIP || slipType == SlipType.BOTH_SLIPS) {
-            bundle.putString("merchantSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(SaleActivity.shareCardNo, SaleActivity.shareCardOwner), SlipType.MERCHANT_SLIP));
+            bundle.putString("merchantSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.MERCHANT_SLIP));
          //  bundle.putByteArray("merchantSlipBitmapData",PrintHelper.getBitmap(getApplicationContext()));
         }
         bundle.putString("ApprovalCode", getApprovalCode());
@@ -196,9 +203,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             json.put("RefNo", String.valueOf(databaseHelper.getSaleID()));
             json.put("MID", databaseHelper.getMerchantId());
             json.put("TID", databaseHelper.getTerminalId());
-            if(!SaleActivity.shareCardNo.equals("****")) {
-                json.put("CardNo", StringHelper.MaskTheCardNo(SaleActivity.shareCardNo));
-            }
+            json.put("CardNo", StringHelper.MaskTheCardNo(cardNumber));
         } catch (JSONException e) {
             e.printStackTrace();
         }
