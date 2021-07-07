@@ -44,6 +44,9 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     String cardOwner = "";
     String cardData;
 
+    private int ZNO = 0;
+    private int ReceiptNo = 0;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +57,10 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         //get data from payment gateway and process
         Bundle bundle = getIntent().getExtras();
         amount = bundle.getInt("Amount");
+
+        ZNO = getIntent().getExtras().getInt("ZNO");
+        ReceiptNo = getIntent().getExtras().getInt("ReceiptNo");
+
         cardReadType = bundle.getInt("CardReadType");
         cardData = getIntent().getStringExtra("CardData");
         TextView tvAmount = findViewById(R.id.tvAmount);
@@ -181,11 +188,11 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
             bundle.putString("RefNo", String.valueOf(databaseHelper.getSaleID()));
 
         if (slipType == SlipType.CARDHOLDER_SLIP || slipType == SlipType.BOTH_SLIPS) {
-            bundle.putString("customerSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.CARDHOLDER_SLIP));
+            bundle.putString("customerSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.CARDHOLDER_SLIP, this, ZNO, ReceiptNo));
           //  bundle.putByteArray("customerSlipBitmapData",PrintHelper.getBitmap(getApplicationContext()));
         }
         if (slipType == SlipType.MERCHANT_SLIP || slipType == SlipType.BOTH_SLIPS) {
-            bundle.putString("merchantSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.MERCHANT_SLIP));
+            bundle.putString("merchantSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.MERCHANT_SLIP, this, ZNO, ReceiptNo));
          //  bundle.putByteArray("merchantSlipBitmapData",PrintHelper.getBitmap(getApplicationContext()));
         }
         bundle.putString("ApprovalCode", getApprovalCode());
