@@ -5,41 +5,34 @@ import android.content.Context;
 import com.token.printerlib.PrinterDefinitions.Alignment;
 import com.token.printerlib.PrinterDefinitions;
 import com.token.printerlib.StyledString;
+import com.tokeninc.deviceinfo.DeviceInfo;
 import com.tokeninc.sardis.application_template.Entity.SampleReceipt;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
+import com.tokeninc.sardis.application_template.AppTemp;
 import com.tokeninc.sardis.application_template.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class SalePrintHelper {
+public class SalePrintHelper extends BasePrintHelper{
 
-    public static String getFormattedText(SampleReceipt receipt, SlipType slipType)
+    public static String getFormattedText(SampleReceipt receipt, SlipType slipType, Context context, Integer ZNO, Integer ReceiptNo)
     {
         StyledString styledText = new StyledString();
 
-        styledText.setLineSpacing(0.5f);
-        styledText.setFontSize(12);
-        styledText.setFontFace(PrinterDefinitions.Font_E.SourceSansPro);
-        styledText.addTextToLine(receipt.getMerchantName(), Alignment.Center);
 
-        styledText.newLine();
-        styledText.setFontFace(PrinterDefinitions.Font_E.Sans_Semi_Bold);
-        styledText.addTextToLine("İŞYERİ NO:", Alignment.Left);
-        styledText.setFontFace(PrinterDefinitions.Font_E.SourceSansPro);
-        styledText.addTextToLine(receipt.getMerchantID(), Alignment.Right);
-
-        styledText.newLine();
-        styledText.setFontFace(PrinterDefinitions.Font_E.Sans_Semi_Bold);
-        styledText.addTextToLine("TERMİNAL NO:", Alignment.Left);
-        styledText.setFontFace(PrinterDefinitions.Font_E.SourceSansPro);
-        styledText.addTextToLine(receipt.getPosID(), Alignment.Right);
+        if(slipType == SlipType.CARDHOLDER_SLIP){
+            if(!((AppTemp) context.getApplicationContext()).getCurrentDeviceMode().equals(DeviceInfo.PosModeEnum.ECR.name())  && !((AppTemp) context.getApplicationContext()).getCurrentDeviceMode().equals(DeviceInfo.PosModeEnum.VUK507.name())){
+                printSlipHeader(styledText, receipt);
+            }
+        }
+        else {
+            printSlipHeader(styledText, receipt);
+        }
 
         styledText.newLine();
         if (slipType == SlipType.CARDHOLDER_SLIP) {
@@ -56,7 +49,18 @@ public class SalePrintHelper {
         String time = sdf.format(Calendar.getInstance().getTime());
 
         styledText.newLine();
-        styledText.addTextToLine(time + " " + "C ONLINE", Alignment.Center);
+
+        if(slipType == SlipType.CARDHOLDER_SLIP){
+            if(((AppTemp) context.getApplicationContext()).getCurrentDeviceMode().equals(DeviceInfo.PosModeEnum.ECR.name())|| ((AppTemp) context.getApplicationContext()).getCurrentDeviceMode().equals(DeviceInfo.PosModeEnum.VUK507.name())){
+                styledText.addTextToLine("C ONLINE", Alignment.Center);
+            }
+            else{
+                styledText.addTextToLine(time + " " + "C ONLINE", Alignment.Center);
+            }
+        }
+        else if(slipType == SlipType.MERCHANT_SLIP){
+            styledText.addTextToLine(time + " " + "C ONLINE", Alignment.Center);
+        }
 
         styledText.newLine();
         styledText.addTextToLine(receipt.getCardNo(), Alignment.Center);
@@ -96,6 +100,26 @@ public class SalePrintHelper {
 
         styledText.newLine();
         styledText.addTextToLine("AID: " + receipt.getAid());
+
+        if (slipType == SlipType.MERCHANT_SLIP) {
+            addTextToNewLine(styledText, "*MALİ DEĞERİ YOKTUR*", Alignment.Center, 8);
+        }
+
+        if (slipType == SlipType.MERCHANT_SLIP) {
+            if(((AppTemp) context.getApplicationContext()).getCurrentDeviceMode().equals(DeviceInfo.PosModeEnum.ECR.name())) {
+                styledText.newLine();
+                styledText.addTextToLine("Z NO: " +ZNO, Alignment.Right);
+                styledText.addTextToLine("FİŞ NO: " +ReceiptNo, Alignment.Left);
+            }
+        }
+
+        if (slipType == SlipType.CARDHOLDER_SLIP) {
+            addTextToNewLine(styledText, ((AppTemp) context.getApplicationContext()).getCurrentFiscalID(), Alignment.Center, 8);
+        }
+
+        if (slipType == SlipType.MERCHANT_SLIP) {
+            addTextToNewLine(styledText, ((AppTemp) context.getApplicationContext()).getCurrentFiscalID(), Alignment.Center, 8);
+        }
 
         styledText.newLine();
         styledText.addTextToLine("BU İŞLEM YURT İÇİ KARTLA YAPILMIŞTIR", Alignment.Center);

@@ -14,7 +14,6 @@ import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.token.uicomponents.ListMenuFragment.IListMenuItem;
 import com.token.uicomponents.ListMenuFragment.ListMenuFragment;
-import com.token.uicomponents.ListMenuFragment.MenuItemClickListener;
 import com.token.uicomponents.infodialog.InfoDialog;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.CardReadType;
@@ -48,6 +47,9 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     String cardData;
     String cardNumber = "**** ****";
     String cardOwner = "";
+
+    protected String qrString = "QR Code Test";
+    private boolean QRisSuccess = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,10 +122,13 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             obj.put("forceOnline", 1);
             obj.put("zeroAmount", 0);
             obj.put("fallback", 1);
-            obj.put("cardReadType",3);
+            obj.put("cardReadTypes",6);
+            obj.put("qrPay", 1);
+
             if(cardReadType == CardReadType.ICC.value) {
                 obj.put("showCardScreen", 0);
             }
+
             cardServiceBinding.getCard(amount, 40, obj.toString());
         }
         catch (Exception e) {
@@ -133,6 +138,32 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
 
     private void takeOutICC() {
         cardServiceBinding.takeOutICC(40);
+    }
+
+    protected void QrSale() {
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Please Wait", true);
+        // Request to Show a QR Code ->
+        cardServiceBinding.showQR("PLEASE READ THE QR CODE", StringHelper.getAmount(amount), qrString); // Shows QR on the back screen
+        dialog.setQr(qrString, "Waiting For The QR Code To Read"); // Shows the same QR on Info Dialog
+        // Request a QR Response ->
+            if (QRisSuccess) {
+                // Dummy Response
+                new Handler().postDelayed(() -> {
+                    dialog.update(InfoDialog.InfoType.Confirmed,"QR Payment Success");
+                    new Handler().postDelayed(() -> {
+                    dialog.dismiss();
+                    finish();
+                    }, 5000);
+                }, 3000);
+            }
+            else {
+                dialog.update(InfoDialog.InfoType.Declined, "Error");
+            }
+        dialog.setDismissedListener(() -> {
+            // You can call your QR Payment Cancel method here
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+        });
     }
 
     private void showInfoDialog() {
@@ -228,6 +259,11 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
 
             JSONObject json = new JSONObject(cardData);
             int type = json.getInt("mCardReadType");
+
+            if (type == CardReadType.QrPay.value) {
+                QrSale();
+                return;
+            }
 
             if (type == CardReadType.CLCard.value) {
                 cardReadType = CardReadType.CLCard.value;

@@ -2,7 +2,7 @@ package com.tokeninc.sardis.application_template.UI.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.RemoteException;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.token.uicomponents.ListMenuFragment.IListMenuItem;
@@ -13,6 +13,7 @@ import com.token.uicomponents.infodialog.InfoDialogListener;
 import com.token.uicomponents.numpad.NumPadDialog;
 import com.token.uicomponents.numpad.NumPadListener;
 import com.tokeninc.barcodescannerimpl.TokenBarcodeScanner;
+import com.tokeninc.deviceinfo.DeviceInfo;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
@@ -33,7 +34,7 @@ public class ExamplesActivity  extends BaseActivity implements InfoDialogListene
 
     protected int qrAmount = 100;
     protected String qrString = "QR Kod Test";
-    boolean qrResponse;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,11 +85,35 @@ public class ExamplesActivity  extends BaseActivity implements InfoDialogListene
             startActivity(myIntent);
         }));
 
-        menuItems.add(new MenuItem("Device Number", (menuItem) -> {
-            try {
-                Toast.makeText(this, "Device SN: " + cardServiceBinding.getDeviceSN(), Toast.LENGTH_SHORT).show();
-            }
-            catch (RemoteException e) { }
+        menuItems.add(new MenuItem("Device Info", (menuItem) -> {
+         /*    [Device Info](https://github.com/TokenPublication/DeviceInfoClientApp)    */
+
+            DeviceInfo deviceInfo = new DeviceInfo(getApplicationContext());
+            deviceInfo.getFields(
+                    fields -> {
+                        if (fields == null) return;
+
+                        Log.d("Example 0", "Fiscal ID:   "    + fields[0]);
+                        Log.d("Example 1", "IMEI Number: "    + fields[1]);
+                        Log.d("Example 2", "IMSI Number: "    + fields[2]);
+                        Log.d("Example 3", "Modem Version : " + fields[3]);
+                        Log.d("Example 4", "LYNX Number: "    + fields[4]);
+
+                        showInfoDialog(InfoDialog.InfoType.Info,
+                                "Fiscal ID: "     +fields[0] +"\n"
+                                    +"IMEI Number: "   +fields[1] +"\n"
+                                    +"IMSI Number: "   +fields[2] +"\n"
+                                    +"Modem Version: " +fields[3] +"\n"
+                                    +"Lynx Version: "  +fields[4],true);
+                        deviceInfo.unbind();
+                    },
+                    // write requested fields
+                    DeviceInfo.Field.FISCAL_ID,
+                    DeviceInfo.Field.IMEI_NUMBER,
+                    DeviceInfo.Field.IMSI_NUMBER,
+                    DeviceInfo.Field.MODEM_VERSION,
+                    DeviceInfo.Field.LYNX_VERSION
+            );
         }));
 
         menuItems.add(new MenuItem("Inject Key", (menuItem) -> {
@@ -120,8 +145,10 @@ public class ExamplesActivity  extends BaseActivity implements InfoDialogListene
         }));
 
         menuItems.add(new MenuItem("Show QR", (menuItem) -> {
-            qrResponse = true;
-            QrDialog();
+            InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "QR Loading", true);
+            // For detailed usage; SaleActivity
+            cardServiceBinding.showQR("PLEASE READ THE QR CODE", StringHelper.getAmount(qrAmount), qrString); // Shows QR on the back screen
+            dialog.setQr(qrString, "WAITING FOR THE QR CODE"); // Shows the same QR on Info Dialog
         }));
 
         List<IListMenuItem> subListPrint = new ArrayList<>();
@@ -141,19 +168,6 @@ public class ExamplesActivity  extends BaseActivity implements InfoDialogListene
         menuItems.add(new MenuItem("Print Functions", subListPrint, null));
 
 
-    }
-
-
-    protected void QrDialog(){
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "QR Loading", true);
-        // Request a response ->
-        if(qrResponse == true){
-            cardServiceBinding.showQR("PLEASE READ THE QR CODE", StringHelper.getAmount(qrAmount), qrString); // Shows QR on the back screen
-            dialog.setQr(qrString, "WAITING FOR THE QR CODE"); // Shows the same QR on Info Dialog
-        }
-        else {
-            dialog.update(InfoDialog.InfoType.Declined, "Declined");
-        }
     }
 
     @Override

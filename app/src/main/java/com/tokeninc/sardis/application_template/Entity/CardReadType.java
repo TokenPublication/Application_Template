@@ -6,7 +6,8 @@ public enum CardReadType {
     MSR(2),
     ICC2MSR(3),
     KeyIn(4),
-    CLCard(5);//Contactless cards, RFU
+    CLCard(5),//Contactless cards
+    QrPay(6);
 
     public final int value;
     CardReadType(int value) {
