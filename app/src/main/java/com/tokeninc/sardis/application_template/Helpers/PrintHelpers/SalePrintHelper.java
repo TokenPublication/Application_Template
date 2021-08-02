@@ -5,7 +5,7 @@ import android.content.Context;
 import com.token.printerlib.PrinterDefinitions.Alignment;
 import com.token.printerlib.PrinterDefinitions;
 import com.token.printerlib.StyledString;
-import com.tokeninc.sardis.application_template.Entity.DeviceMode;
+import com.tokeninc.deviceinfo.DeviceInfo;
 import com.tokeninc.sardis.application_template.Entity.SampleReceipt;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
 import com.tokeninc.sardis.application_template.AppTemp;
@@ -26,7 +26,7 @@ public class SalePrintHelper extends BasePrintHelper{
 
 
         if(slipType == SlipType.CARDHOLDER_SLIP){
-            if(((AppTemp) context.getApplicationContext()).getCurrentDeviceMode() != DeviceMode.ECR.mode && ((AppTemp) context.getApplicationContext()).getCurrentDeviceMode() != DeviceMode.VUK507.mode){
+            if(!((AppTemp) context.getApplicationContext()).getCurrentDeviceMode().equals(DeviceInfo.PosModeEnum.ECR.name())  && !((AppTemp) context.getApplicationContext()).getCurrentDeviceMode().equals(DeviceInfo.PosModeEnum.VUK507.name())){
                 printSlipHeader(styledText, receipt);
             }
         }
@@ -51,7 +51,7 @@ public class SalePrintHelper extends BasePrintHelper{
         styledText.newLine();
 
         if(slipType == SlipType.CARDHOLDER_SLIP){
-            if(((AppTemp) context.getApplicationContext()).getCurrentDeviceMode() == DeviceMode.ECR.mode || ((AppTemp) context.getApplicationContext()).getCurrentDeviceMode() == DeviceMode.VUK507.mode){
+            if(((AppTemp) context.getApplicationContext()).getCurrentDeviceMode().equals(DeviceInfo.PosModeEnum.ECR.name())|| ((AppTemp) context.getApplicationContext()).getCurrentDeviceMode().equals(DeviceInfo.PosModeEnum.VUK507.name())){
                 styledText.addTextToLine("C ONLINE", Alignment.Center);
             }
             else{
@@ -106,7 +106,7 @@ public class SalePrintHelper extends BasePrintHelper{
         }
 
         if (slipType == SlipType.MERCHANT_SLIP) {
-            if(((AppTemp) context.getApplicationContext()).getCurrentDeviceMode() == DeviceMode.ECR.mode) {
+            if(((AppTemp) context.getApplicationContext()).getCurrentDeviceMode().equals(DeviceInfo.PosModeEnum.ECR.name())) {
                 styledText.newLine();
                 styledText.addTextToLine("Z NO: " +ZNO, Alignment.Right);
                 styledText.addTextToLine("FİŞ NO: " +ReceiptNo, Alignment.Left);

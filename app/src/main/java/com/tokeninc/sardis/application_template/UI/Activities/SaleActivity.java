@@ -122,7 +122,7 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
             obj.put("forceOnline", 1);
             obj.put("zeroAmount", 0);
             obj.put("fallback", 1);
-            obj.put("cardReadType",3);
+            obj.put("cardReadTypes",6);
             obj.put("qrPay", 1);
 
             if(cardReadType == CardReadType.ICC.value) {
