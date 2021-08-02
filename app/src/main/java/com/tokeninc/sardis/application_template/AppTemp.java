@@ -40,7 +40,7 @@ public class AppTemp extends Application {
 
                     this.setCurrentFiscalID(fields[0]);
                     this.setCurrentDeviceMode(fields[1]);
-                    Log.d("POS OPERATION MODE: ", String.valueOf(fields[1]));
+                    Log.d("POS OPERATION MODE ", String.valueOf(fields[1]));
 
                     deviceInfo.unbind();
                 },
