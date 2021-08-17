@@ -98,13 +98,15 @@ public class ExamplesActivity  extends BaseActivity implements InfoDialogListene
                         Log.d("Example 2", "IMSI Number: "    + fields[2]);
                         Log.d("Example 3", "Modem Version : " + fields[3]);
                         Log.d("Example 4", "LYNX Number: "    + fields[4]);
+                        Log.d("Example 5", "POS Mode: "       + fields[5]);
 
                         showInfoDialog(InfoDialog.InfoType.Info,
                                 "Fiscal ID: "     +fields[0] +"\n"
                                     +"IMEI Number: "   +fields[1] +"\n"
                                     +"IMSI Number: "   +fields[2] +"\n"
                                     +"Modem Version: " +fields[3] +"\n"
-                                    +"Lynx Version: "  +fields[4],true);
+                                    +"Lynx Version: "  +fields[4] +"\n"
+                                    +"Pos Mode: "      +fields[5],true);
                         deviceInfo.unbind();
                     },
                     // write requested fields
@@ -112,7 +114,8 @@ public class ExamplesActivity  extends BaseActivity implements InfoDialogListene
                     DeviceInfo.Field.IMEI_NUMBER,
                     DeviceInfo.Field.IMSI_NUMBER,
                     DeviceInfo.Field.MODEM_VERSION,
-                    DeviceInfo.Field.LYNX_VERSION
+                    DeviceInfo.Field.LYNX_VERSION,
+                    DeviceInfo.Field.OPERATION_MODE
             );
         }));
 
