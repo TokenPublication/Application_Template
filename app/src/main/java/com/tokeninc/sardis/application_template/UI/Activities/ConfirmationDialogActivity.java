@@ -29,7 +29,7 @@ public class ConfirmationDialogActivity extends BaseActivity implements InfoDial
         setContentView(R.layout.activity_pos_txn);
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "", true, R.drawable.token_logo);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "Confirmation", true, R.drawable.token_logo);
         addFragment(R.id.container, fragment, false);
     }
 

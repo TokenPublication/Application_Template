@@ -71,12 +71,12 @@ public class SettingsActivity extends BaseActivity {
 
     private void showMenu() {
         List<IListMenuItem> menuItems = new ArrayList<>();
-        menuItems.add(new MenuItem("Setup", iListMenuItem -> {
+        menuItems.add(new MenuItem(getString(R.string.setup), iListMenuItem -> {
             addTidMidFragment();
         }));
-        menuItems.add(new MenuItem("Host Settings", iListMenuItem -> addIpFragment()));
+        menuItems.add(new MenuItem(getString(R.string.host_settings), iListMenuItem -> addIpFragment()));
 
-        menuFragment = ListMenuFragment.newInstance(menuItems, "Settings",
+        menuFragment = ListMenuFragment.newInstance(menuItems, getString(R.string.settings),
                 true, R.drawable.token_logo);
         addFragment(R.id.container, menuFragment, false);
 
@@ -84,7 +84,7 @@ public class SettingsActivity extends BaseActivity {
 
     private void addIpFragment() {
         List<CustomInputFormat> inputList = new ArrayList<>();
-        inputList.add(new CustomInputFormat("IP", EditTextInputType.IpAddress, null, "Invalid IP!", new InputValidator() {
+        inputList.add(new CustomInputFormat("IP", EditTextInputType.IpAddress, null, getString(R.string.invalid_ip), new InputValidator() {
             @Override
             public boolean validate(CustomInputFormat customInputFormat) {
                 String text = customInputFormat.getText();
@@ -101,7 +101,7 @@ public class SettingsActivity extends BaseActivity {
             }
         }));
 
-        inputList.add(new CustomInputFormat("Port", EditTextInputType.Number, 4, "Invalid Port!", new InputValidator() {
+        inputList.add(new CustomInputFormat("Port", EditTextInputType.Number, 4, getString(R.string.invalid_port), new InputValidator() {
             @Override
             public boolean validate(CustomInputFormat customInputFormat) {
                 return customInputFormat.getText().length() >= 2 && Integer.parseInt(customInputFormat.getText()) > 0;
@@ -110,19 +110,19 @@ public class SettingsActivity extends BaseActivity {
         inputList.get(0).setText(databaseHelper.getIP_NO());
         inputList.get(1).setText(databaseHelper.getPort());
 
-        hostFragment = InputListFragment.newInstance(inputList, "Save", new InputListFragment.ButtonListener() {
+        hostFragment = InputListFragment.newInstance(inputList, getString(R.string.save), new InputListFragment.ButtonListener() {
             @Override
             public void onButtonAction(List<String> list) {
                 // TODO If Batch Close SUCCESS
 
                 // Dummy response for Host and IP settings.
-                InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Batch Close...", false);
+                InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, getString(R.string.batch_close), false);
                 new Handler().postDelayed(() -> {
-                    dialog.update(InfoDialog.InfoType.Confirmed, "Batch Close: Success");
+                    dialog.update(InfoDialog.InfoType.Confirmed, getString(R.string.batch_close) +": " +getString(R.string.success));
                     databaseHelper.batchClose();
                 new Handler().postDelayed(() -> {
                     // TODO Set Host Settings
-                    dialog.update(InfoDialog.InfoType.Confirmed, "Activation Completed");
+                    dialog.update(InfoDialog.InfoType.Confirmed, getString(R.string.activation_completed));
 
                     ip_no = inputList.get(0).getText();
                     port_no = inputList.get(1).getText();
@@ -142,14 +142,14 @@ public class SettingsActivity extends BaseActivity {
 
     private void addTidMidFragment() {
         List<CustomInputFormat> inputList = new ArrayList<>();
-        inputList.add(new CustomInputFormat("Merchant No", EditTextInputType.Number, 10, "Invalid Merchant No!", new InputValidator() {
+        inputList.add(new CustomInputFormat(getString(R.string.merchant_no), EditTextInputType.Number, 10, getString(R.string.invalid_merchant_no), new InputValidator() {
                 @Override
                 public boolean validate(CustomInputFormat input) {
                     return input.getText().length() == 10;
                 }
         }));
 
-        inputList.add(new CustomInputFormat("Terminal No", EditTextInputType.Text, 8, "Invalid Terminal No!", new InputValidator() {
+        inputList.add(new CustomInputFormat(getString(R.string.terminal_no), EditTextInputType.Text, 8, getString(R.string.invalid_terminal_no), new InputValidator() {
             @Override
             public boolean validate(CustomInputFormat input) {
                 return input.getText().length() == 8;
@@ -159,7 +159,7 @@ public class SettingsActivity extends BaseActivity {
         inputList.get(0).setText(databaseHelper.getMerchantId());
         inputList.get(1).setText(databaseHelper.getTerminalId());
 
-        TidMidFragment = InputListFragment.newInstance(inputList, "Save", new InputListFragment.ButtonListener() {
+        TidMidFragment = InputListFragment.newInstance(inputList, getString(R.string.save), new InputListFragment.ButtonListener() {
             @Override
             public void onButtonAction(List<String> list) {
 
@@ -179,19 +179,19 @@ public class SettingsActivity extends BaseActivity {
     private void startActivation() {
         if (DB_getAllTransactionsCount) {
 
-            InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Processing, "Starting Activation...", false);
+            InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Processing, getString(R.string.starting_activation), false);
                 new Handler(Looper.myLooper()).postDelayed(() -> {
-                    dialog.update(InfoDialog.InfoType.Progress, "Parameter Loading");
+                    dialog.update(InfoDialog.InfoType.Progress, getString(R.string.parameter_loading));
                     new Handler().postDelayed(() -> {
-                        dialog.update(InfoDialog.InfoType.Confirmed, "Member activation: Completed");
+                        dialog.update(InfoDialog.InfoType.Confirmed, getString(R.string.member_act_completed));
                         new Handler().postDelayed(() -> {
-                            dialog.update(InfoDialog.InfoType.Progress, "RKL Loading");
+                            dialog.update(InfoDialog.InfoType.Progress, getString(R.string.rkl_loading));
                         new Handler().postDelayed(() -> {
-                            dialog.update(InfoDialog.InfoType.Confirmed, "RKL Loaded");
+                            dialog.update(InfoDialog.InfoType.Confirmed, getString(R.string.rkl_loaded));
                             new Handler().postDelayed(() -> {
-                                dialog.update(InfoDialog.InfoType.Progress, "Key Block Loading");
+                                dialog.update(InfoDialog.InfoType.Progress, getString(R.string.key_block_loading));
                                 new Handler().postDelayed(() -> {
-                                    dialog.update(InfoDialog.InfoType.Confirmed, "Activation Completed");
+                                    dialog.update(InfoDialog.InfoType.Confirmed, getString(R.string.activation_completed));
                             new Handler().postDelayed(() -> {
                                 dialog.dismiss();
                                 printService.print(PrintHelper.PrintSuccess()); // Print success
@@ -206,7 +206,7 @@ public class SettingsActivity extends BaseActivity {
 
         else {
             new Handler().postDelayed(() -> {
-            InfoDialog progress = showInfoDialog(InfoDialog.InfoType.Progress, "Parameter Loading...", false);
+            InfoDialog progress = showInfoDialog(InfoDialog.InfoType.Progress, getString(R.string.parameter_loading), false);
             }, 2000);
         }
     }

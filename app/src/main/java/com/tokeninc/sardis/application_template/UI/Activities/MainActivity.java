@@ -33,38 +33,34 @@ public class MainActivity extends BaseActivity {
         voidActivity = new VoidActivity();
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "Pos Operations", false, R.drawable.token_logo);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, getString(R.string.pos_operations), false, R.drawable.token_logo);
         addFragment(R.id.container, fragment, false);
     }
 
     private void prepareData() {
 
-        menuItems.add(new MenuItem("Transactions", iListMenuItem -> {
+        menuItems.add(new MenuItem(getString(R.string.transactions), iListMenuItem -> {
             Intent myIntent = new Intent(MainActivity.this, TransactionsActivity.class);
             startActivity(myIntent);
         }));
 
-        menuItems.add(new MenuItem("Refund", iListMenuItem -> {
+        menuItems.add(new MenuItem(getString(R.string.refund), iListMenuItem -> {
             Intent myIntent = new Intent(MainActivity.this, RefundActivity.class);
             startActivity(myIntent);
         }));
 
-        menuItems.add(new MenuItem("Batch Close", iListMenuItem -> {
-            InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Processing, "Batch Close", false);
+        menuItems.add(new MenuItem(getString(R.string.batch_close), iListMenuItem -> {
+            InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Processing, getString(R.string.batch_close), false);
             new Handler().postDelayed(() -> {
-                dialog.update(InfoDialog.InfoType.Confirmed, "Batch Close: Done");
+                dialog.update(InfoDialog.InfoType.Confirmed, getString(R.string.batch_close) +": " +getString(R.string.success));
                 databaseHelper.batchClose();
-                new Handler().postDelayed(() -> {
-                    dialog.dismiss();
-                    }, 2000);
+                new Handler().postDelayed(dialog::dismiss, 2000);
                 }, 2000);
         }));
 
-        menuItems.add(new MenuItem("Examples", iListMenuItem -> {
+        menuItems.add(new MenuItem(getString(R.string.examples), iListMenuItem -> {
             Intent myIntent = new Intent(MainActivity.this, ExamplesActivity.class);
             startActivity(myIntent);
         }));
-
-
     }
 }

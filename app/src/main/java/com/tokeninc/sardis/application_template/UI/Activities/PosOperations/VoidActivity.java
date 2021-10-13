@@ -121,7 +121,7 @@ public class VoidActivity extends BaseActivity {
     }
 
     public void showVoid(){
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Transaction canceling", false);
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, getString(R.string.trans_cancelling), false);
         new Handler().postDelayed(() -> {
             dialog.dismiss();
             readCard();
@@ -129,7 +129,7 @@ public class VoidActivity extends BaseActivity {
     }
 
     public void showRefund(){
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "The transaction is being refunded", false);
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, getString(R.string.trans_refunding), false);
         new Handler().postDelayed(() -> {
             dialog.dismiss();
             readCard();
@@ -142,11 +142,11 @@ public class VoidActivity extends BaseActivity {
     }
 
     private void showInfoDialog() {
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Connecting", false);
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, getString(R.string.connecting), false);
         new Handler().postDelayed(() -> {
-            dialog.update(InfoDialog.InfoType.Confirmed, "Transaction Successful \n Confirmation code: 002301");
+            dialog.update(InfoDialog.InfoType.Confirmed,  getString(R.string.trans_successful) +"\n" +getString(R.string.confirmation_code) +": 000385");
             new Handler().postDelayed(() -> {
-                dialog.update(InfoDialog.InfoType.Progress, "Printing the receipt");
+                dialog.update(InfoDialog.InfoType.Progress, getString(R.string.printing_the_receipt));
                 new Handler().postDelayed(() -> {
                     dialog.dismiss();
                     if (card instanceof ICCCard)
