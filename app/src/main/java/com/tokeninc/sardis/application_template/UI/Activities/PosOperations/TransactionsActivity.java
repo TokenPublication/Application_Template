@@ -45,7 +45,7 @@ public class TransactionsActivity extends BaseActivity implements View.OnClickLi
     public void CheckTable(){
         boolean empty = databaseHelper.CheckTableIsEmpty();
         if(empty){
-            InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Info, "No Transactions Found", false);
+            InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Info, getString(R.string.no_trans_found), false);
             new Handler().postDelayed(() -> {
                 dialog.dismiss();
                 setResult(Activity.RESULT_CANCELED);

@@ -1,5 +1,6 @@
 package com.tokeninc.sardis.application_template.UI.Activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -90,15 +91,16 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
 
     private void prepareSaleMenu() {
         menuItemList = new ArrayList<>();
-        menuItemList.add(new MenuItem("Sale", (menuItem) -> showInfoDialog()));
-        menuItemList.add(new MenuItem("Installment Sale", (menuItem) -> showInfoDialog()));
-        menuItemList.add(new MenuItem("Loyalty Sale", (menuItem) -> showInfoDialog()));
-        menuItemList.add(new MenuItem("Campaign Sale", (menuItem) -> showInfoDialog()));
+        menuItemList.add(new MenuItem(getString(R.string.sale), (menuItem) -> showInfoDialog()));
+        menuItemList.add(new MenuItem(getString(R.string.installment_sale), (menuItem) -> showInfoDialog()));
+        menuItemList.add(new MenuItem(getString(R.string.loyalty_sale), (menuItem) -> showInfoDialog()));
+        menuItemList.add(new MenuItem(getString(R.string.campaign_sale), (menuItem) -> showInfoDialog()));
 
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, "Sale Type", false, null);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItemList, getString(R.string.sale_type), false, null);
         addFragment(R.id.container, fragment, false);
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -144,12 +146,12 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Please Wait", true);
         // Request to Show a QR Code ->
         cardServiceBinding.showQR("PLEASE READ THE QR CODE", StringHelper.getAmount(amount), qrString); // Shows QR on the back screen
-        dialog.setQr(qrString, "Waiting For The QR Code To Read"); // Shows the same QR on Info Dialog
+        dialog.setQr(qrString, "Waiting For the QR Code to Read"); // Shows the same QR on Info Dialog
         // Request a QR Response ->
             if (QRisSuccess) {
                 // Dummy Response
                 new Handler().postDelayed(() -> {
-                    dialog.update(InfoDialog.InfoType.Confirmed,"QR Payment Success");
+                    dialog.update(InfoDialog.InfoType.Confirmed,"QR " +getString(R.string.trans_successful));
                     new Handler().postDelayed(() -> {
                     dialog.dismiss();
                     finish();
@@ -167,11 +169,11 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void showInfoDialog() {
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Connecting", false);
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, getString(R.string.connecting), false);
         new Handler().postDelayed(() -> {
-            dialog.update(InfoDialog.InfoType.Confirmed, "Success \n Approval Code: " + StringHelper.GenerateApprovalCode(String.valueOf(databaseHelper.getBatchNo()), String.valueOf(databaseHelper.getTxNo()), String.valueOf(databaseHelper.getSaleID())));
+            dialog.update(InfoDialog.InfoType.Confirmed, getString(R.string.trans_successful) +"\n" +getString(R.string.confirmation_code) +": " +StringHelper.GenerateApprovalCode(String.valueOf(databaseHelper.getBatchNo()), String.valueOf(databaseHelper.getTxNo()), String.valueOf(databaseHelper.getSaleID())));
             new Handler().postDelayed(() -> {
-                dialog.update(InfoDialog.InfoType.Progress, "Printing the receipt");
+                dialog.update(InfoDialog.InfoType.Progress, getString(R.string.printing_the_receipt));
                 new Handler().postDelayed(() -> {
                     dialog.dismiss();
                     if (card instanceof ICCCard)

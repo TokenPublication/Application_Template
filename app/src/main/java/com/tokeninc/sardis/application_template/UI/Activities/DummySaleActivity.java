@@ -1,5 +1,6 @@
 package com.tokeninc.sardis.application_template.UI.Activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -86,6 +87,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View view) {
         switch (view.getId()) {

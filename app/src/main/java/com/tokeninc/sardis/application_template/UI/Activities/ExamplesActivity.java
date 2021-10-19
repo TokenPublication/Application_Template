@@ -33,7 +33,7 @@ public class ExamplesActivity  extends BaseActivity implements InfoDialogListene
     private PrintServiceBinding printService;
 
     protected int qrAmount = 100;
-    protected String qrString = "QR Kod Test";
+    protected String qrString = "QR Code Test";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class ExamplesActivity  extends BaseActivity implements InfoDialogListene
         printService = new PrintServiceBinding();
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "Examples", false, R.drawable.token_logo);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, getString(R.string.examples), false, R.drawable.token_logo);
         addFragment(R.id.container, fragment, false);
     }
 

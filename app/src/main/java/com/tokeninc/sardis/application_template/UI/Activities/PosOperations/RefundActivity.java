@@ -66,25 +66,25 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); //Prevent screen from turning of when sale is active
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "Pos Operations", false, R.drawable.token_logo);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, getString(R.string.pos_operations), false, R.drawable.token_logo);
         addFragment(R.id.container, fragment, false);
     }
 
     private void prepareData() {
 
-        menuItems.add(new MenuItem("Matched Refund", iListMenuItem -> {
+        menuItems.add(new MenuItem(getString(R.string.matched_refund), iListMenuItem -> {
             showMatchedReturnFragment();
         }));
 
-        menuItems.add(new MenuItem("Cash Refund", iListMenuItem -> {
+        menuItems.add(new MenuItem(getString(R.string.cash_refund), iListMenuItem -> {
             showReturnFragment();
         }));
 
-        menuItems.add(new MenuItem("Installment Refund", iListMenuItem -> {
+        menuItems.add(new MenuItem(getString(R.string.installment_refund), iListMenuItem -> {
             showInstallments();
         }));
 
-        menuItems.add(new MenuItem("Loyalty Refund", iListMenuItem -> {
+        menuItems.add(new MenuItem(getString(R.string.loyalty_refund), iListMenuItem -> {
             showReturnFragment();
         }));
 
@@ -93,13 +93,13 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
     private void showMatchedReturnFragment() { // EŞLENİKLİ İADE
         List<CustomInputFormat> inputList = new ArrayList<>();
 
-        inputOrgAmount = new CustomInputFormat("Original Amount", Amount, null, "Invalid Amount",
+        inputOrgAmount = new CustomInputFormat(getString(R.string.original_amount), Amount, null, getString(R.string.invalid_amount),
                 input -> {
                     int amount = input.getText().isEmpty() ? 0 : Integer.parseInt(input.getText());
                     return amount > 0;
                 });
         inputList.add(inputOrgAmount);
-        inputRetAmount = new CustomInputFormat("Refund Amount", Amount, null, "Invalid Amount",
+        inputRetAmount = new CustomInputFormat(getString(R.string.refund_amount), Amount, null, getString(R.string.invalid_amount),
                 input -> {
                     int amount = input.getText().isEmpty() ? 0 : Integer.parseInt(input.getText());
                     int original = inputOrgAmount.getText().isEmpty() ? 0 : Integer.parseInt(inputOrgAmount.getText());
@@ -107,16 +107,16 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
                 });
         inputList.add(inputRetAmount);
 
-            inputRefNo = new CustomInputFormat("Ref No", EditTextInputType.Number, 10, "Ref No invalid (10 digits)",
+            inputRefNo = new CustomInputFormat(getString(R.string.ref_no), EditTextInputType.Number, 10, getString(R.string.ref_no_invalid_ten_digits),
                     customInputFormat -> {
                         return !isCurrentDay(inputTranDate.getText()) || isCurrentDay(inputTranDate.getText()) && customInputFormat.getText().length() == 10;
                     });
             inputList.add(inputRefNo);
-            inputAuthCode = new CustomInputFormat("Confirmation code", EditTextInputType.Number, 6, "Confirmation code is invalid (6 digits)",
+            inputAuthCode = new CustomInputFormat(getString(R.string.confirmation_code), EditTextInputType.Number, 6, getString(R.string.confirmation_code_invalid_six_digits),
                     customInputFormat -> customInputFormat.getText().length() == 6);
             inputList.add(inputAuthCode);
 
-        inputTranDate = new CustomInputFormat("Transaction date", EditTextInputType.Date, null, "Transaction date is invalid",
+        inputTranDate = new CustomInputFormat(getString(R.string.tran_date), EditTextInputType.Date, null, getString(R.string.tran_date_invalid),
                 customInputFormat -> {
                     try {
                         String[] array = customInputFormat.getText().split("/");
@@ -131,7 +131,7 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
         );
         inputList.add(inputTranDate);
 
-        InputListFragment fragment = InputListFragment.newInstance(inputList, "Refund", list -> {
+        InputListFragment fragment = InputListFragment.newInstance(inputList, getString(R.string.refund), list -> {
             data = list;
             amount = Integer.parseInt(list.get(1));
             readCard();
@@ -141,7 +141,7 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
 
     public void showReturnFragment() { // İADE
         List<CustomInputFormat> inputList = new ArrayList<>();
-        inputList.add(new CustomInputFormat("Refund Amount", Amount, null, "Invalid Amount", input -> {
+        inputList.add(new CustomInputFormat(getString(R.string.refund_amount), Amount, null, getString(R.string.invalid_amount), input -> {
             int ListAmount = input.getText().isEmpty() ? 0 : Integer.parseInt(input.getText());
             try {
                 amount = ListAmount;
@@ -150,7 +150,7 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
             }
             return ListAmount > 0;
         }));
-        InputListFragment fragment = InputListFragment.newInstance(inputList, "Refund", list -> {
+        InputListFragment fragment = InputListFragment.newInstance(inputList, getString(R.string.refund), list -> {
             readCard();
         });
         addFragment(R.id.container, fragment, true);
@@ -165,12 +165,12 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
         int maxInst = 12;
         List<IListMenuItem> menuItems = new ArrayList<>();
         for (int i = 2; i <= maxInst; i++) {
-            MenuItem menuItem = new MenuItem(i + " Installment", listener);
+            MenuItem menuItem = new MenuItem(i +" " +getString(R.string.installment), listener);
             //menuItem.setArg(i);
             menuItems.add(menuItem);
         }
 
-        instFragment = ListMenuFragment.newInstance(menuItems, "Installment Refund", true, R.drawable.token_logo);
+        instFragment = ListMenuFragment.newInstance(menuItems, getString(R.string.installment_refund), true, R.drawable.token_logo);
         addFragment(R.id.container, instFragment, true);
     }
 
@@ -195,11 +195,11 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
 
     // Creates a dummy response for Refund.
     private void showInfoDialog() {
-        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, "Connecting", false);
+        InfoDialog dialog = showInfoDialog(InfoDialog.InfoType.Progress, getString(R.string.connecting), false);
         new Handler().postDelayed(() -> {
-            dialog.update(InfoDialog.InfoType.Confirmed, "Transaction Successful \n Confirmation code: 000782");
+            dialog.update(InfoDialog.InfoType.Confirmed, getString(R.string.trans_successful) +"\n" +getString(R.string.confirmation_code) +": 000782");
             new Handler().postDelayed(() -> {
-                dialog.update(InfoDialog.InfoType.Progress, "Printing the receipt");
+                dialog.update(InfoDialog.InfoType.Progress, getString(R.string.printing_the_receipt));
                 new Handler().postDelayed(() -> {
                     dialog.dismiss();
                     if (card instanceof ICCCard)
