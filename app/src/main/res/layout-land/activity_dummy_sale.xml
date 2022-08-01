@@ -135,7 +135,6 @@
             android:paddingEnd="20dp"
             android:text="Dummy Response"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toTopOf="@+id/cbMerchant"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/containerLayout" />
@@ -164,8 +163,24 @@
             android:textColor="@color/white"
             app:layout_constraintBottom_toTopOf="@+id/cbCustomer"
             app:layout_constraintEnd_toEndOf="@+id/btnError"
+            app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.931" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:backgroundTint="@color/color_token"
+            android:spinnerMode="dropdown"
+            app:layout_constraintBottom_toTopOf="@+id/cbMerchant"
+            app:layout_constraintEnd_toStartOf="@+id/btnOffline"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toEndOf="@+id/btnCancel"
+            app:layout_constraintTop_toBottomOf="@+id/textDummyResponse" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
