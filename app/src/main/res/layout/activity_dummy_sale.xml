@@ -52,10 +52,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="395dp"
+        android:layout_height="384dp"
+        android:background="@drawable/border_white"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/border_white">
+        tools:layout_editor_absoluteX="10dp">
 
         <Button
             android:id="@+id/btnSuccess"
@@ -113,12 +114,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:layout_marginBottom="20dp"
-            android:text="UNABLE_DECLINE"
-            android:onClick="onClick"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@id/btnSuccess"
             android:background="@drawable/button_blue"
-            android:textColor="#fff"/>
+            android:onClick="onClick"
+            android:text="UNABLE_DECLINE"
+            android:textColor="#fff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/btnSuccess" />
 
         <Button
             android:id="@+id/btnOnlineDecline"
@@ -126,40 +127,52 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:text="ONLINE_DECLINE"
-            android:onClick="onClick"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnError"
             android:background="@drawable/button_blue"
-            android:textColor="#fff"/>
+            android:onClick="onClick"
+            android:text="ONLINE_DECLINE"
+            android:textColor="#fff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/btnError" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:backgroundTint="@color/color_token"
+            android:spinnerMode="dropdown"
+            app:layout_constraintBottom_toTopOf="@+id/cbMerchant"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <CheckBox
             android:id="@+id/cbCustomer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:buttonTint="@color/color_token"
+            android:checked="false"
             android:text="Customer Slip"
             android:textColor="@color/white"
-            android:checked="false"
-            android:buttonTint="@color/color_token"
-            android:layout_marginBottom="20dp"
             app:layout_constraintBottom_toTopOf="@+id/btnSuccess"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <CheckBox
             android:id="@+id/cbMerchant"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:buttonTint="@color/color_token"
+            android:checked="false"
             android:text="Merchant Slip"
             android:textColor="@color/white"
-            android:checked="false"
-            android:buttonTint="@color/color_token"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/cbCustomer"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

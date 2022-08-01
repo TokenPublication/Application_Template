@@ -193,11 +193,16 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
 
         bundle.putInt("sCardReadType", cardReadType);
 
-        if(cardReadType != CardReadType.CLCard.value) {
-            bundle.putString("sCardOwner", card.getOwnerName());
-            bundle.putString("sCardNumber", card.getCardNumber());
-        }
-        else{
+        try {
+            if(card.getOwnerName() != null && card.getCardNumber() != null) {
+                bundle.putString("sCardOwner", card.getOwnerName());
+                bundle.putString("sCardNumber", card.getCardNumber());
+            }
+            else{
+                bundle.putString("sCardOwner", cardOwner);
+                bundle.putString("sCardNumber", cardNumber);
+            }
+        } catch (Exception e) {
             bundle.putString("sCardOwner", cardOwner);
             bundle.putString("sCardNumber", cardNumber);
         }

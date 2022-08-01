@@ -4,11 +4,15 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -19,6 +23,7 @@ import com.token.printerlib.StyledString;
 import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Entity.CardReadType;
 import com.tokeninc.sardis.application_template.Entity.MSRCard;
+import com.tokeninc.sardis.application_template.Entity.PaymentTypes;
 import com.tokeninc.sardis.application_template.Entity.ResponseCode;
 import com.tokeninc.sardis.application_template.Entity.SampleReceipt;
 import com.tokeninc.sardis.application_template.Entity.SlipType;
@@ -44,6 +49,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
     String cardNumber = "**** ****";
     String cardOwner = "";
     String cardData;
+    Spinner spinner;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,7 +65,34 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         cardData = getIntent().getStringExtra("CardData");
         TextView tvAmount = findViewById(R.id.tvAmount);
         tvAmount.setText(StringHelper.getAmount(amount));
+        prepareSpinner();
     }
+
+    private void prepareSpinner(){
+        spinner = findViewById(R.id.spinner);
+        String[] items = new String[]{
+                String.valueOf(PaymentTypes.CREDITCARD),
+                String.valueOf(PaymentTypes.TRQRCREDITCARD),
+                String.valueOf(PaymentTypes.TRQRFAST),
+                String.valueOf(PaymentTypes.TRQRMOBILE),
+                String.valueOf(PaymentTypes.TRQROTHER),
+                String.valueOf(PaymentTypes.OTHER)};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(listener);
+    }
+
+    private final AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            ((TextView) parent.getChildAt(0)).setTextColor(Color.WHITE);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+
+        }
+    };
 
     private void doSale() {
         Intent intent = new Intent(this, SaleActivity.class);
@@ -83,7 +116,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
 
             databaseHelper.SaveSaleToDB(cardNumber, String.valueOf(amount));
 
-            onSaleResponseRetrieved(amount, ResponseCode.values()[responseCode], true, SlipType.BOTH_SLIPS, cardNumber, cardOwner);
+            onSaleResponseRetrieved(amount, ResponseCode.values()[responseCode], true, SlipType.BOTH_SLIPS, cardNumber, cardOwner, PaymentTypes.CREDITCARD.type);
         }
     }
 
@@ -143,6 +176,9 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
 
 
     public void prepareDummyResponse(ResponseCode code) {
+        // Dummy response with payment type, for 1000TR device
+        int paymentType = PaymentTypes.CREDITCARD.type;
+
         CheckBox cbMerchant = findViewById(R.id.cbMerchant);
         CheckBox cbCustomer = findViewById(R.id.cbCustomer);
 
@@ -154,11 +190,26 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
         else if (cbCustomer.isChecked())
             slipType = SlipType.CARDHOLDER_SLIP;
 
-        onSaleResponseRetrieved(amount, code, cbCustomer.isChecked() || cbMerchant.isChecked(), slipType, "**** **** **** ****", "OWNER NAME");
+        if(code == ResponseCode.SUCCESS){
+            String text = spinner.getSelectedItem().toString();
+
+            if (text.equals(String.valueOf(PaymentTypes.TRQRCREDITCARD)))
+                paymentType = PaymentTypes.TRQRCREDITCARD.type;
+            else if (text.equals(String.valueOf(PaymentTypes.TRQRFAST)))
+                paymentType = PaymentTypes.TRQRFAST.type;
+            else if(text.equals(String.valueOf(PaymentTypes.TRQRMOBILE)))
+                paymentType = PaymentTypes.TRQRMOBILE.type;
+            else if (text.equals(String.valueOf(PaymentTypes.TRQROTHER)))
+                paymentType = PaymentTypes.TRQROTHER.type;
+            else if (text.equals(String.valueOf(PaymentTypes.OTHER)))
+                paymentType = PaymentTypes.OTHER.type;
+        }
+
+        onSaleResponseRetrieved(amount, code, true, slipType, "1234 **** **** 7890", "OWNER NAME", paymentType);
     }
 
     //TODO Data has to be returned to Payment Gateway after sale operation completed via template below using actual data.
-    public void onSaleResponseRetrieved(Integer price, ResponseCode code, Boolean hasSlip, SlipType slipType, String cardNo, String ownerName) {
+    public void onSaleResponseRetrieved(Integer price, ResponseCode code, Boolean hasSlip, SlipType slipType, String cardNo, String ownerName, int paymentType) {
 
         Intent resultIntent = new Intent();
         Bundle bundle = new Bundle();
@@ -181,6 +232,7 @@ public class DummySaleActivity extends BaseActivity implements View.OnClickListe
 
             bundle.putString("RefundInfo", getRefundInfo(ResponseCode.SUCCESS));
             bundle.putString("RefNo", String.valueOf(databaseHelper.getSaleID()));
+            bundle.putInt("PaymentType", paymentType);
 
         if (slipType == SlipType.CARDHOLDER_SLIP || slipType == SlipType.BOTH_SLIPS) {
             bundle.putString("customerSlipData", SalePrintHelper.getFormattedText(getSampleReceipt(cardNo, ownerName), SlipType.CARDHOLDER_SLIP, this, 1, 2));
