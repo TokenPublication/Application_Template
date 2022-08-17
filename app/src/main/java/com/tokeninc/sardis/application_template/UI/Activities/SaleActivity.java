@@ -74,8 +74,8 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
-    public void getCardDataFromBundle(){
-        if (cardReadType == CardReadType.MSR.value ) {
+    public void getCardDataFromBundle() {
+        if (cardReadType == CardReadType.MSR.value) {
             if(getIntent().getExtras().getString("CardData") != null) {
                 String cardData = getIntent().getStringExtra("CardData");
                 try {
@@ -85,6 +85,13 @@ public class SaleActivity extends BaseActivity implements View.OnClickListener {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        } else if (cardReadType == CardReadType.CLCard.value){
+            try {
+                ICCCard card = new Gson().fromJson(cardData, ICCCard.class);
+                this.card = card;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
