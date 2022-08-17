@@ -8,6 +8,7 @@ import com.tokeninc.deviceinfo.DeviceInfo;
 public class AppTemp extends Application {
     private String currentDeviceMode = DeviceInfo.PosModeEnum.VUK507.name();
     private String currentFiscalID = null;
+    private String currentCardRedirection = DeviceInfo.CardRedirect.NOT_ASSIGNED.name();
 
     @Override
     public void onCreate() {
@@ -31,6 +32,14 @@ public class AppTemp extends Application {
         this.currentFiscalID = currentFiscalID;
     }
 
+    public String getCurrentCardRedirection() {
+        return currentCardRedirection;
+    }
+
+    public void setCurrentCardRedirection(String currentCardRedirection) {
+        this.currentCardRedirection = currentCardRedirection;
+    }
+
     private void startDeviceInfo(){
         DeviceInfo deviceInfo = new DeviceInfo(this);
         deviceInfo.getFields(
@@ -40,11 +49,11 @@ public class AppTemp extends Application {
 
                     this.setCurrentFiscalID(fields[0]);
                     this.setCurrentDeviceMode(fields[1]);
-                    Log.d("POS OPERATION MODE ", String.valueOf(fields[1]));
+                    this.setCurrentCardRedirection(fields[2]);
 
                     deviceInfo.unbind();
                 },
-                DeviceInfo.Field.FISCAL_ID, DeviceInfo.Field.OPERATION_MODE
+                DeviceInfo.Field.FISCAL_ID, DeviceInfo.Field.OPERATION_MODE, DeviceInfo.Field.CARD_REDIRECTION
         );
     }
 }
