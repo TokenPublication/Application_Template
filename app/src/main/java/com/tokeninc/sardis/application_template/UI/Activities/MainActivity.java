@@ -33,7 +33,7 @@ public class MainActivity extends BaseActivity {
         voidActivity = new VoidActivity();
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, getString(R.string.pos_operations), false, R.drawable.token_logo);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, getString(R.string.pos_operations), false, R.drawable.token_logo_png);
         addFragment(R.id.container, fragment, false);
     }
 

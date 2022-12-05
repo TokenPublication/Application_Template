@@ -66,7 +66,7 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON); //Prevent screen from turning of when sale is active
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, getString(R.string.pos_operations), false, R.drawable.token_logo);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, getString(R.string.pos_operations), false, R.drawable.token_logo_png);
         addFragment(R.id.container, fragment, false);
     }
 
@@ -170,7 +170,7 @@ public class RefundActivity extends BaseActivity implements View.OnClickListener
             menuItems.add(menuItem);
         }
 
-        instFragment = ListMenuFragment.newInstance(menuItems, getString(R.string.installment_refund), true, R.drawable.token_logo);
+        instFragment = ListMenuFragment.newInstance(menuItems, getString(R.string.installment_refund), true, R.drawable.token_logo_png);
         addFragment(R.id.container, instFragment, true);
     }
 

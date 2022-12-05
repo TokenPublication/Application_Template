@@ -128,7 +128,7 @@ public class SalePrintHelper extends BasePrintHelper{
         styledText.addTextToLine("BU BELGEYİ SAKLAYINIZ", Alignment.Center);
         styledText.newLine();
 
-        styledText.printBitmap("ykb", 20);
+        styledText.printLogo(context);
         styledText.addSpace(100);
         return styledText.toString();
     }
