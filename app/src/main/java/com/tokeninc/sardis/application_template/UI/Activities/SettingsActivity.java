@@ -77,7 +77,7 @@ public class SettingsActivity extends BaseActivity {
         menuItems.add(new MenuItem(getString(R.string.host_settings), iListMenuItem -> addIpFragment()));
 
         menuFragment = ListMenuFragment.newInstance(menuItems, getString(R.string.settings),
-                true, R.drawable.token_logo);
+                true, R.drawable.token_logo_png);
         addFragment(R.id.container, menuFragment, false);
 
     }
@@ -194,7 +194,7 @@ public class SettingsActivity extends BaseActivity {
                                     dialog.update(InfoDialog.InfoType.Confirmed, getString(R.string.activation_completed));
                             new Handler().postDelayed(() -> {
                                 dialog.dismiss();
-                                printService.print(PrintHelper.PrintSuccess()); // Print success
+                                PrintHelper.PrintSuccess(); // Print success
                                   }, 2000);
                              }, 2000);
                             }, 2000);

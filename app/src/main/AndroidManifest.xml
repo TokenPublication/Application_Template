@@ -10,6 +10,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:logo="@drawable/token_logo"
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".UI.Activities.MainActivity"
                   android:label="Application Template">

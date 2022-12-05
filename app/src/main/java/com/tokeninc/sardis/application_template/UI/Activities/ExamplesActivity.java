@@ -18,7 +18,6 @@ import com.tokeninc.sardis.application_template.BaseActivity;
 import com.tokeninc.sardis.application_template.Helpers.StringHelper;
 import com.tokeninc.sardis.application_template.R;
 import com.tokeninc.sardis.application_template.UI.Definitions.MenuItem;
-import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.PrintServiceBinding;
 import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.PrintHelper;
 
 import java.lang.ref.WeakReference;
@@ -30,7 +29,6 @@ import static com.tokeninc.sardis.application_template.Helpers.KeyInjectHelper.e
 public class ExamplesActivity  extends BaseActivity implements InfoDialogListener {
 
     private List<IListMenuItem> menuItems = new ArrayList<>();
-    private PrintServiceBinding printService;
 
     protected int qrAmount = 100;
     protected String qrString = "QR Code Test";
@@ -39,10 +37,9 @@ public class ExamplesActivity  extends BaseActivity implements InfoDialogListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_examples);
-        printService = new PrintServiceBinding();
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, getString(R.string.examples), false, R.drawable.token_logo);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, getString(R.string.examples), false, R.drawable.token_logo_png);
         addFragment(R.id.container, fragment, false);
     }
 
@@ -156,12 +153,12 @@ public class ExamplesActivity  extends BaseActivity implements InfoDialogListene
 
         List<IListMenuItem> subListPrint = new ArrayList<>();
         subListPrint.add(new MenuItem("Print Load Success", (menuItem) -> {
-            printService.print(PrintHelper.PrintSuccess()); // Message print: Load Success
+            PrintHelper.PrintSuccess(); // Message print: Load Success
 
         }, null));
 
         subListPrint.add(new MenuItem("Print Load Error", (menuItem) -> {
-            printService.print(PrintHelper.PrintError()); // Message print: Load Error
+            PrintHelper.PrintError(); // Message print: Load Error
 
         }, null));
         subListPrint.add(new MenuItem("Print Bitmap", (menuItem) -> {

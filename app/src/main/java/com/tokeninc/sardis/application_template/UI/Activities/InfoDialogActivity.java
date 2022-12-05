@@ -71,7 +71,7 @@ public class InfoDialogActivity extends BaseActivity {
         setContentView(R.layout.activity_pos_txn);
 
         prepareData();
-        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "Info Dialog", true, R.drawable.token_logo);
+        ListMenuFragment fragment = ListMenuFragment.newInstance(menuItems, "Info Dialog", true, R.drawable.token_logo_png);
         addFragment(R.id.container, fragment, false);
     }
 

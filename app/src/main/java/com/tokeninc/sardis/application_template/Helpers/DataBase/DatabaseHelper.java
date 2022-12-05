@@ -8,15 +8,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.DateUtil;
 import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.PrintHelper;
-import com.tokeninc.sardis.application_template.Helpers.PrintHelpers.PrintServiceBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-
-    public PrintServiceBinding printService;
 
     public static String DATABASE = "database.db";
 
@@ -259,7 +256,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 public void batchClose(){
-        printService = new PrintServiceBinding();
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.execSQL("DROP TABLE IF EXISTS sale_table");
@@ -276,7 +272,7 @@ public void batchClose(){
         String MID = getMerchantId();
         String TID = getTerminalId();
 
-        printService.print(PrintHelper.PrintBatchClose(batchNo, txNo, MID, TID));
+        PrintHelper.PrintBatchClose(batchNo, txNo, MID, TID);
 
         updateTxNo("0");
 

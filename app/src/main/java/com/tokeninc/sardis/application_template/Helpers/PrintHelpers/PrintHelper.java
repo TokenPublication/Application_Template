@@ -1,11 +1,12 @@
 package com.tokeninc.sardis.application_template.Helpers.PrintHelpers;
 
 import com.token.printerlib.PrinterDefinitions;
+import com.token.printerlib.PrinterService;
 import com.token.printerlib.StyledString;
 
 public class PrintHelper extends BasePrintHelper {
 
-    public static String PrintSuccess()
+    public static void PrintSuccess()
     {   // Print the success message
         StyledString styledText = new StyledString();
 
@@ -31,10 +32,10 @@ public class PrintHelper extends BasePrintHelper {
         styledText.newLine();
         styledText.addSpace(100);
 
-        return styledText.toString();
+        styledText.print(PrinterService.getService());
     }
 
-    public static String PrintError()
+    public static void PrintError()
     {   // Print the error message if necessary
         StyledString styledText = new StyledString();
 
@@ -50,10 +51,10 @@ public class PrintHelper extends BasePrintHelper {
         styledText.newLine();
         styledText.addSpace(100);
 
-        return styledText.toString();
+        styledText.print(PrinterService.getService());
     }
 
-    public static String PrintBatchClose(String batch_no, String tx_no, String MID, String TID)
+    public static void PrintBatchClose(String batch_no, String tx_no, String MID, String TID)
     {
         StyledString styledText = new StyledString();
 
@@ -91,6 +92,6 @@ public class PrintHelper extends BasePrintHelper {
         styledText.newLine();
         styledText.addSpace(100);
 
-        return styledText.toString();
+        styledText.print(PrinterService.getService());
     }
 }
