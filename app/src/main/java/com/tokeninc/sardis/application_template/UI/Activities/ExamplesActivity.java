@@ -165,6 +165,14 @@ public class ExamplesActivity  extends BaseActivity implements InfoDialogListene
             // printService.printBitmap("/*Prints Preloaded BMP*/", 100);
         }, null));
 
+        subListPrint.add(new MenuItem("Print Visa PayWave32", (menuItem) -> {
+            PrintHelper.PrintVisa(true);
+        }, null));
+
+        subListPrint.add(new MenuItem("Print  Visa PayWave64", (menuItem) -> {
+            PrintHelper.PrintVisa(false);
+        }, null));
+
         menuItems.add(new MenuItem("Print Functions", subListPrint, null));
 
 

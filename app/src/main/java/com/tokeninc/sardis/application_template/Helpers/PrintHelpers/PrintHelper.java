@@ -94,4 +94,14 @@ public class PrintHelper extends BasePrintHelper {
 
         styledText.print(PrinterService.getService());
     }
+
+    public static void PrintVisa(boolean is32)
+    {
+        StyledString styledText = new StyledString();
+        addTextToNewLine(styledText, "Visa PayWave", PrinterDefinitions.Alignment.Center);
+        styledText.printBitmap(is32 ? "contactless32" : "contactless64", 0);
+        styledText.newLine();
+        styledText.addSpace(100);
+        styledText.print(PrinterService.getService());
+    }
 }
